@@ -13,7 +13,10 @@
                 "additionalLibraryDirectories": [],
                 "preprocessorDefinitions": []
             },
-            "dependencies": [],
+            "dependencies": [
+                "317376A3-6554-5BF0-77C1-0E4F11D6621C",
+                "315D50BD-7CDB-49F5-5DB7-22F03CBB3227"
+            ],
             "dependents": [],
             "name": "Server",
             "property-lib": false,
@@ -34,7 +37,10 @@
                 "additionalLibraryDirectories": [],
                 "preprocessorDefinitions": []
             },
-            "dependencies": [],
+            "dependencies": [
+                "317376A3-6554-5BF0-77C1-0E4F11D6621C",
+                "315D50BD-7CDB-49F5-5DB7-22F03CBB3227"
+            ],
             "dependents": [],
             "name": "Client",
             "property-lib": false,
@@ -56,7 +62,10 @@
                 "preprocessorDefinitions": []
             },
             "dependencies": [],
-            "dependents": [],
+            "dependents": [
+                "30F16733-7E0D-2C0C-2C1A-28C22B842B7F",
+                "312830F6-2058-6A00-590E-2D847A34691C"
+            ],
             "name": "LibGameplay",
             "property-lib": true,
             "property-pch": false,
@@ -77,7 +86,10 @@
                 "preprocessorDefinitions": []
             },
             "dependencies": [],
-            "dependents": [],
+            "dependents": [
+                "312830F6-2058-6A00-590E-2D847A34691C",
+                "30F16733-7E0D-2C0C-2C1A-28C22B842B7F"
+            ],
             "name": "LibNetwork",
             "property-lib": true,
             "property-pch": false,
