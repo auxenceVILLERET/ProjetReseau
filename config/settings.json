@@ -1,6 +1,6 @@
 {
     "projects": {
-        "5A460175-4821-7065-2FED-00CC767D586E": {
+        "30F16733-7E0D-2C0C-2C1A-28C22B842B7F": {
             "config-debug": {
                 "additionalDependencies": [],
                 "additionalIncludeDirectories": [],
@@ -15,17 +15,83 @@
             },
             "dependencies": [],
             "dependents": [],
-            "name": "ProjetReseau",
+            "name": "Server",
             "property-lib": false,
             "property-pch": false,
             "property-vcpkg": false,
+            "property-window": false
+        },
+        "312830F6-2058-6A00-590E-2D847A34691C": {
+            "config-debug": {
+                "additionalDependencies": [],
+                "additionalIncludeDirectories": [],
+                "additionalLibraryDirectories": [],
+                "preprocessorDefinitions": []
+            },
+            "config-release": {
+                "additionalDependencies": [],
+                "additionalIncludeDirectories": [],
+                "additionalLibraryDirectories": [],
+                "preprocessorDefinitions": []
+            },
+            "dependencies": [],
+            "dependents": [],
+            "name": "Client",
+            "property-lib": false,
+            "property-pch": true,
+            "property-vcpkg": false,
             "property-window": true
+        },
+        "315D50BD-7CDB-49F5-5DB7-22F03CBB3227": {
+            "config-debug": {
+                "additionalDependencies": [],
+                "additionalIncludeDirectories": [],
+                "additionalLibraryDirectories": [],
+                "preprocessorDefinitions": []
+            },
+            "config-release": {
+                "additionalDependencies": [],
+                "additionalIncludeDirectories": [],
+                "additionalLibraryDirectories": [],
+                "preprocessorDefinitions": []
+            },
+            "dependencies": [],
+            "dependents": [],
+            "name": "LibGameplay",
+            "property-lib": true,
+            "property-pch": false,
+            "property-vcpkg": false,
+            "property-window": false
+        },
+        "317376A3-6554-5BF0-77C1-0E4F11D6621C": {
+            "config-debug": {
+                "additionalDependencies": [],
+                "additionalIncludeDirectories": [],
+                "additionalLibraryDirectories": [],
+                "preprocessorDefinitions": []
+            },
+            "config-release": {
+                "additionalDependencies": [],
+                "additionalIncludeDirectories": [],
+                "additionalLibraryDirectories": [],
+                "preprocessorDefinitions": []
+            },
+            "dependencies": [],
+            "dependents": [],
+            "name": "LibNetwork",
+            "property-lib": true,
+            "property-pch": false,
+            "property-vcpkg": false,
+            "property-window": false
         }
     },
     "projects_name_to_guid": {
-        "ProjetReseau": "5A460175-4821-7065-2FED-00CC767D586E"
+        "Client": "312830F6-2058-6A00-590E-2D847A34691C",
+        "LibGameplay": "315D50BD-7CDB-49F5-5DB7-22F03CBB3227",
+        "LibNetwork": "317376A3-6554-5BF0-77C1-0E4F11D6621C",
+        "Server": "30F16733-7E0D-2C0C-2C1A-28C22B842B7F"
     },
-    "solution_guid": "237413C2-5937-30AE-31F7-5982595C4C48",
+    "solution_guid": "30303A07-68EB-0234-62EA-1FC55E324E24",
     "solution_name": "ProjetReseau",
     "startup_project": "",
     "version": "2.0"
