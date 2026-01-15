@@ -1,0 +1,32 @@
+{
+    "projects": {
+        "5A460175-4821-7065-2FED-00CC767D586E": {
+            "config-debug": {
+                "additionalDependencies": [],
+                "additionalIncludeDirectories": [],
+                "additionalLibraryDirectories": [],
+                "preprocessorDefinitions": []
+            },
+            "config-release": {
+                "additionalDependencies": [],
+                "additionalIncludeDirectories": [],
+                "additionalLibraryDirectories": [],
+                "preprocessorDefinitions": []
+            },
+            "dependencies": [],
+            "dependents": [],
+            "name": "ProjetReseau",
+            "property-lib": false,
+            "property-pch": false,
+            "property-vcpkg": false,
+            "property-window": true
+        }
+    },
+    "projects_name_to_guid": {
+        "ProjetReseau": "5A460175-4821-7065-2FED-00CC767D586E"
+    },
+    "solution_guid": "237413C2-5937-30AE-31F7-5982595C4C48",
+    "solution_name": "ProjetReseau",
+    "startup_project": "",
+    "version": "2.0"
+}
