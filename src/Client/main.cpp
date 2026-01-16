@@ -8,8 +8,20 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
+void AttachConsoleIO()
+{
+    AllocConsole();
+
+    FILE* f;
+    freopen_s(&f, "CONIN$", "r", stdin);
+    freopen_s(&f, "CONOUT$", "w", stdout);
+    freopen_s(&f, "CONOUT$", "w", stderr);
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int cmdShow)
 {
+    AttachConsoleIO();
+
     if (!Sockets::Start())
     {
         std::cout << "Erreur initialisation : " << Sockets::GetError() << std::endl;

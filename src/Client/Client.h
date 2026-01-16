@@ -22,8 +22,8 @@ private:
     
     UDPSocket m_udpSocket;
 
-    char* m_serverIp = nullptr;
-    int serverPort = 1888;
+    std::string m_serverIp;
+    int m_serverPort = 1888;
     std::string m_username;
     
 };
