@@ -21,6 +21,7 @@ private:
     static uint32_t ID_COUNT;
     static constexpr uint32_t MAX_ID = 1000;
     static constexpr uint32_t BUFFER_SIZE = 1024;
+    static constexpr uint16_t MAGIC_WORD = 0b1010101111001101;
     
     uint32_t m_id;
     uint32_t m_size;

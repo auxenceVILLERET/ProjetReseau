@@ -2,8 +2,21 @@
 #include <windows.h>
 #include "main.h"
 
+#include <iostream>
+
+#include "Client.h"
+
+#pragma comment(lib, "Ws2_32.lib")
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int cmdShow)
 {
+    if (!Sockets::Start())
+    {
+        std::cout << "Erreur initialisation : " << Sockets::GetError() << std::endl;
+    }
+    
+    Client* client = Client::GetInstance();
+    
     // AMIGA NTSC FULLSCREEN
     //CPU_RUN(320, 200, true, true);
 

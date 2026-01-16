@@ -21,7 +21,7 @@ Message::Message(bool isNew)
 
     m_id = ID_COUNT;
 
-    m_size = sizeof(m_id) + sizeof(m_packetCount) + sizeof(m_isSystemMsg);
+    m_size = sizeof(MAGIC_WORD) + sizeof(m_id) + sizeof(m_packetCount) + sizeof(m_isSystemMsg);
 }
 
 char* Message::Serialize()
@@ -30,6 +30,9 @@ char* Message::Serialize()
     char* bufferCursor = buffer;
     
     std::memset(buffer, 0, BUFFER_SIZE);
+
+    std::memcpy(bufferCursor, &MAGIC_WORD, sizeof(MAGIC_WORD));
+    bufferCursor += sizeof(MAGIC_WORD);
     
     std::memcpy(bufferCursor, &m_id, sizeof(m_id));
     bufferCursor += sizeof(m_id);
@@ -57,9 +60,16 @@ std::vector<Packet*> Message::Deserialize(char* message)
     std::vector<Packet*> result;
     if (!message)
         return result;
+
+    uint16_t magicWord;
+    std::memcpy(&magicWord, message, sizeof(MAGIC_WORD));
+    message = message + sizeof(MAGIC_WORD);
+
+    if (magicWord != MAGIC_WORD) return result;
     
     std::memcpy(&m_id, message, sizeof(m_id));
     message = message + sizeof(m_id);
+    
     std::memcpy(&m_isSystemMsg, message, sizeof(m_isSystemMsg));
     message += sizeof(m_isSystemMsg);
 
