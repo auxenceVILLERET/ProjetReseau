@@ -5,6 +5,8 @@
 
 #include "UDPSocket.h"
 
+class Packet;
+
 class Client 
 {
 public:
@@ -16,9 +18,14 @@ public:
 
     void Init();
     bool Connect(char* ip, int port);
+
+    static DWORD WINAPI ReceiveThread(LPVOID lpParam);
+    void HandlePackets();
     
 private:
     static Client* m_pInstance;
+
+    std::vector<Packet*> m_packets;
     
     UDPSocket m_udpSocket;
 
@@ -26,6 +33,8 @@ private:
     int m_serverPort = 1888;
     std::string m_username;
     
+    bool m_isConnected;
+    bool m_hasPinged;
 };
 
 #endif

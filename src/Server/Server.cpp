@@ -6,6 +6,8 @@
 #include <iostream>
 #include <WS2tcpip.h>
 
+#include "Message.h"
+#include "Packets.hpp"
 #include "../LibNetwork/Socket.h"
 
 Server* Server::m_pInstance = nullptr;
@@ -95,7 +97,64 @@ void Server::PrintMessage(const char* msg, sockaddr_in addr)
     std::cout << "[" << ip << " : " << port << "] : " << msg << "\n";
 }
 
+DWORD Server::ReceiveThread(LPVOID lpParam)
+{
+    Server* pInstance = static_cast<Server*>(lpParam);
+    while (true)
+    {
+        char responseBuffer[1024 + 1];
+        sockaddr_in target;
+        int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1024, target);
 
+        Message msg;
+        std::vector<Packet*> packets = msg.Deserialize(responseBuffer);
+
+        for (int i = 0; i < packets.size(); i++)
+        {
+            pInstance->m_packets.push_back(packets[i]);
+        }
+    }
+    
+    return 1;
+}
+
+void Server::HandlePackets()
+{
+    for (Packet* packet : m_packets)
+    {
+        PacketType type = (PacketType)packet->GetType();
+
+        if (type == PING_PONG)
+        {
+            PingPongPacket* casted = dynamic_cast<PingPongPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            
+        }
+    }
+
+    for (int i = 0; i < m_packets.size(); i++)
+    {
+        delete m_packets[i];
+    }
+    
+    m_packets.clear();
+}
+
+void Server::SendPacket(Packet* packet)
+{
+    if (m_pendingMessages.size() == 0)
+    {
+        Message msg;
+        m_pendingMessages.push_back(msg);
+    }
+
+    Message* lastMessage = &m_pendingMessages.back();
+    if (lastMessage->AddPacket(packet) == false)
+    {
+        
+    }
+}
 
 
 #endif

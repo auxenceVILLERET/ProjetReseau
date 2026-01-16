@@ -9,17 +9,17 @@
 enum PacketType
 {
     BALL_UPDATE,
-    MESSAGE
+    MESSAGE,
+    PING_PONG,
 };
-
 
 class BallUpdatePacket : public Packet
 {
+public:
     float x;
     float y;
     float z;
     
-public:
     BallUpdatePacket() : Packet()
     {
         x = 0.0f;
@@ -73,14 +73,14 @@ public:
 
 class MessagePacket : public Packet
 {
-    std::string text;
-    uint32_t len;
 public:
+    uint32_t len;
+    std::string text;
+    
     MessagePacket()
     {
         len = 0;
     }
-    
     MessagePacket(std::string _text) : text(_text)
     {
         m_type = MESSAGE;
@@ -118,6 +118,71 @@ public:
         
         text.assign(_message, len - 1);
         _message += len;
+    }
+};
+
+class PingPongPacket : public Packet
+{
+public:
+    uint32_t usernameLen;
+    std::string username;
+    bool isPing = true;
+    
+    PingPongPacket()
+    {
+        username = "";
+        usernameLen = username.length() + 1;
+        isPing = false;
+
+        m_type = PING_PONG;
+        
+        m_size = 2 * sizeof(int) + sizeof(usernameLen) + usernameLen + sizeof(isPing);
+    }
+    PingPongPacket(std::string _ip, std::string _username,int _port, bool _isPing)
+    {
+        username = _username;
+        usernameLen = username.length() + 1;
+        isPing = _isPing;
+
+        m_type = PING_PONG;
+
+        m_size = 2 * sizeof(int) + sizeof(usernameLen) + usernameLen + sizeof(isPing);
+    }
+
+    char* Serialize()
+    {
+        char* buffer = new char[m_size];
+        char* bufferCursor = buffer;
+        std::memset(bufferCursor, 0, m_size);
+
+        std::memcpy(bufferCursor, &m_type, sizeof(m_type));
+        bufferCursor += sizeof(m_type);
+        std::memcpy(bufferCursor, &m_size, sizeof(m_size));
+        bufferCursor += sizeof(m_size);
+        
+        std::memcpy(bufferCursor, &usernameLen, sizeof(usernameLen));
+        bufferCursor += sizeof(usernameLen);
+        std::memcpy(bufferCursor, username.c_str(), usernameLen);
+        bufferCursor += usernameLen;
+        
+        std::memcpy(bufferCursor, &isPing, sizeof(isPing));
+        bufferCursor += sizeof(isPing);
+
+        return buffer;
+    }
+    
+    void Deserialize(char* message)
+    {
+        Packet::Deserialize(message);
+        message += sizeof(m_type) + sizeof(m_size);
+
+        std::memcpy(&usernameLen, message, sizeof(usernameLen));
+        message += sizeof(usernameLen);
+        username.assign(message, usernameLen - 1);
+        message += usernameLen;
+        
+        std::memcpy(&isPing, message, sizeof(isPing));
+        message += sizeof(isPing);
     }
 };
 

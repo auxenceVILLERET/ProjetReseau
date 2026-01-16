@@ -8,6 +8,8 @@ public:
     Packet(int size, int type);
     ~Packet() = default;
 
+    int GetType() { return m_type; }
+    
     virtual void Deserialize(char* message);
     virtual char* Serialize();
     
