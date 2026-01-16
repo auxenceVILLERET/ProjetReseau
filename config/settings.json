@@ -68,7 +68,7 @@
             ],
             "name": "LibGameplay",
             "property-lib": true,
-            "property-pch": false,
+            "property-pch": true,
             "property-vcpkg": false,
             "property-window": false
         },

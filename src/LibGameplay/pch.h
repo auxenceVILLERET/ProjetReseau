@@ -1,0 +1,19 @@
+#ifndef PCH_H
+#define PCH_H
+#include <iostream>
+
+#ifdef _DEBUG
+#pragma comment(lib, "../../lib/cpulib/lib/cpu-core-debug.lib")
+#pragma comment(lib, "../../lib/cpulib/lib/cpu-render-debug.lib")
+#pragma comment(lib, "../../lib/cpulib/lib/cpu-engine-debug.lib")
+
+#else
+#pragma comment(lib, "../../lib/cpulib/lib/cpu-core.lib")
+#pragma comment(lib, "../../lib/cpulib/lib/cpu-render.lib")
+#pragma comment(lib, "../../lib/cpulib/lib/cpu-engine.lib")
+#endif
+
+#include <SDKDDKVer.h>
+#include "../../lib/cpulib/include/cpu-engine/cpu-engine.h"
+
+#endif
