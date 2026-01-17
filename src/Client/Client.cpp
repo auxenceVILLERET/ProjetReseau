@@ -38,7 +38,9 @@ UDPSocket* Client::GetSocket()
 
 void Client::Init()
 {
+    m_isConnected = false;
     CreateThread(NULL, 0, ReceiveThread, this, 0, NULL);
+    
     std::cout << "Please select your username : ";
     std::cin >> m_username;
 
@@ -51,21 +53,25 @@ void Client::Init()
         std::cin >> m_serverPort;
         
         Message msg;
-        PingPongPacket* packet = new PingPongPacket(m_serverIp, m_username, m_serverPort, true);
+        PingPongPacket* packet = new PingPongPacket(m_username, true);
         msg.AddPacket(packet);
 
         char* buffer = msg.Serialize();
 
         sockaddr_in target;
         if ( inet_pton(AF_INET, m_serverIp.c_str(), &target.sin_addr)<=0 )
+        {
+            std::cout << "Unvalid Server address, please try again" << std::endl;
             continue;
+        }
         target.sin_family = AF_INET;
         target.sin_port = htons(m_serverPort);
         
-        if (m_udpSocket.SendTo(buffer, strlen(buffer) + 1, target) != SOCKET_ERROR)
+        if (m_udpSocket.SendTo(buffer, 1025, target) != SOCKET_ERROR)
         {
             m_hasPinged = true;
             Sleep(500);
+            HandlePackets();
         }
         
         if (m_isConnected)
@@ -74,9 +80,7 @@ void Client::Init()
             std::cout << "Connection Successful" << std::endl;
         }
         else
-        {
             std::cout << "Unvalid Server address, please try again" << std::endl;
-        }
     }
 }
 
@@ -97,10 +101,12 @@ DWORD Client::ReceiveThread(LPVOID lpParam)
         Message msg;
         std::vector<Packet*> packets = msg.Deserialize(responseBuffer);
 
+        pInstance->m_packetProtection.Enter();
         for (int i = 0; i < packets.size(); i++)
         {
             pInstance->m_packets.push_back(packets[i]);
         }
+        pInstance->m_packetProtection.Leave();
     }
     
     return 1;
@@ -109,6 +115,7 @@ DWORD Client::ReceiveThread(LPVOID lpParam)
 
 void Client::HandlePackets()
 {
+    m_packetProtection.Enter();
     for (Packet* packet : m_packets)
     {
         PacketType type = (PacketType)packet->GetType();
@@ -120,8 +127,8 @@ void Client::HandlePackets()
 
             if (casted->isPing == false)
             {
-                if (casted->ip == m_serverIp && casted->port == m_serverPort)
-                    m_isConnected = true;
+                // if (casted->ip == m_serverIp && casted->port == m_serverPort)
+                m_isConnected = true;
             }
         }
     }
@@ -132,6 +139,7 @@ void Client::HandlePackets()
     }
     
     m_packets.clear();
+    m_packetProtection.Leave();
 }
 
 

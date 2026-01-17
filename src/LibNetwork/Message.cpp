@@ -24,6 +24,11 @@ Message::Message(bool isNew)
     m_size = sizeof(MAGIC_WORD) + sizeof(m_id) + sizeof(m_packetCount) + sizeof(m_isSystemMsg);
 }
 
+Message::~Message()
+{
+    
+}
+
 char* Message::Serialize()
 {
     char* buffer = new char[BUFFER_SIZE];
@@ -95,6 +100,9 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::MESSAGE:
                 packet = new MessagePacket();
                 break;
+            case PacketType::PING_PONG:
+                packet = new PingPongPacket();
+                break;
         }
 
         if (packet == nullptr) continue;
@@ -115,4 +123,13 @@ bool Message::AddPacket(Packet* packet)
 
     m_vPackets.push_back(packet);
     return true;
+}
+
+void Message::ClearPackets()
+{
+    for (Packet* pkt : m_vPackets)
+    {
+        delete pkt;
+    }
+    m_vPackets.clear();
 }

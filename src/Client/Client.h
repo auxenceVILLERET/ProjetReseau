@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "UDPSocket.h"
+#include "CriticalSection.h"
 
 class Packet;
 
@@ -25,6 +26,7 @@ public:
 private:
     static Client* m_pInstance;
 
+    CriticalSection m_packetProtection;
     std::vector<Packet*> m_packets;
     
     UDPSocket m_udpSocket;

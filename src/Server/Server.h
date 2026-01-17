@@ -4,8 +4,8 @@
 #include <vector>
 
 #include "Message.h"
+#include "CriticalSection.h"
 #include "../LibNetwork/UDPSocket.h"
-#include "Client/Client.h"
 
 struct ClientInfo
 {
@@ -13,6 +13,12 @@ struct ClientInfo
     std::string ip;
     int port;
     std::string username;
+};
+
+struct ReceivedPacket
+{
+    Packet* packet;
+    sockaddr_in sockAddr;
 };
 
 class Server
@@ -24,22 +30,25 @@ public:
     static Server* GetInstance();
     UDPSocket* GetSocket();
 
-    void LogUser(sockaddr_in newAddr);
+    bool LogUser(sockaddr_in newAddr, std::string username);
     void GlobalMsg(const char* msg);
     void PrintMessage(const char* msg, sockaddr_in addr);
 
     static DWORD WINAPI ReceiveThread(LPVOID lpParam);
     void HandlePackets();
-
+    
     void SendPacket(Packet* packet);
+
+    void Update();
         
 private:
     static Server* m_pInstance;
     UDPSocket m_udpSocket;
 
-    std::vector<Packet*> m_packets;
+    CriticalSection m_packetProtection;
+    std::vector<ReceivedPacket> m_packets;
     std::vector<Message> m_pendingMessages;
-    std::vector<sockaddr_in> m_vClients;
+    std::vector<ClientInfo> m_vClients;
     
     void Init();
 };

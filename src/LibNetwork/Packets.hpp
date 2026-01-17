@@ -138,7 +138,7 @@ public:
         
         m_size = 2 * sizeof(int) + sizeof(usernameLen) + usernameLen + sizeof(isPing);
     }
-    PingPongPacket(std::string _ip, std::string _username,int _port, bool _isPing)
+    PingPongPacket(std::string _username, bool _isPing)
     {
         username = _username;
         usernameLen = username.length() + 1;
