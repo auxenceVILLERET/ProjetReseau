@@ -1,22 +1,19 @@
 #include "pch.h"
+#ifndef PLAYER_CPP_DEFINED
+#define PLAYER_CPP_DEFINED
 #include "Player.h"
 
 Player::Player()
 {
 	Entity::Entity();
-	m_textPlayer.Load("../../res/LibGameplay/PlayerBlue1.png");
-
-	m_pSprite = cpuEngine.CreateSprite();
-	m_pSprite->pTexture = &m_textPlayer;
-	m_pSprite->CenterAnchor();
-	m_pSprite->x = 1920/2;
-	m_pSprite->y = 1080/2;
+	m_health = 100.0f;
+	m_mesh.CreateSpaceship();
+	m_pCpuEntity->pMesh = &m_mesh;
 }
 
 Player::~Player()
 {
-	m_textPlayer.Close();
-	cpuEngine.Release(m_pSprite);
+	
 
 }
 
@@ -25,9 +22,9 @@ void Player::Update(float dt)
 
 }
 
-void Player::Move(float x, float y, float dt)
+void Player::Move(float x, float y, float z, float dt)
 {
-	m_pSprite->x += x * dt;
-	m_pSprite->y += y * dt;
-
+	
 }
+
+#endif
