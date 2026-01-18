@@ -70,7 +70,7 @@ void Client::Init()
         if (m_udpSocket.SendTo(buffer, 1025, target) != SOCKET_ERROR)
         {
             m_hasPinged = true;
-            Sleep(500);
+            Sleep(1000);
             HandlePackets();
         }
         
@@ -125,7 +125,7 @@ void Client::HandlePackets()
             PingPongPacket* casted = dynamic_cast<PingPongPacket*>(packet);
             if (casted == nullptr) continue;
 
-            if (casted->isPing == false)
+            if (casted->isPing == false && m_username == casted->username)
             {
                 // if (casted->ip == m_serverIp && casted->port == m_serverPort)
                 m_isConnected = true;

@@ -1,6 +1,7 @@
 ﻿#ifndef SERVER_H_DEFINED
 #define SERVER_H_DEFINED
 
+#include <map>
 #include <vector>
 
 #include "Message.h"
@@ -38,7 +39,9 @@ public:
     void HandlePackets();
     
     void SendPacket(Packet* packet);
-
+    void SendTargetedPacket(Packet* packet, ClientInfo* target);
+    ClientInfo* FindClient(std::string username);
+    
     void Update();
         
 private:
@@ -48,6 +51,7 @@ private:
     CriticalSection m_packetProtection;
     std::vector<ReceivedPacket> m_packets;
     std::vector<Message> m_pendingMessages;
+    std::map<ClientInfo*, std::vector<Message>> m_pendingTargetedMessage;
     std::vector<ClientInfo> m_vClients;
     
     void Init();

@@ -143,12 +143,10 @@ void Server::HandlePackets()
             PingPongPacket* casted = dynamic_cast<PingPongPacket*>(packet);
             if (casted == nullptr) continue;
 
-            std::cout << "Ping Received" << std::endl;
-
             LogUser(rPacket.sockAddr, casted->username);
             
             PingPongPacket* responsePkt = new PingPongPacket(casted->username, false);
-            SendPacket(responsePkt);
+            SendTargetedPacket(responsePkt, FindClient(casted->username));
         }
     }
 
@@ -178,19 +176,62 @@ void Server::SendPacket(Packet* packet)
     }
 }
 
+void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
+{
+    if (pTarget == nullptr) return;
+    
+    if (!m_pendingTargetedMessage.contains(pTarget))
+    {
+        m_pendingTargetedMessage[pTarget] = std::vector<Message>();
+    }
+
+    if (m_pendingMessages.size() == 0)
+    {
+        Message msg;
+        m_pendingTargetedMessage[pTarget].push_back(msg);
+    }
+
+    Message* lastMessage = &m_pendingTargetedMessage[pTarget].back();
+    if (lastMessage->AddPacket(packet) == false)
+    {
+        Message msg;
+        msg.AddPacket(packet);
+        m_pendingTargetedMessage[pTarget].push_back(msg);
+    }
+    
+}
+
+ClientInfo* Server::FindClient(std::string username)
+{
+    for (ClientInfo& client : m_vClients)
+    {
+        if (client.username == username)
+            return &client;
+    }
+    return nullptr;
+}
+
 void Server::Update()
 {
     HandlePackets();
-
-    if (m_pendingMessages.size() == 0) return;
 
     for (Message msg : m_pendingMessages)
     {
         GlobalMsg(msg.Serialize());
         msg.ClearPackets();
     }
-    
     m_pendingMessages.clear();
+
+    for ( auto& [key, value] : m_pendingTargetedMessage)
+    {
+        for (Message msg : value)
+        {
+            m_udpSocket.SendTo(msg.Serialize(), Message::BUFFER_SIZE + 1, key->sockAddr);
+            msg.ClearPackets();
+        }
+        value.clear();
+    }
+    
 }
 
 
