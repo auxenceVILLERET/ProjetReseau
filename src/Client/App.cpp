@@ -137,7 +137,7 @@ void App::HandleInut()
 	}
 	if (cpuInput.IsKey(VK_SPACE))
 	{
-		m_pPlayer->Move(cpuTime.delta);
+		m_pPlayer->Accelerate(cpuTime.delta);
 	}
 	if (cpuInput.IsKey(VK_CONTROL))
 	{

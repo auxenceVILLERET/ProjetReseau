@@ -15,7 +15,7 @@ Player::Player()
 	m_pCpuEntity->pMaterial = &m_material;
 	
 	m_speedRotation = 0.8f;
-	m_speedMovement = 4.0f;
+	m_speedMovement = 0.0f;
 	m_maxSpeed = 4.0f;
 
 	m_shootCooldown = 0.2f;
@@ -29,15 +29,12 @@ Player::~Player()
 
 void Player::Update(float dt)
 {
-	
+	m_pCpuEntity->transform.Move(dt * m_speedMovement);
 }
 
-void Player::Move(float dt)
+void Player::Accelerate(float dt)
 {
-	m_speedMovement += dt;
-	m_speedMovement = std::min(m_speedMovement + dt, 4.0f);
-	
-	m_pCpuEntity->transform.Move(dt * m_speedMovement);
+	m_speedMovement = std::min(m_speedMovement + dt * 2.0f, 4.0f);
 }
 
 void Player::Brake(float dt)
@@ -50,7 +47,7 @@ void Player::UpdateCamera()
 	XMFLOAT3 pos = m_pCpuEntity->transform.pos;
 	XMFLOAT3 camPos = pos;
 
-	float speedMult = (m_speedMovement - 1.0f) / 10.0f + 1.0f; 
+	float speedMult = (m_speedMovement) / 10.0f + 1.0f; 
 	
 	camPos.x -= m_pCpuEntity->transform.dir.x * 6.0f * speedMult - m_pCpuEntity->transform.up.x * 2.0f;
 	camPos.y -= m_pCpuEntity->transform.dir.y * 6.0f * speedMult - m_pCpuEntity->transform.up.y * 2.0f;
