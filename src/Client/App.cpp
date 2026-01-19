@@ -28,11 +28,6 @@ void App::OnStart()
 
 	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
-	cpuEngine.GetCamera()->transform.pos.z = -8.0f;
-	cpuEngine.GetCamera()->transform.pos.y = 2.5f;
-
-	cpuEngine.GetCamera()->transform.SetYPR(0.0f, 0.0f, 0.0f);
-
 }
 
 void App::OnUpdate()
@@ -54,6 +49,7 @@ void App::OnExit()
 {
 	// YOUR CODE HERE
 	GameManager::GetInstance()->Exit();
+	delete GameManager::GetInstance();
 
 }
 
@@ -135,7 +131,11 @@ void App::HandleInut()
 	}
 	if (cpuInput.IsKey(VK_SPACE))
 	{
-		m_pPlayer->Move(1.0f, cpuTime.delta);
+		m_pPlayer->Move(cpuTime.delta);
+	}
+	if (cpuInput.IsKey(VK_CONTROL))
+	{
+		m_pPlayer->Brake(cpuTime.delta);
 	}
 	if(cpuInput.IsKey(VK_LBUTTON))
 	{
