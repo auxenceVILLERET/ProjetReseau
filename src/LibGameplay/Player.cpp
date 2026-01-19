@@ -16,7 +16,7 @@ Player::Player()
 	
 	m_speedRotation = 0.8f;
 	m_speedMovement = 0.0f;
-	m_maxSpeed = 4.0f;
+	m_maxSpeed = 10.0f;
 
 	m_shootCooldown = 0.2f;
 	m_shootTimer = 0.0f;
@@ -34,7 +34,7 @@ void Player::Update(float dt)
 
 void Player::Accelerate(float dt)
 {
-	m_speedMovement = std::min(m_speedMovement + dt * 2.0f, 4.0f);
+	m_speedMovement = std::min(m_speedMovement + dt * 3.0f, m_maxSpeed);
 }
 
 void Player::Brake(float dt)
