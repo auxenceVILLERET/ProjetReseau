@@ -12,4 +12,14 @@ Entity::Entity()
 	m_pCpuEntity = cpuEngine.CreateEntity();
 }
 
+void Entity::Update(float dt)
+{
+	// YOUR CODE HERE
+}
+
+void Entity::Destroy()
+{
+	m_toDestroy = true;
+}
+
 #endif

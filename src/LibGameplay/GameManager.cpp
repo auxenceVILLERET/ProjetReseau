@@ -34,6 +34,25 @@ void GameManager::Start()
 void GameManager::Update()
 {
 	m_deltaTime = cpuTime.delta;
+	for (auto it = m_entities.begin(); it != m_entities.end(); )
+	{
+		Entity* entity = *it;
+		entity->Update(m_deltaTime);
+		++it;
+	}
+	for (auto it = m_entities.begin(); it != m_entities.end(); )
+	{
+		Entity* entity = *it;
+		if (entity->m_toDestroy)
+		{
+			delete entity;
+			it = m_entities.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 void GameManager::Exit()

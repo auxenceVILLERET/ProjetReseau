@@ -7,7 +7,7 @@ class Player : public Entity
 public:
 	Player();
 	~Player();
-	void Update(float dt);
+	void Update(float dt) override;
 	void Move(float dist, float dt);
 
 	void Rotate(float x, float y,float z, float dt);

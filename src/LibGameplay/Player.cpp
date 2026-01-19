@@ -25,6 +25,7 @@ void Player::Update(float dt)
 
 }
 
+
 void Player::Move(float dist, float dt)
 {
 	m_pCpuEntity->transform.Move(dist * dt * m_speedMovement);
