@@ -9,10 +9,9 @@ public:
 	~Player();
 	
 	void Update(float dt) override;
-	void Move(float dt);
+	void Accelerate(float dt);
 	void Brake(float dt);
-
-	void Move(float dist, float dt);
+	
 	void Rotate(float x, float y,float z, float dt);
 	
 	void UpdateCamera();
