@@ -20,6 +20,12 @@ Player::Player()
 
 	m_shootCooldown = 0.2f;
 	m_shootTimer = 0.0f;
+
+	cpuEngine.GetParticleData()->Create(1000000);
+	m_pEmitter = cpuEngine.CreateParticleEmitter();
+	m_pEmitter->density = 3000.0f;
+	m_pEmitter->colorMin = cpu::ToColor(0, 0, 255);
+	m_pEmitter->colorMax = cpu::ToColor(255, 128, 0);
 }
 
 Player::~Player()
@@ -30,11 +36,14 @@ Player::~Player()
 void Player::Update(float dt)
 {
 	m_pCpuEntity->transform.Move(dt * m_speedMovement);
+	
+
 }
 
 void Player::Accelerate(float dt)
 {
 	m_speedMovement = std::min(m_speedMovement + dt * 3.0f, m_maxSpeed);
+
 }
 
 void Player::Brake(float dt)
@@ -75,4 +84,15 @@ void Player::Shoot()
 		m_shootTimer = 0.0f;
 	}
 }
+void Player::Render()
+{
+	m_pEmitter->density = m_speedMovement * 500.0f;
+	m_pEmitter->pos = m_pCpuEntity->transform.pos;
+	m_pEmitter->dir = m_pCpuEntity->transform.dir;
+	m_pEmitter->dir.x = -m_pEmitter->dir.x;
+	m_pEmitter->dir.y = -m_pEmitter->dir.y;
+	m_pEmitter->dir.z = -m_pEmitter->dir.z;
+}
+
+
 #endif

@@ -22,6 +22,11 @@ void Entity::Update(float dt)
 	// YOUR CODE HERE
 }
 
+void Entity::Render()
+{
+
+}
+
 void Entity::Destroy()
 {
 	m_toDestroy = true;

@@ -143,6 +143,7 @@ void App::OnRender(int pass)
 	}
 	}
 
+	GameManager::GetInstance()->Render(pass);
 	
 }
 

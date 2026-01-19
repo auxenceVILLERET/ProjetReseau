@@ -9,6 +9,7 @@ public:
 	virtual ~Entity();
 
 	virtual void Update(float dt);
+	virtual void Render();
 
 	void Destroy();
 	uint32_t GetID() const { return m_id; }

@@ -67,7 +67,12 @@ void GameManager::Exit()
 
 void GameManager::Render(int pass)
 {
-
+	for (auto it = m_entities.begin(); it != m_entities.end(); )
+	{
+		Entity* entity = *it;
+		entity->Render();
+		++it;
+	}
 }
 
 

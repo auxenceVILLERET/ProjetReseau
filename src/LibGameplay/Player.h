@@ -18,6 +18,8 @@ public:
 
 	void Shoot();
 
+	void Render() override;
+
 private:
 	float m_health;
 
@@ -30,7 +32,7 @@ private:
 
 	cpu_mesh m_mesh;
 	cpu_material m_material;
-
+	cpu_particle_emitter* m_pEmitter;
 
 };
 
