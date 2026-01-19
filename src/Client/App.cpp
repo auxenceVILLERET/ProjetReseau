@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Player.h"
 #include "GameManager.h"
+#include "Asteroid.h"
 
 App::App()
 {
@@ -28,6 +29,9 @@ void App::OnStart()
 
 	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
+	m_pAsteroid = GameManager::GetInstance()->CreateEntity<Asteroid>();
+	m_pAsteroid->SetPos({ 0.0f, 0.0f, 20.0f });
+	m_pAsteroid->Init(3.0f);
 }
 
 void App::OnUpdate()

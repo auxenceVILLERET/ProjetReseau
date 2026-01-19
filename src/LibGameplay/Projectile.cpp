@@ -4,7 +4,7 @@
 Projectile::Projectile()
 {
 	m_mesh.CreateSphere(0.5f);
-	m_material.color = cpu::ToColor(255, 255, 0);	
+	m_material.color = cpu::ToColor(171, 181, 255);
 	m_pCpuEntity->pMesh = &m_mesh;
 	m_pCpuEntity->pMaterial = &m_material;
 	m_pCpuEntity->transform.SetScaling(0.2f);

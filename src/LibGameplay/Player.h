@@ -31,6 +31,8 @@ private:
 
 	cpu_mesh m_mesh;
 	cpu_material m_material;
+
+
 };
 
 #endif
