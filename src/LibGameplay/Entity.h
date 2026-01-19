@@ -6,7 +6,7 @@ class Entity
 public:
 
 	Entity();
-	~Entity();
+	virtual ~Entity();
 
 	virtual void Update(float dt);
 
