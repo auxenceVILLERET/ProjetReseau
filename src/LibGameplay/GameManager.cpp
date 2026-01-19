@@ -6,8 +6,6 @@
 #include "GameManager.h"
 #include "Entity.h"
 
-GameManager* GameManager::s_pInstance = nullptr;
-
 GameManager* GameManager::GetInstance()
 {
 	if (s_pInstance == nullptr)

@@ -20,7 +20,7 @@ public:
 	T* CreateEntity();
 
 private:
-	static GameManager* s_pInstance;
+	inline static GameManager* s_pInstance = nullptr;
 	float m_deltaTime;
 
 	std::vector<Entity*> m_entities;

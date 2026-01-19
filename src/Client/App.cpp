@@ -28,8 +28,10 @@ void App::OnStart()
 
 	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
-	cpuEngine.GetCamera()->transform.pos.y = -100.0f;
-	cpuEngine.GetCamera()->transform.SetYPR(0.0f, 90.0f, 0.0f);
+	cpuEngine.GetCamera()->transform.pos.z = -8.0f;
+	cpuEngine.GetCamera()->transform.pos.y = 2.5f;
+
+	cpuEngine.GetCamera()->transform.SetYPR(0.0f, 0.0f, 0.0f);
 
 }
 
@@ -108,19 +110,19 @@ void App::HandleInut()
 {
 	if (cpuInput.IsKey(VK_UP))
 	{
-		m_pPlayer->Move(0.0f, -200.0f, cpuTime.delta);
+		//m_pPlayer->Move(0.0f, -200.0f, cpuTime.delta);
 	}
 	if (cpuInput.IsKey(VK_DOWN))
 	{
-		m_pPlayer->Move(0.0f, 200.0f, cpuTime.delta);
+		//m_pPlayer->Move(0.0f, 200.0f, cpuTime.delta);
 	}
 	if (cpuInput.IsKey(VK_LEFT))
 	{
-		m_pPlayer->Move(-200.0f, 0.0f, cpuTime.delta);
+		//m_pPlayer->Move(-200.0f, 0.0f, cpuTime.delta);
 	}
 	if (cpuInput.IsKey(VK_RIGHT))
 	{
-		m_pPlayer->Move(200.0f, 0.0f, cpuTime.delta);
+		//m_pPlayer->Move(200.0f, 0.0f, cpuTime.delta);
 	}
 }
 

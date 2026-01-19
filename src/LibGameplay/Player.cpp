@@ -5,10 +5,11 @@
 
 Player::Player()
 {
-	Entity::Entity();
 	m_health = 100.0f;
 	m_mesh.CreateSpaceship();
+	m_material.color = cpu::ToColor(255, 128, 0);
 	m_pCpuEntity->pMesh = &m_mesh;
+	m_pCpuEntity->pMaterial = &m_material;
 }
 
 Player::~Player()
