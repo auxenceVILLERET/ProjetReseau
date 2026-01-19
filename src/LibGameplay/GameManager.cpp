@@ -42,6 +42,7 @@ void GameManager::Update()
 	}
 	for (auto it = m_entities.begin(); it != m_entities.end(); )
 	{
+
 		Entity* entity = *it;
 		if (entity->m_toDestroy)
 		{

@@ -2,6 +2,8 @@
 #ifndef PLAYER_CPP_DEFINED
 #define PLAYER_CPP_DEFINED
 #include "Player.h"
+#include "Projectile.h"
+#include "GameManager.h"
 
 Player::Player()
 {
@@ -12,6 +14,8 @@ Player::Player()
 	m_pCpuEntity->pMaterial = &m_material;
 	m_speedRotation = 0.8f;
 	m_speedMovement = 4.0f;
+	m_shootCooldown = 0.2f;
+	m_shootTimer = 0.0f;
 }
 
 Player::~Player()
@@ -37,4 +41,14 @@ void Player::Rotate(float x, float y,float z, float dt)
 
 }
 
+void Player::Shoot()
+{
+	m_shootTimer += cpuTime.delta;
+	if (m_shootTimer >= m_shootCooldown)
+	{
+		Projectile* pProjectile = GameManager::GetInstance()->CreateEntity<Projectile>();
+		pProjectile->Init(m_pCpuEntity->transform);
+		m_shootTimer = 0.0f;
+	}
+}
 #endif

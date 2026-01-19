@@ -12,6 +12,11 @@ Entity::Entity()
 	m_pCpuEntity = cpuEngine.CreateEntity();
 }
 
+Entity::~Entity()
+{
+	cpuEngine.Release(m_pCpuEntity);
+}
+
 void Entity::Update(float dt)
 {
 	// YOUR CODE HERE

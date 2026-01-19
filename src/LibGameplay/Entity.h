@@ -6,6 +6,8 @@ class Entity
 public:
 
 	Entity();
+	~Entity();
+
 	virtual void Update(float dt);
 
 	void Destroy();
@@ -17,7 +19,7 @@ protected:
 private:
 	static uint32_t ID_COUNT;
 	uint32_t m_id;
-	bool m_toDestroy;
+	bool m_toDestroy = false;
 
 	friend class GameManager;
 };

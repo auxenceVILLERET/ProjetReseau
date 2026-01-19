@@ -42,6 +42,7 @@ void App::OnUpdate()
 	float dt = cpuTime.delta;
 	float time = cpuTime.total;
 
+	GameManager::GetInstance()->Update();
 	HandleInut();
 
 	// Quit
@@ -136,6 +137,11 @@ void App::HandleInut()
 	{
 		m_pPlayer->Move(1.0f, cpuTime.delta);
 	}
+	if(cpuInput.IsKey(VK_LBUTTON))
+	{
+		m_pPlayer->Shoot();
+	}
+
 }
 
 void App::MyPixelShader(cpu_ps_io& io)
