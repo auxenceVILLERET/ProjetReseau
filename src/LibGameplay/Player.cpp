@@ -15,7 +15,7 @@ Player::Player()
 	m_pCpuEntity->pMaterial = &m_material;
 	
 	m_speedRotation = 0.8f;
-	m_speedMovement = 4.0f;
+	m_speedMovement = 1.0f;
 	m_maxSpeed = 4.0f;
 
 	m_shootCooldown = 0.2f;
