@@ -108,21 +108,33 @@ void App::OnRender(int pass)
 
 void App::HandleInut()
 {
-	if (cpuInput.IsKey(VK_UP))
+	if (cpuInput.IsKey('Z'))
 	{
-		//m_pPlayer->Move(0.0f, -200.0f, cpuTime.delta);
+		m_pPlayer->Rotate(0.0f, 1.0f, 0.0f, cpuTime.delta);
 	}
-	if (cpuInput.IsKey(VK_DOWN))
+	if (cpuInput.IsKey('S'))
 	{
-		//m_pPlayer->Move(0.0f, 200.0f, cpuTime.delta);
+		m_pPlayer->Rotate(0.0f, -1.0f, 0.0f, cpuTime.delta);
 	}
-	if (cpuInput.IsKey(VK_LEFT))
+	if (cpuInput.IsKey('Q'))
 	{
-		//m_pPlayer->Move(-200.0f, 0.0f, cpuTime.delta);
+		m_pPlayer->Rotate(-1.0f, 0.0f, 0.0f, cpuTime.delta);
 	}
-	if (cpuInput.IsKey(VK_RIGHT))
+	if (cpuInput.IsKey('D'))
 	{
-		//m_pPlayer->Move(200.0f, 0.0f, cpuTime.delta);
+		m_pPlayer->Rotate(1.0f, 0.0f, 0.0f, cpuTime.delta);
+	}
+	if (cpuInput.IsKey('A'))
+	{
+		m_pPlayer->Rotate(0.0f, 0.0f, 1.0f, cpuTime.delta);
+	}
+	if (cpuInput.IsKey('E'))
+	{
+		m_pPlayer->Rotate(0.0f, 0.0f, -1.0f, cpuTime.delta);
+	}
+	if (cpuInput.IsKey(VK_SPACE))
+	{
+		m_pPlayer->Move(1.0f, cpuTime.delta);
 	}
 }
 

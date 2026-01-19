@@ -12,6 +12,8 @@ Player::Player()
 	m_material.color = cpu::ToColor(255, 128, 0);
 	m_pCpuEntity->pMesh = &m_mesh;
 	m_pCpuEntity->pMaterial = &m_material;
+	m_speedRotation = 0.8f;
+	m_speedMovement = 4.0f;
 }
 
 Player::~Player()
@@ -34,15 +36,20 @@ void Player::Update(float dt)
 	}
 }
 
-void Player::Move(float x, float y, float z, float dt)
+void Player::Move(float dist, float dt)
 {
-		
+	m_pCpuEntity->transform.Move(dist * dt * m_speedMovement);
 }
 
 void Player::BindCamera(bool state)
 {
 	m_isCameraBinded = state;
-	
+}
+
+void Player::Rotate(float x, float y,float z, float dt)
+{
+	m_pCpuEntity->transform.AddYPR(x * dt * m_speedRotation, y * dt * m_speedRotation, z * dt * m_speedRotation * 1.5f);
+
 }
 
 #endif
