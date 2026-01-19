@@ -14,8 +14,6 @@ Player::Player()
 	m_speedRotation = 0.8f;
 	m_speedMovement = 1.0f;
 	m_maxSpeed = 4.0f;
-
-	m_isMoving = false;
 }
 
 Player::~Player()
@@ -25,21 +23,20 @@ Player::~Player()
 
 void Player::Update(float dt)
 {
-	if (!m_isMoving)
-	{
-		m_speedMovement = std::max(m_speedMovement - dt * 4.0f, 1.0f);
-	}
-
-	m_isMoving = false;
+	
 }
 
-void Player::Move(float dist, float dt)
+void Player::Move(float dt)
 {
 	m_speedMovement += dt;
 	m_speedMovement = std::min(m_speedMovement + dt, 4.0f);
-	m_isMoving = true;
 	
-	m_pCpuEntity->transform.Move(dist * dt * m_speedMovement);
+	m_pCpuEntity->transform.Move(dt * m_speedMovement);
+}
+
+void Player::Brake(float dt)
+{
+	m_speedMovement = std::max(m_speedMovement - dt * 8.0f, 1.0f);
 }
 
 void Player::UpdateCamera()

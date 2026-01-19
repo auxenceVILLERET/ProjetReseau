@@ -38,13 +38,11 @@ void GameManager::Update()
 
 void GameManager::Exit()
 {
-	for (m_entities; !m_entities.empty(); )
+	while (!m_entities.empty())
 	{
-		Entity* entity = m_entities.back();
+		delete m_entities.back();
 		m_entities.pop_back();
-		delete entity;
 	}
-	GameManager::s_pInstance = nullptr;
 }
 
 void GameManager::Render(int pass)

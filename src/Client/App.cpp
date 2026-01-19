@@ -50,6 +50,7 @@ void App::OnExit()
 {
 	// YOUR CODE HERE
 	GameManager::GetInstance()->Exit();
+	delete GameManager::GetInstance();
 
 }
 
@@ -131,7 +132,11 @@ void App::HandleInut()
 	}
 	if (cpuInput.IsKey(VK_SPACE))
 	{
-		m_pPlayer->Move(1.0f, cpuTime.delta);
+		m_pPlayer->Move(cpuTime.delta);
+	}
+	if (cpuInput.IsKey(VK_CONTROL))
+	{
+		m_pPlayer->Brake(cpuTime.delta);
 	}
 }
 
