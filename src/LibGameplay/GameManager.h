@@ -19,6 +19,8 @@ public:
 	template<typename T>
 	T* CreateEntity();
 
+	~GameManager();
+	
 private:
 	inline static GameManager* s_pInstance = nullptr;
 	float m_deltaTime;
@@ -26,7 +28,6 @@ private:
 	std::vector<Entity*> m_entities;
 
 	GameManager();
-	~GameManager();
 };
 
 #include "GameManager.inl"
