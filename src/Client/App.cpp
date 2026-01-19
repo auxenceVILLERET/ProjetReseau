@@ -28,11 +28,6 @@ void App::OnStart()
 
 	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
-	cpuEngine.GetCamera()->transform.pos.z = -8.0f;
-	cpuEngine.GetCamera()->transform.pos.y = 2.5f;
-
-	cpuEngine.GetCamera()->transform.SetYPR(0.0f, 0.0f, 0.0f);
-
 }
 
 void App::OnUpdate()
@@ -42,6 +37,8 @@ void App::OnUpdate()
 	float dt = cpuTime.delta;
 	float time = cpuTime.total;
 
+	m_pPlayer->UpdateCamera();
+	m_pPlayer->Update(dt);
 	HandleInut();
 
 	// Quit
