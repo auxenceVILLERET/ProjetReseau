@@ -10,11 +10,15 @@ public:
 	void Update(float dt);
 	void Move(float x, float y, float z, float dt);
 
+	void BindCamera(bool state = true);
+
 private:
 	float m_health;
 
 	cpu_mesh m_mesh;
 	cpu_material m_material;
+
+	bool m_isCameraBinded;
 };
 
 #endif
