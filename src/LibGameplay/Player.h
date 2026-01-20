@@ -19,6 +19,9 @@ public:
 	void Shoot();
 
 	void Render() override;
+	void OnCollision(Entity* other) override;
+
+	EntityType GetType() const override { return EntityType::Player; }
 
 private:
 	float m_health;

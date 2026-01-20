@@ -26,6 +26,8 @@ Player::Player()
 	m_pEmitter->density = 3000.0f;
 	m_pEmitter->colorMin = cpu::ToColor(0, 0, 255);
 	m_pEmitter->colorMax = cpu::ToColor(255, 128, 0);
+
+	m_collider.radius = 1.0f;
 }
 
 Player::~Player()
@@ -92,6 +94,18 @@ void Player::Render()
 	m_pEmitter->dir.x = -m_pEmitter->dir.x;
 	m_pEmitter->dir.y = -m_pEmitter->dir.y;
 	m_pEmitter->dir.z = -m_pEmitter->dir.z;
+}
+
+void Player::OnCollision(Entity* other)
+{
+	if(other->GetType() == EntityType::Asteroid)
+	{
+		m_health -= 20.0f;
+		if (m_health <= 0.0f)
+		{
+			Destroy();
+		}
+	}
 }
 
 

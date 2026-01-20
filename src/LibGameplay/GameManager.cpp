@@ -34,6 +34,7 @@ void GameManager::Start()
 void GameManager::Update()
 {
 	m_deltaTime = cpuTime.delta;
+	CheckCollisions();
 	for (auto it = m_entities.begin(); it != m_entities.end(); )
 	{
 		Entity* entity = *it;
@@ -74,6 +75,37 @@ void GameManager::Render(int pass)
 		++it;
 	}
 }
+
+void GameManager::CheckCollisions()
+{
+	for (int i = 0; i < m_entities.size(); ++i)
+	{
+		Entity* a = m_entities[i];
+		a->UpdateCollider();
+		for (int j = i + 1; j < m_entities.size(); ++j)
+		{
+			Entity* b = m_entities[j];
+			b->UpdateCollider();
+			if (SphereCollision(a->m_collider, b->m_collider))
+			{
+				a->OnCollision(b);
+				b->OnCollision(a);
+			}
+		}
+	}
+}
+
+bool GameManager::SphereCollision(const SphereCollider& a, const SphereCollider& b) const
+{
+	float dx = a.center.x - b.center.x;
+	float dy = a.center.y - b.center.y;
+	float dz = a.center.z - b.center.z;
+	float distanceSq = dx * dx + dy * dy + dz * dz;
+	float radiusSum = a.radius + b.radius;
+	return distanceSq <= radiusSum * radiusSum;
+}
+
+
 
 
 #endif // !GAMEMANAGER_CPP_DEFINE

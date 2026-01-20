@@ -9,6 +9,7 @@ Projectile::Projectile()
 	m_pCpuEntity->pMaterial = &m_material;
 	m_pCpuEntity->transform.SetScaling(0.2f);
 	m_speed = 20.0f;
+	m_collider.radius = 0.2f;
 }
 
 Projectile::~Projectile()
@@ -35,4 +36,9 @@ void Projectile::Init(cpu_transform& transform)
 	m_pCpuEntity->transform.pos.y += transform.dir.y * 2.0f;
 	m_pCpuEntity->transform.pos.z += transform.dir.z * 2.0f;
 	m_pCpuEntity->transform.SetRotation(transform);
+}
+
+void Projectile::OnCollision(Entity* other)
+{
+	Destroy();
 }

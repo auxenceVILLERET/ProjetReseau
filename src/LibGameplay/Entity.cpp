@@ -27,9 +27,16 @@ void Entity::Render()
 
 }
 
+void Entity::UpdateCollider()
+{
+	XMFLOAT3 pos = m_pCpuEntity->transform.pos;
+	m_collider.center = pos;
+}
+
 void Entity::Destroy()
 {
 	m_toDestroy = true;
 }
+
 
 #endif

@@ -2,6 +2,7 @@
 #define GAMEMANAGER_H_DEFINED
 
 class Entity;
+class SphereCollider;
 
 class GameManager
 {
@@ -11,6 +12,8 @@ public:
 	void Update();
 	void Exit();
 	void Render(int pass);
+	void CheckCollisions();
+	bool SphereCollision(const SphereCollider& a, const SphereCollider& b) const;
 
 	float GetDeltaTime() const { return m_deltaTime; }
 
