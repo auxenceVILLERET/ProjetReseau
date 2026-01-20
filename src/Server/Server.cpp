@@ -6,8 +6,10 @@
 #include <iostream>
 #include <WS2tcpip.h>
 
+#include "GameManager.h"
 #include "Message.h"
 #include "Packets.hpp"
+#include "Player.h"
 #include "../LibNetwork/Socket.h"
 
 Server* Server::m_pInstance = nullptr;
@@ -144,9 +146,17 @@ void Server::HandlePackets()
             if (casted == nullptr) continue;
 
             LogUser(rPacket.sockAddr, casted->username);
+            ClientInfo* pClient = FindClient(casted->username);
             
             PingPongPacket* responsePkt = new PingPongPacket(casted->username, false);
-            SendTargetedPacket(responsePkt, FindClient(casted->username));
+            SendTargetedPacket(responsePkt, pClient);
+            
+            Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
+            p->GetTransform().pos = XMFLOAT3(0, 0, 0);
+            CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
+            SendPacket(createPacket);
+
+            SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
         }
     }
 
@@ -214,6 +224,7 @@ ClientInfo* Server::FindClient(std::string username)
 void Server::Update()
 {
     HandlePackets();
+    GameManager::GetInstance()->Update();
 
     for (Message msg : m_pendingMessages)
     {

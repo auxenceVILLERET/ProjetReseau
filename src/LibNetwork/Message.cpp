@@ -49,11 +49,15 @@ char* Message::Serialize()
     std::memcpy(bufferCursor, &m_packetCount, sizeof(m_packetCount));
     bufferCursor += sizeof(m_packetCount);
 
+    size_t remaining = BUFFER_SIZE - (bufferCursor - buffer);
+    
     for (int i = 0; i < m_vPackets.size(); i++)
     {
         char* packetBuffer = m_vPackets[i]->Serialize();
+        
         std::memcpy(bufferCursor, packetBuffer, m_vPackets[i]->m_size);
         bufferCursor += m_vPackets[i]->m_size;
+        
         delete[] packetBuffer;
     }
 
@@ -102,6 +106,12 @@ std::vector<Packet*> Message::Deserialize(char* message)
                 break;
             case PacketType::PING_PONG:
                 packet = new PingPongPacket();
+                break;
+            case PacketType::CREATE_ENTITY:
+                packet = new CreateEntity();
+                break;
+            case PacketType::SET_PLAYER_ID:
+                packet = new CreateEntity();
                 break;
         }
 

@@ -5,7 +5,7 @@
 class Player : public Entity
 {
 public:
-	Player();
+	Player(bool isServerSide);
 	~Player();
 	
 	void Update(float dt) override;

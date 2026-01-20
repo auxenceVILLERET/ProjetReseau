@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+#include "ClientMethods.h"
 #include "Message.h"
 #include "Packets.hpp"
 
@@ -130,6 +131,13 @@ void Client::HandlePackets()
                 // if (casted->ip == m_serverIp && casted->port == m_serverPort)
                 m_isConnected = true;
             }
+        }
+        if (type == CREATE_ENTITY)
+        {
+            CreateEntity* casted = dynamic_cast<CreateEntity*>(packet);
+            if (casted == nullptr) continue;
+
+            ClientMethods::CopyEntity(casted);
         }
     }
 

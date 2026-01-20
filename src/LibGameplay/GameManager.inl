@@ -4,9 +4,9 @@
 #include "GameManager.h"
 
 template<typename T>
-T* GameManager::CreateEntity()
+T* GameManager::CreateEntity(bool isServerSide)
 {
-	T* newEntity = new T();
+	T* newEntity = new T(isServerSide);
 	Entity* castedEntity = dynamic_cast<Entity*>(newEntity);
 	
 	if (castedEntity == nullptr)

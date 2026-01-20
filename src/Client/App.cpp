@@ -1,8 +1,10 @@
 #include "pch.h"
+
+#include "Client.h"
 #include "Player.h"
 #include "GameManager.h"
 
-App::App()
+App::App() : m_loginInput(m_font), m_loginHeader(m_font)
 {
 	s_pApp = this;
 	CPU_CALLBACK_START(OnStart);
@@ -24,9 +26,11 @@ void App::OnStart()
 {
 	GameManager::GetInstance();
 
+	Client* client = Client::GetInstance();
+	
 	m_font.Create(12);
 
-	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
+	// m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
 }
 
@@ -37,10 +41,14 @@ void App::OnUpdate()
 	float dt = cpuTime.delta;
 	float time = cpuTime.total;
 
-	GameManager::GetInstance()->Update();
-	HandleInut();
-
-	m_pPlayer->UpdateCamera();
+	if (m_isConnected == false)
+		LoginUpdate(dt);
+	else
+	{
+		GameManager::GetInstance()->Update();
+		// HandleInut();
+		// m_pPlayer->UpdateCamera();
+	}
 
 	// Quit
 	if ( cpuInput.IsKeyDown(VK_ESCAPE) )
@@ -107,43 +115,58 @@ void App::OnRender(int pass)
 
 void App::HandleInut()
 {
-	if (cpuInput.IsKey('Z'))
+// 	if (cpuInput.IsKey('Z'))
+// 	{
+// 		m_pPlayer->Rotate(0.0f, 1.0f, 0.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('S'))
+// 	{
+// 		m_pPlayer->Rotate(0.0f, -1.0f, 0.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('Q'))
+// 	{
+// 		m_pPlayer->Rotate(-1.0f, 0.0f, 0.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('D'))
+// 	{
+// 		m_pPlayer->Rotate(1.0f, 0.0f, 0.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('A'))
+// 	{
+// 		m_pPlayer->Rotate(0.0f, 0.0f, 1.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('E'))
+// 	{
+// 		m_pPlayer->Rotate(0.0f, 0.0f, -1.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey(VK_SPACE))
+// 	{
+// 		m_pPlayer->Accelerate(cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey(VK_CONTROL))
+// 	{
+// 		m_pPlayer->Brake(cpuTime.delta);
+// 	}
+// 	if(cpuInput.IsKey(VK_LBUTTON))
+// 	{
+// 		m_pPlayer->Shoot();
+// 	}
+}
+
+void App::LoginUpdate(float dt)
+{
+	if (m_isConnecting)
 	{
-		m_pPlayer->Rotate(0.0f, 1.0f, 0.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey('S'))
-	{
-		m_pPlayer->Rotate(0.0f, -1.0f, 0.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey('Q'))
-	{
-		m_pPlayer->Rotate(-1.0f, 0.0f, 0.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey('D'))
-	{
-		m_pPlayer->Rotate(1.0f, 0.0f, 0.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey('A'))
-	{
-		m_pPlayer->Rotate(0.0f, 0.0f, 1.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey('E'))
-	{
-		m_pPlayer->Rotate(0.0f, 0.0f, -1.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey(VK_SPACE))
-	{
-		m_pPlayer->Accelerate(cpuTime.delta);
-	}
-	if (cpuInput.IsKey(VK_CONTROL))
-	{
-		m_pPlayer->Brake(cpuTime.delta);
-	}
-	if(cpuInput.IsKey(VK_LBUTTON))
-	{
-		m_pPlayer->Shoot();
+		m_requestTime += dt;
+		if (m_requestTime >= m_requestCooldown && m_isConnected == false)
+		{
+			m_serverIp.clear();
+			m_serverPort = -1;
+		}
+		return;
 	}
 
+	
 }
 
 void App::MyPixelShader(cpu_ps_io& io)

@@ -27,8 +27,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int cmdShow)
         std::cout << "Erreur initialisation : " << Sockets::GetError() << std::endl;
     }
     
-    //Client* client = Client::GetInstance();
-    
     // AMIGA NTSC FULLSCREEN
     //CPU_RUN(320, 200, true, true);
 

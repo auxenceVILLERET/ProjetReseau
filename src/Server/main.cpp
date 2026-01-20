@@ -4,6 +4,8 @@
 #include <WS2tcpip.h>
 #pragma comment(lib, "Ws2_32.lib")
 
+#define IS_SERVER
+
 #include "Packets.hpp"
 #include "../LibNetwork/Socket.h"
 #include "../LibNetwork//UDPSocket.h"

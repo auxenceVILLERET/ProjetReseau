@@ -20,6 +20,11 @@ GameManager::GameManager() : m_deltaTime(0.0f)
 {
 }
 
+std::vector<Entity*>& GameManager::GetEntities()
+{
+	return m_entities;
+}
+
 GameManager::~GameManager()
 {
 

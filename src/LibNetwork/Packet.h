@@ -6,7 +6,7 @@ class Packet
 public:
     Packet();
     Packet(int size, int type);
-    ~Packet() = default;
+    virtual ~Packet() = default;
 
     int GetType() { return m_type; }
     

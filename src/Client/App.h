@@ -1,4 +1,5 @@
 #pragma once
+#include "InputText.h"
 
 class Player;
 
@@ -18,10 +19,26 @@ public:
 	static void MyPixelShader(cpu_ps_io& io);
 
 	void HandleInut();
+
+	void LoginUpdate(float dt);
 private:
 	inline static App* s_pApp = nullptr;
 	cpu_font m_font;
 	Player* m_pPlayer = nullptr;
+
+	////////// LOGIN //////////////
+	bool m_isConnected = false;
+	std::string m_username;
+	std::string m_serverIp;
+	int m_serverPort;
+
+	bool m_isConnecting = false;
+	float m_requestCooldown = 1.0f;
+	float m_requestTime = 0.0f;
+	
+	InputText m_loginHeader;
+	InputText m_loginInput;
+	///////////////////////////////
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

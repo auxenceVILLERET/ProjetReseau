@@ -6,7 +6,6 @@ class Entity;
 class GameManager
 {
 public:
-
 	void Start();
 	void Update();
 	void Exit();
@@ -17,7 +16,9 @@ public:
 	static GameManager* GetInstance();
 
 	template<typename T>
-	T* CreateEntity();
+	T* CreateEntity(bool isServerSide = false);
+
+	std::vector<Entity*>& GetEntities();
 
 	~GameManager();
 	
