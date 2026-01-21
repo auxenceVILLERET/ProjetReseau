@@ -49,7 +49,7 @@ bool Client::Connect(std::string ip, int port)
     PingPongPacket* packet = new PingPongPacket(m_username, true);
     msg.AddPacket(packet);
 
-    char* buffer = msg.Serialize();
+    msg.Serialize(m_buffer);
     m_serverIp = ip;
     m_serverPort = port;
 
@@ -62,13 +62,14 @@ bool Client::Connect(std::string ip, int port)
     target.sin_family = AF_INET;
     target.sin_port = htons(m_serverPort);
         
-    if (m_udpSocket.SendTo(buffer, 1025, target) != SOCKET_ERROR)
+    if (m_udpSocket.SendTo(m_buffer, 1025, target) != SOCKET_ERROR)
     {
         m_hasPinged = true;
         Sleep(1000);
         HandlePackets();
     }
 
+    memset(m_buffer, 0, 1024);
     return true;
 }
 
@@ -124,6 +125,7 @@ void Client::HandlePackets()
 
     for (int i = 0; i < m_packets.size(); i++)
     {
+        std::cout << " deleted packet of type : "<< m_packets[i]->GetType() << std::endl;
         delete m_packets[i];
     }
     

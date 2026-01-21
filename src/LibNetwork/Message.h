@@ -12,7 +12,7 @@ public:
     Message(bool isNew = false);
     ~Message();
     
-    char* Serialize();
+    void Serialize(char* buffer);
     std::vector<Packet*> Deserialize(char* message);
     bool AddPacket(Packet* packet);
 

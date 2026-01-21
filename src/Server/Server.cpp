@@ -228,7 +228,8 @@ void Server::Update()
 
     for (Message msg : m_pendingMessages)
     {
-        GlobalMsg(msg.Serialize());
+        msg.Serialize(m_buffer);
+        GlobalMsg(m_buffer);
         msg.ClearPackets();
     }
     m_pendingMessages.clear();
@@ -237,7 +238,8 @@ void Server::Update()
     {
         for (Message msg : value)
         {
-            m_udpSocket.SendTo(msg.Serialize(), Message::BUFFER_SIZE + 1, key->sockAddr);
+            msg.Serialize(m_buffer);
+            m_udpSocket.SendTo(m_buffer, Message::BUFFER_SIZE + 1, key->sockAddr);
             msg.ClearPackets();
         }
         value.clear();

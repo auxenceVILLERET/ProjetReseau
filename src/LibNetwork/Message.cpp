@@ -29,9 +29,8 @@ Message::~Message()
     
 }
 
-char* Message::Serialize()
+void Message::Serialize(char* buffer)
 {
-    char* buffer = new char[BUFFER_SIZE];
     char* bufferCursor = buffer;
     
     std::memset(buffer, 0, BUFFER_SIZE);
@@ -61,7 +60,7 @@ char* Message::Serialize()
         delete[] packetBuffer;
     }
 
-    return buffer;
+    ClearPackets();
 }
 
 std::vector<Packet*> Message::Deserialize(char* message)
@@ -111,11 +110,13 @@ std::vector<Packet*> Message::Deserialize(char* message)
                 packet = new CreateEntity();
                 break;
             case PacketType::SET_PLAYER_ID:
-                packet = new CreateEntity();
+                packet = new SetPlayerIDPacket();
                 break;
         }
 
         if (packet == nullptr) continue;
+
+        std::cout << "packet created of type : " << packet->GetType() << std::endl;
         
         packet->Deserialize(message);
         result.push_back(packet);
