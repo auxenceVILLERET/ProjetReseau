@@ -10,7 +10,7 @@ Player::Player()
 	m_health = 100.0f;
 	
 	m_mesh.CreateSpaceship();
-	m_material.color = cpu::ToColor(255, 128, 0);
+	m_material.color = cpu::ToColor(0, 0, 255);
 	m_pCpuEntity->pMesh = &m_mesh;
 	m_pCpuEntity->pMaterial = &m_material;
 	
@@ -24,8 +24,8 @@ Player::Player()
 	cpuEngine.GetParticleData()->Create(1000000);
 	m_pEmitter = cpuEngine.CreateParticleEmitter();
 	m_pEmitter->density = 3000.0f;
-	m_pEmitter->colorMin = cpu::ToColor(0, 0, 255);
-	m_pEmitter->colorMax = cpu::ToColor(255, 128, 0);
+	m_pEmitter->colorMin = cpu::ToColor(156, 0, 250);
+	m_pEmitter->colorMax = cpu::ToColor(213, 125, 255);
 
 	m_collider.radius = 1.0f;
 }
@@ -100,7 +100,7 @@ void Player::OnCollision(Entity* other)
 {
 	if(other->GetType() == EntityType::Asteroid)
 	{
-		m_health -= 20.0f;
+		m_health -= 100.0f;
 		if (m_health <= 0.0f)
 		{
 			Destroy();

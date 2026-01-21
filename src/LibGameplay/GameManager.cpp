@@ -48,6 +48,7 @@ void GameManager::Update()
 		if (entity->m_toDestroy)
 		{
 			delete entity;
+			entity = nullptr;
 			it = m_entities.erase(it);
 		}
 		else

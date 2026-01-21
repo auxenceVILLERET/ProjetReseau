@@ -32,6 +32,7 @@ public:
 
 	virtual EntityType GetType() const = 0;
 
+
 protected:
 	cpu_entity* m_pCpuEntity;
 	SphereCollider m_collider;

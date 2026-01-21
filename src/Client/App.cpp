@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "GameManager.h"
 #include "Asteroid.h"
+#include <iostream>
 
 const float ARENA_MIN_X = -50.0f;
 const float ARENA_MAX_X = 50.0f;
@@ -9,6 +10,8 @@ const float ARENA_MIN_Y = -50.0f;
 const float ARENA_MAX_Y = 50.0f;
 const float ARENA_MIN_Z = -50.0f;
 const float ARENA_MAX_Z = 50.0f;
+
+const int ASTEROID_COUNT = 60;
 
 float RandomRange(float min, float max)
 {
@@ -46,7 +49,6 @@ void App::OnStart()
 
 	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
-	const int ASTEROID_COUNT = 60;
 	
 
 	for (int i = 0; i < ASTEROID_COUNT; ++i)
@@ -79,10 +81,12 @@ void App::OnUpdate()
 	float time = cpuTime.total;
 
 	GameManager::GetInstance()->Update();
-	HandleInut();
 
+	
+	HandleInput();
 	m_pPlayer->UpdateCamera();
-
+	
+	
 	// Quit
 	if ( cpuInput.IsKeyDown(VK_ESCAPE) )
 		cpuEngine.Quit();
@@ -147,7 +151,7 @@ void App::OnRender(int pass)
 	
 }
 
-void App::HandleInut()
+void App::HandleInput()
 {
 	if (cpuInput.IsKey('Z'))
 	{
