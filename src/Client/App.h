@@ -1,4 +1,5 @@
 #pragma once
+#include "Entity.h"
 #include "InputText.h"
 
 class Player;
@@ -25,6 +26,8 @@ private:
 	inline static App* s_pApp = nullptr;
 	cpu_font m_font;
 	cpu_font m_loginFont;
+
+	Player* m_pPlayer = nullptr; 
 
 	////////// LOGIN //////////////
 	bool m_isConnected = false;

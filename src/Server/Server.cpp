@@ -83,18 +83,7 @@ void Server::GlobalMsg(const char* msg)
 {
     for (ClientInfo client : m_vClients)
     {
-        // char ip[23];
-        // inet_ntop(AF_INET, &addr.sin_addr, ip, INET_ADDRSTRLEN);
-        // int port = ntohs(addr.sin_port);
-        //
-        // std::string msgTemp = "[";
-        // msgTemp.append(ip);
-        // msgTemp.append(" : ");
-        // msgTemp.append(std::to_string(port));
-        // msgTemp.append("] : ");
-        // msgTemp.append(msg);
-        // msgTemp.append("\n");
-        
+        std::cout << "Sent global message to " << client.username << "\n";
         m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client.sockAddr);
     }
 }
@@ -139,6 +128,8 @@ void Server::HandlePackets()
     {
         Packet* packet = rPacket.packet;
         PacketType type = (PacketType)packet->GetType();
+
+        std::cout << "Received Packet Type: " << PacketTypeNames[type] << std::endl;
         
         if (type == PING_PONG)
         {
@@ -152,7 +143,7 @@ void Server::HandlePackets()
             SendTargetedPacket(responsePkt, pClient);
             
             Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
-            p->GetTransform().pos = XMFLOAT3(0, 0, 0);
+            p->GetTransform().pos = GetSpawnPoint();
             CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
             SendPacket(createPacket);
 
@@ -171,6 +162,8 @@ void Server::HandlePackets()
 
 void Server::SendPacket(Packet* packet)
 {
+    std::cout << "Registered Global packet of type " << PacketTypeNames[packet->GetType()] << std::endl;
+    
     if (m_pendingMessages.size() == 0)
     {
         Message msg;
@@ -188,6 +181,7 @@ void Server::SendPacket(Packet* packet)
 
 void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
 {
+    std::cout << "Registered packet of type " << PacketTypeNames[packet->GetType()] << " for " << pTarget->username << std::endl;
     if (pTarget == nullptr) return;
     
     if (!m_pendingTargetedMessage.contains(pTarget))

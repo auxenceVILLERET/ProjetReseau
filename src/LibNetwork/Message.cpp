@@ -115,8 +115,6 @@ std::vector<Packet*> Message::Deserialize(char* message)
         }
 
         if (packet == nullptr) continue;
-
-        std::cout << "packet created of type : " << packet->GetType() << std::endl;
         
         packet->Deserialize(message);
         result.push_back(packet);

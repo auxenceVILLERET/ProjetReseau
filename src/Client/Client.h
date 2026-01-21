@@ -18,11 +18,14 @@ public:
     UDPSocket* GetSocket();
 
     void Init();
-    bool Connect(std::string ip, int port);
+    bool Connect(std::string ip, int port, std::string username);
     void Exit() { m_isRunning = false; }
 
     static DWORD WINAPI ReceiveThread(LPVOID lpParam);
     void HandlePackets();
+
+    uint32_t GetPlayerID() { return m_playerID; }
+    bool GetIsConnected() { return m_isConnected; }
     
 private:
     static Client* m_pInstance;
@@ -41,6 +44,8 @@ private:
     bool m_isRunning;
     bool m_isConnected;
     bool m_hasPinged;
+
+    uint32_t m_playerID;
 };
 
 #endif

@@ -45,8 +45,9 @@ void Client::Init()
     CreateThread(NULL, 0, ReceiveThread, this, 0, NULL);
 }
 
-bool Client::Connect(std::string ip, int port)
+bool Client::Connect(std::string ip, int port, std::string username)
 {
+    m_username = username;
     Message msg;
     PingPongPacket* packet = new PingPongPacket(m_username, true);
     msg.AddPacket(packet);
@@ -120,6 +121,8 @@ void Client::HandlePackets()
     {
         PacketType type = (PacketType)packet->GetType();
 
+        std::cout << "Received Packet Type: " << PacketTypeNames[type] << std::endl;
+        
         if (m_hasPinged && type == PING_PONG)
         {
             PingPongPacket* casted = dynamic_cast<PingPongPacket*>(packet);
@@ -138,11 +141,17 @@ void Client::HandlePackets()
 
             ClientMethods::CopyEntity(casted);
         }
+        if (type == SET_PLAYER_ID)
+        {
+            SetPlayerIDPacket* casted = dynamic_cast<SetPlayerIDPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            m_playerID = casted->id;
+        }
     }
 
     for (int i = 0; i < m_packets.size(); i++)
     {
-        std::cout << " deleted packet of type : "<< m_packets[i]->GetType() << std::endl;
         delete m_packets[i];
     }
     

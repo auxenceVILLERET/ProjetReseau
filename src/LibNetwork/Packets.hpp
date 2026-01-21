@@ -17,6 +17,15 @@ enum PacketType
     SET_PLAYER_ID
 };
 
+inline std::vector<std::string> PacketTypeNames
+{
+    "BALL UPDATE",
+    "MESSAGE",
+    "PING PONG",
+    "CREATE ENTITY",
+    "SET PLAYER ID"
+};
+
 class BallUpdatePacket : public Packet
 {
 public:

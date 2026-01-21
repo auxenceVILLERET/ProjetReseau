@@ -19,6 +19,7 @@ public:
 	T* CreateEntity(bool isServerSide = false);
 
 	std::vector<Entity*>& GetEntities();
+	Entity* GetEntity(uint32_t id);
 
 	~GameManager();
 	

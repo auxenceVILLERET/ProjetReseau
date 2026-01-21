@@ -2,7 +2,6 @@
 #ifndef GAMEMANAGER_CPP_DEFINE
 #define GAMEMANAGER_CPP_DEFINE
 
-
 #include "GameManager.h"
 #include "Entity.h"
 
@@ -15,7 +14,6 @@ GameManager* GameManager::GetInstance()
 	return s_pInstance;
 }
 
-
 GameManager::GameManager() : m_deltaTime(0.0f)
 {
 }
@@ -25,11 +23,20 @@ std::vector<Entity*>& GameManager::GetEntities()
 	return m_entities;
 }
 
+Entity* GameManager::GetEntity(uint32_t id)
+{
+	for (Entity* e : m_entities)
+	{
+		if (e->GetID() == id)
+			return e;
+	}
+	return nullptr;
+}
+
 GameManager::~GameManager()
 {
 
 }
-
 
 void GameManager::Start()
 {
