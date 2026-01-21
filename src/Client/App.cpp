@@ -43,13 +43,14 @@ void App::OnStart()
 	cpuEngine.GetCamera()->far = 200.0f;
 	cpuEngine.GetCamera()->UpdateProjection();
 
+	m_texture.Load("../../res/Client/CarreRougeVie.png");
 	GameManager::GetInstance();
 
 	m_font.Create(12);
 
 	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
-	
+	CreateHealthSprite();
 
 	for (int i = 0; i < ASTEROID_COUNT; ++i)
 	{
@@ -85,8 +86,8 @@ void App::OnUpdate()
 	
 	HandleInput();
 	m_pPlayer->UpdateCamera();
-	
-	
+	UpdateHealthSprite();
+
 	// Quit
 	if ( cpuInput.IsKeyDown(VK_ESCAPE) )
 		cpuEngine.Quit();
@@ -189,7 +190,40 @@ void App::HandleInput()
 	{
 		m_pPlayer->Shoot();
 	}
+	if(cpuInput.IsKeyDown('H'))
+	{
+		m_pPlayer->TakeDamage(5.0f);
+		std::cout << "Player Health: " << m_pPlayer->GetHealth() << std::endl;
+	}
 
+}
+
+void App::UpdateHealthSprite()
+{
+	float currentHealth = m_healthSprites.size() * 10.0f - 10.0f;
+	while (currentHealth >= m_pPlayer->GetHealth() && m_healthSprites.size() != 0)
+	{
+		cpu_sprite* temp = m_healthSprites.back();
+
+		cpuEngine.Release(temp);
+
+		m_healthSprites.pop_back();
+
+		currentHealth -= 10.0f;
+	}
+}
+
+void App::CreateHealthSprite()
+{
+	for(int i = 0; i < m_pPlayer->GetHealth() / 10; ++i)
+	{
+		cpu_sprite* m_pSprite = cpuEngine.CreateSprite();
+		m_pSprite->pTexture = &m_texture;
+		m_pSprite->CenterAnchor();
+		m_pSprite->x = 30 ;
+		m_pSprite->y = 50 + (i * 20);
+		m_healthSprites.push_back(m_pSprite);
+	}
 }
 
 void App::MyPixelShader(cpu_ps_io& io)
