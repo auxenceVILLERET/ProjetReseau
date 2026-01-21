@@ -22,8 +22,11 @@ public:
 	virtual ~Entity();
 
 	virtual void Update(float dt);
-	virtual void Render();
 	virtual void UpdateCollider();
+
+	virtual void InitRenderElements() {}
+	virtual void UpdateRenderElements(float dt) {}
+	virtual void Render();
 
 	void Destroy();
 	uint32_t GetID() const { return m_id; }

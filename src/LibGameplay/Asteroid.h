@@ -15,6 +15,10 @@ public:
 	void OnCollision(Entity* other) override;
 	void ExplosionParticul();
 
+	void InitRenderElements() override;
+	void UpdateRenderElements(float dt) override;
+	void Render() override;
+
 	EntityType GetType() const override { return EntityType::Asteroid; }
 
 private:

@@ -9,6 +9,8 @@ class GameManager
 public:
 
 	void Start();
+	void InitRenderElements();
+	void UpdateRenderElements(float dt);
 	void Update();
 	void Exit();
 	void Render(int pass);

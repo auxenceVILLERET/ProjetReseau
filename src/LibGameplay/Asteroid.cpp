@@ -12,7 +12,6 @@ Asteroid::Asteroid()
 	m_pEmitter->density = 0.0f;
 	m_pEmitter->colorMin = cpu::ToColor(100, 0, 0);
 	m_pEmitter->colorMax = cpu::ToColor(255, 125, 0);
-	
 	m_timerParticul = 0.0f;
 	m_durationParticul = 0.2f;
 
@@ -26,16 +25,6 @@ void Asteroid::Update(float dt)
 {
 	m_pCpuEntity->transform.AddYPR(m_YPR.x * dt, m_YPR.y * dt, m_YPR.z * dt );
 
-	if(m_Explo == true)
-	{
-		m_timerParticul += dt;
-		if (m_timerParticul >= m_durationParticul)
-		{
-			m_pEmitter->density = 0.0f;
-			m_timerParticul = 0.0f;
-			Destroy();
-		}
-	}
 }
 
 void Asteroid::Init(float size)
@@ -68,5 +57,31 @@ void Asteroid::ExplosionParticul()
 	m_pEmitter->density = 3000.0f;
 	m_pEmitter->spread = 5.0f;
 	m_Explo = true;
+}
+
+void Asteroid::InitRenderElements()
+{
+
+}
+
+void Asteroid::UpdateRenderElements(float dt)
+{
+
+	if (m_Explo == true)
+	{
+		m_timerParticul += dt;
+		if (m_timerParticul >= m_durationParticul)
+		{
+			m_pEmitter->density = 0.0f;
+			m_timerParticul = 0.0f;
+			delete m_pEmitter;
+			Destroy();
+		}
+	}
+}
+
+void Asteroid::Render()
+{
+
 }
 

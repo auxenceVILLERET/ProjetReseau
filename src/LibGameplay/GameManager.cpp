@@ -28,7 +28,7 @@ GameManager::~GameManager()
 
 void GameManager::Start()
 {
-
+	
 }
 
 void GameManager::Update()
@@ -64,6 +64,26 @@ void GameManager::Exit()
 	{
 		delete m_entities.back();
 		m_entities.pop_back();
+	}
+}
+
+void GameManager::InitRenderElements()
+{
+	for (auto it = m_entities.begin(); it != m_entities.end(); )
+	{
+		Entity* entity = *it;
+		entity->InitRenderElements();
+		++it;
+	}
+}
+
+void GameManager::UpdateRenderElements(float dt)
+{
+	for (auto it = m_entities.begin(); it != m_entities.end(); )
+	{
+		Entity* entity = *it;
+		entity->UpdateRenderElements(dt);
+		++it;
 	}
 }
 

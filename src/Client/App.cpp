@@ -46,7 +46,7 @@ void App::OnStart()
 
 	m_texture.Load("../../res/Client/CarreRougeVie.png");
 	GameManager::GetInstance();
-
+	GameManager::GetInstance()->InitRenderElements();
 	m_font.Create(12);
 
 	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
@@ -83,7 +83,7 @@ void App::OnUpdate()
 	float time = cpuTime.total;
 
 	GameManager::GetInstance()->Update();
-
+	GameManager::GetInstance()->UpdateRenderElements(dt);
 	
 	HandleInput();
 	m_pPlayer->UpdateCamera();

@@ -86,7 +86,12 @@ void Player::Shoot()
 		m_shootTimer = 0.0f;
 	}
 }
-void Player::Render()
+void Player::InitRenderElements()
+{
+
+}
+
+void Player::UpdateRenderElements(float dt)
 {
 	m_pEmitter->density = m_speedMovement * 500.0f;
 	m_pEmitter->pos = m_pCpuEntity->transform.pos;
@@ -94,6 +99,11 @@ void Player::Render()
 	m_pEmitter->dir.x = -m_pEmitter->dir.x;
 	m_pEmitter->dir.y = -m_pEmitter->dir.y;
 	m_pEmitter->dir.z = -m_pEmitter->dir.z;
+}
+
+void Player::Render()
+{
+	
 }
 
 void Player::OnCollision(Entity* other)

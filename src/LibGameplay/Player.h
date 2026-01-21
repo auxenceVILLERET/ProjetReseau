@@ -18,6 +18,8 @@ public:
 
 	void Shoot();
 
+	void InitRenderElements() override;
+	void UpdateRenderElements(float dt) override;
 	void Render() override;
 	void OnCollision(Entity* other) override;
 
