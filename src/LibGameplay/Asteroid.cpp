@@ -8,6 +8,14 @@ Asteroid::Asteroid()
 	m_pCpuEntity->pMesh = &m_mesh;
 	m_pCpuEntity->pMaterial = &m_material;
 
+	m_pEmitter = cpuEngine.CreateParticleEmitter();
+	m_pEmitter->density = 0.0f;
+	m_pEmitter->colorMin = cpu::ToColor(100, 0, 0);
+	m_pEmitter->colorMax = cpu::ToColor(255, 125, 0);
+	
+	m_timerParticul = 0.0f;
+	m_durationParticul = 0.2f;
+
 }
 
 Asteroid::~Asteroid()
@@ -17,6 +25,17 @@ Asteroid::~Asteroid()
 void Asteroid::Update(float dt)
 {
 	m_pCpuEntity->transform.AddYPR(m_YPR.x * dt, m_YPR.y * dt, m_YPR.z * dt );
+
+	if(m_Explo == true)
+	{
+		m_timerParticul += dt;
+		if (m_timerParticul >= m_durationParticul)
+		{
+			m_pEmitter->density = 0.0f;
+			m_timerParticul = 0.0f;
+			Destroy();
+		}
+	}
 }
 
 void Asteroid::Init(float size)
@@ -34,7 +53,20 @@ void Asteroid::OnCollision(Entity* other)
 {
 	if(other->GetType() == EntityType::Bullet)
 	{
-		Destroy();
+		m_pCpuEntity->pMesh->Clear();
+		ExplosionParticul();
 	}
+}
+
+void Asteroid::ExplosionParticul()
+{
+	m_pEmitter->pos = m_pCpuEntity->transform.pos;
+	m_pEmitter->dir = m_pCpuEntity->transform.dir;
+	m_pEmitter->dir.x = 0;
+	m_pEmitter->dir.y = 0;
+	m_pEmitter->dir.z = 0;
+	m_pEmitter->density = 3000.0f;
+	m_pEmitter->spread = 5.0f;
+	m_Explo = true;
 }
 

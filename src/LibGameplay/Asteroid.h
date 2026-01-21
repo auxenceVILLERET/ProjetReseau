@@ -13,6 +13,7 @@ public:
 	void SetColor(XMFLOAT3 color) { m_material.color = color; }
 	void SetYPR(float yaw, float pitch, float roll);
 	void OnCollision(Entity* other) override;
+	void ExplosionParticul();
 
 	EntityType GetType() const override { return EntityType::Asteroid; }
 
@@ -20,6 +21,12 @@ private:
 	XMFLOAT3 m_YPR;
 	cpu_mesh m_mesh;
 	cpu_material m_material;
+
+	float m_timerParticul;
+	float m_durationParticul;
+	bool m_Explo = false;
+
+	cpu_particle_emitter* m_pEmitter;
 
 };
 

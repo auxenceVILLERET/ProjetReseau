@@ -11,7 +11,7 @@ const float ARENA_MAX_Y = 50.0f;
 const float ARENA_MIN_Z = -50.0f;
 const float ARENA_MAX_Z = 50.0f;
 
-const int ASTEROID_COUNT = 60;
+const int ASTEROID_COUNT = 160;
 
 float RandomRange(float min, float max)
 {
@@ -42,6 +42,7 @@ void App::OnStart()
 	srand(time(NULL));
 	cpuEngine.GetCamera()->far = 200.0f;
 	cpuEngine.GetCamera()->UpdateProjection();
+	cpuEngine.GetParticleData()->Create(1000000);
 
 	m_texture.Load("../../res/Client/CarreRougeVie.png");
 	GameManager::GetInstance();

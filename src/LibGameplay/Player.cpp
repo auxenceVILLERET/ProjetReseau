@@ -21,7 +21,7 @@ Player::Player()
 	m_shootCooldown = 0.2f;
 	m_shootTimer = 0.0f;
 
-	cpuEngine.GetParticleData()->Create(1000000);
+
 	m_pEmitter = cpuEngine.CreateParticleEmitter();
 	m_pEmitter->density = 3000.0f;
 	m_pEmitter->colorMin = cpu::ToColor(156, 0, 250);
