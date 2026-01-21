@@ -38,7 +38,7 @@ private:
     int m_serverPort = 1888;
     std::string m_username;
 
-    bool m_isRunning = true;
+    bool m_isRunning;
     bool m_isConnected;
     bool m_hasPinged;
 };

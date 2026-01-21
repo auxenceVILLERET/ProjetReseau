@@ -40,6 +40,8 @@ UDPSocket* Client::GetSocket()
 void Client::Init()
 {
     m_isConnected = false;
+    m_hasPinged = false;
+    m_isRunning = true;
     CreateThread(NULL, 0, ReceiveThread, this, 0, NULL);
 }
 
@@ -78,10 +80,25 @@ DWORD Client::ReceiveThread(LPVOID lpParam)
     Client* pInstance = static_cast<Client*>(lpParam);
     while (pInstance->m_isRunning)
     {
+        if (pInstance->m_hasPinged == false && pInstance->m_isConnected == false)
+            continue;
+        
         char responseBuffer[1024 + 1];
         sockaddr_in target;
-        int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1024, target);
+        int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1025, target);
+        
+        if (response == -1)
+        {
+            int err = Sockets::GetError();
+            std::cout << err << std::endl;
 
+            if (err == WSAEINTR)
+                break;
+            
+            continue;
+        }
+
+        
         Message msg;
         std::vector<Packet*> packets = msg.Deserialize(responseBuffer);
 
