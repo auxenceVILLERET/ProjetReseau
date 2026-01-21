@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "GameManager.h"
 
-App::App() : m_loginInput(m_font), m_loginHeader(m_font)
+App::App() : m_loginInput(m_loginFont), m_loginHeader(m_loginFont)
 {
 	s_pApp = this;
 	CPU_CALLBACK_START(OnStart);
@@ -28,7 +28,14 @@ void App::OnStart()
 
 	Client* client = Client::GetInstance();
 	
+	
 	m_font.Create(12);
+	m_loginFont.Create(30);
+	m_loginHeader.SetText("Please enter your username:");
+	m_loginHeader.SetAnchor(CPU_TEXT_CENTER);
+	m_loginHeader.SetPos({ cpuWindow.GetWidth() / 2, cpuWindow.GetHeight() / 2 - 30 });
+	m_loginInput.SetAnchor(CPU_TEXT_CENTER);
+	m_loginInput.SetPos({ cpuWindow.GetWidth() / 2, cpuWindow.GetHeight() / 2 + 30 });
 
 	// m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
@@ -60,12 +67,18 @@ void App::OnExit()
 	// YOUR CODE HERE
 	GameManager::GetInstance()->Exit();
 	delete GameManager::GetInstance();
-
+	Client::GetInstance()->Exit();
+	delete Client::GetInstance();
 }
 
 void App::OnRender(int pass)
 {
-
+	if (!m_isConnected)
+	{
+		m_loginHeader.Render();
+		m_loginInput.Render();
+	}		
+	
 	switch (pass)
 	{
 	case CPU_PASS_PARTICLE_BEGIN:
@@ -158,14 +171,44 @@ void App::LoginUpdate(float dt)
 	if (m_isConnecting)
 	{
 		m_requestTime += dt;
-		if (m_requestTime >= m_requestCooldown && m_isConnected == false)
+		if (m_requestTime >= 2 * m_requestCooldown && m_isConnected == false)
 		{
 			m_serverIp.clear();
 			m_serverPort = -1;
+			m_requestTime = 0.0f;
+			m_isConnecting = false;
+			m_loginInput.Reset();
+			m_loginHeader.SetText("Please enter the server IP :");
+		}
+		else if (m_requestTime >= m_requestCooldown && m_isConnected == false)
+		{
+			m_loginHeader.SetText("Connexion attempt failed");
 		}
 		return;
 	}
+	
+	if (m_username.size() == 0 && m_loginInput.IsFinished())
+	{
+		m_loginHeader.SetText("Please enter the server IP :");
+		m_username = m_loginInput.GetText();
+		m_loginInput.Reset();
+	}
+	else if (m_serverIp.size() == 0 && m_loginInput.IsFinished())
+	{
+		m_loginHeader.SetText("Please enter the server port :");
+		m_serverIp = m_loginInput.GetText();
+		m_loginInput.Reset();
+	}
+	else if (m_serverPort == -1 && m_loginInput.IsFinished())
+	{
+		m_loginHeader.SetText("Connexion Request Sent");
+		m_serverPort = std::stoi( m_loginInput.GetText() );
+		m_loginInput.Reset();
+		m_isConnecting = true;
+		Client::GetInstance()->Connect(m_serverIp, m_serverPort);
+	}
 
+	m_loginInput.HandleInput();
 	
 }
 

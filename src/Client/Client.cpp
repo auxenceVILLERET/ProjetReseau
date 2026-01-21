@@ -41,59 +41,41 @@ void Client::Init()
 {
     m_isConnected = false;
     CreateThread(NULL, 0, ReceiveThread, this, 0, NULL);
-    
-    std::cout << "Please select your username : ";
-    std::cin >> m_username;
-
-    while (!m_isConnected)
-    {
-        std::cout << "Please enter the server IP : ";
-        std::cin >> m_serverIp;
-
-        std::cout << "Please enter the server port : ";
-        std::cin >> m_serverPort;
-        
-        Message msg;
-        PingPongPacket* packet = new PingPongPacket(m_username, true);
-        msg.AddPacket(packet);
-
-        char* buffer = msg.Serialize();
-
-        sockaddr_in target;
-        if ( inet_pton(AF_INET, m_serverIp.c_str(), &target.sin_addr)<=0 )
-        {
-            std::cout << "Unvalid Server address, please try again" << std::endl;
-            continue;
-        }
-        target.sin_family = AF_INET;
-        target.sin_port = htons(m_serverPort);
-        
-        if (m_udpSocket.SendTo(buffer, 1025, target) != SOCKET_ERROR)
-        {
-            m_hasPinged = true;
-            Sleep(1000);
-            HandlePackets();
-        }
-        
-        if (m_isConnected)
-        {
-            m_hasPinged = false;
-            std::cout << "Connection Successful" << std::endl;
-        }
-        else
-            std::cout << "Unvalid Server address, please try again" << std::endl;
-    }
 }
 
-bool Client::Connect(char* ip, int port)
+bool Client::Connect(std::string ip, int port)
 {
-    return false;
+    Message msg;
+    PingPongPacket* packet = new PingPongPacket(m_username, true);
+    msg.AddPacket(packet);
+
+    char* buffer = msg.Serialize();
+    m_serverIp = ip;
+    m_serverPort = port;
+
+    sockaddr_in target;
+    if ( inet_pton(AF_INET, m_serverIp.c_str(), &target.sin_addr)<=0 )
+    {
+        std::cout << "Unvalid Server address, please try again" << std::endl;
+        return false;
+    }
+    target.sin_family = AF_INET;
+    target.sin_port = htons(m_serverPort);
+        
+    if (m_udpSocket.SendTo(buffer, 1025, target) != SOCKET_ERROR)
+    {
+        m_hasPinged = true;
+        Sleep(1000);
+        HandlePackets();
+    }
+
+    return true;
 }
 
 DWORD Client::ReceiveThread(LPVOID lpParam)
 {
     Client* pInstance = static_cast<Client*>(lpParam);
-    while (true)
+    while (pInstance->m_isRunning)
     {
         char responseBuffer[1024 + 1];
         sockaddr_in target;
@@ -112,7 +94,6 @@ DWORD Client::ReceiveThread(LPVOID lpParam)
     
     return 1;
 }
-
 
 void Client::HandlePackets()
 {

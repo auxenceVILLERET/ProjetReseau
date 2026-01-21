@@ -19,7 +19,8 @@ public:
 	cpu_transform& GetTransform();
 	EntityType GetType() const { return m_type; }
 
-	virtual void InitRender() {};
+	virtual void InitRenderElements() {};
+	virtual void UpdateRenderElements() {};
 	virtual void OnRender() {};
 
 protected:

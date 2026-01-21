@@ -8,7 +8,7 @@ void InputText::HandleInput()
 {
     if (m_finished)
         return;
-
+    
     // Lettres A-Z
     for (char c = 'A'; c <= 'Z'; c++)
         if (cpuInput.IsKeyDown(c))
@@ -18,8 +18,18 @@ void InputText::HandleInput()
     for (char c = '0'; c <= '9'; c++)
         if (cpuInput.IsKeyDown(c))
             m_text += c;
+
+    int temp = 0;
+    for (int i = VK_NUMPAD0; i <= VK_NUMPAD9; i++)
+    {
+        if (cpuInput.IsKeyDown(i))
+        {
+            m_text += std::to_string(temp);
+        }
+        temp++;
+    }
     
-    if (cpuInput.IsKeyDown(VK_OEM_PERIOD))
+    if (cpuInput.IsKeyDown(VK_OEM_PERIOD) || cpuInput.IsKeyDown(VK_DECIMAL))
         m_text += '.';
 
     // Backspace

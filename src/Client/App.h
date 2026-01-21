@@ -24,13 +24,13 @@ public:
 private:
 	inline static App* s_pApp = nullptr;
 	cpu_font m_font;
-	Player* m_pPlayer = nullptr;
+	cpu_font m_loginFont;
 
 	////////// LOGIN //////////////
 	bool m_isConnected = false;
 	std::string m_username;
 	std::string m_serverIp;
-	int m_serverPort;
+	int m_serverPort = -1;
 
 	bool m_isConnecting = false;
 	float m_requestCooldown = 1.0f;

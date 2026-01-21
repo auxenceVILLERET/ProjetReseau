@@ -18,7 +18,8 @@ public:
     UDPSocket* GetSocket();
 
     void Init();
-    bool Connect(char* ip, int port);
+    bool Connect(std::string ip, int port);
+    void Exit() { m_isRunning = false; }
 
     static DWORD WINAPI ReceiveThread(LPVOID lpParam);
     void HandlePackets();
@@ -34,7 +35,8 @@ private:
     std::string m_serverIp;
     int m_serverPort = 1888;
     std::string m_username;
-    
+
+    bool m_isRunning = true;
     bool m_isConnected;
     bool m_hasPinged;
 };

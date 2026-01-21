@@ -23,6 +23,8 @@ public:
     void SetPos(XMINT2 _pos) { m_pos = _pos; }
     XMINT2 GetPos() const { return m_pos; }
 
+    void SetAnchor(int _anchor) { m_anchor = _anchor; }
+
 private:
     int m_anchor = 0;
     bool m_isActive = false;
