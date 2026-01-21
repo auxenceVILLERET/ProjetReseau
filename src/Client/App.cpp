@@ -193,7 +193,6 @@ void App::HandleInput()
 	if(cpuInput.IsKeyDown('H'))
 	{
 		m_pPlayer->TakeDamage(5.0f);
-		std::cout << "Player Health: " << m_pPlayer->GetHealth() << std::endl;
 	}
 
 }
