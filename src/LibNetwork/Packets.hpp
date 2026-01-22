@@ -560,7 +560,7 @@ public:
         y = 0.0f;
         z = 0.0f;
 
-        m_type = SET_ENTITY_POS;
+        m_type = MOVE_ENTITY;
         m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
     }
     MoveEntityPacket(uint32_t _id, float _x, float _y, float _z)
@@ -570,7 +570,7 @@ public:
         y = _y;
         z = _z;
         
-        m_type = SET_ENTITY_POS;
+        m_type = MOVE_ENTITY;
         m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
     }
 
@@ -627,7 +627,7 @@ public:
         y = 0.0f;
         z = 0.0f;
 
-        m_type = SET_ENTITY_POS;
+        m_type = ROTATE_ENTITY;
         m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
     }
     RotateEntityPacket(uint32_t _id, float _x, float _y, float _z)
@@ -637,7 +637,7 @@ public:
         y = _y;
         z = _z;
         
-        m_type = SET_ENTITY_POS;
+        m_type = ROTATE_ENTITY;
         m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
     }
 
@@ -694,7 +694,7 @@ public:
         y = 0.0f;
         z = 0.0f;
 
-        m_type = SET_ENTITY_POS;
+        m_type = SCALE_ENTITY;
         m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
     }
     ScaleEntityPacket(uint32_t _id, float _x, float _y, float _z)
@@ -704,7 +704,7 @@ public:
         y = _y;
         z = _z;
         
-        m_type = SET_ENTITY_POS;
+        m_type = SCALE_ENTITY;
         m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
     }
 
