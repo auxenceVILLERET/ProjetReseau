@@ -47,8 +47,6 @@ void Message::Serialize(char* buffer)
     m_packetCount = m_vPackets.size();
     std::memcpy(bufferCursor, &m_packetCount, sizeof(m_packetCount));
     bufferCursor += sizeof(m_packetCount);
-
-    size_t remaining = BUFFER_SIZE - (bufferCursor - buffer);
     
     for (int i = 0; i < m_vPackets.size(); i++)
     {
@@ -111,6 +109,15 @@ std::vector<Packet*> Message::Deserialize(char* message)
                 break;
             case PacketType::SET_PLAYER_ID:
                 packet = new SetPlayerIDPacket();
+                break;
+            case PacketType::SET_ENTITY_POS:
+                packet = new SetEntityPos();
+                break;
+            case PacketType::SET_ENTITY_ROT:
+                packet = new SetEntityRot();
+                break;
+            case PacketType::SET_ENTITY_SCALE:
+                packet = new SetEntityScale();
                 break;
         }
 
