@@ -7,6 +7,7 @@
 #include <WS2tcpip.h>
 
 #include "GameManager.h"
+#include "ManagerMethods.h"
 #include "Message.h"
 #include "Packets.hpp"
 #include "Player.h"
@@ -219,6 +220,8 @@ void Server::Update()
 {
     HandlePackets();
     GameManager::GetInstance()->Update();
+
+    ManagerMethods::HandleDirtyEntities();
     
     for (Message msg : m_pendingMessages)
     {
@@ -240,6 +243,5 @@ void Server::Update()
     }
     
 }
-
 
 #endif

@@ -482,26 +482,20 @@ class SetEntityScale : public Packet
 {
 public:
     uint32_t id;
-    float x;
-    float y;
-    float z;
+    float n;
 
     SetEntityScale()
     {
         id = 0;
-        x = 0.0f;
-        y = 0.0f;
-        z = 0.0f;
+        n = 0.0f;
 
         m_type = SET_ENTITY_POS;
         m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
     }
-    SetEntityScale(uint32_t _id, float _x, float _y, float _z)
+    SetEntityScale(uint32_t _id, float _n)
     {
         id = _id;
-        x = _x;
-        y = _y;
-        z = _z;
+        n = _n;
         
         m_type = SET_ENTITY_POS;
         m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
@@ -520,12 +514,8 @@ public:
         
         std::memcpy(bufferCursor, &id, sizeof(id));
         bufferCursor += sizeof(id);
-        std::memcpy(bufferCursor, &x, sizeof(x));
-        bufferCursor += sizeof(x);
-        std::memcpy(bufferCursor, &y, sizeof(y));
-        bufferCursor += sizeof(y);
-        std::memcpy(bufferCursor, &z, sizeof(z));
-        bufferCursor += sizeof(z);
+        std::memcpy(bufferCursor, &n, sizeof(n));
+        bufferCursor += sizeof(n);
 
         return buffer;
     }
@@ -536,12 +526,8 @@ public:
         
         std::memcpy(&id, _message, sizeof(id));
         _message += sizeof(id);
-        std::memcpy(&x, _message, sizeof(x));
-        _message += sizeof(x);
-        std::memcpy(&y, _message, sizeof(y));
-        _message += sizeof(y);
-        std::memcpy(&z, _message, sizeof(z));
-        _message += sizeof(z);
+        std::memcpy(&n, _message, sizeof(n));
+        _message += sizeof(n);
     }
 };
 
@@ -683,29 +669,23 @@ class ScaleEntityPacket : public Packet
 {
 public:
     uint32_t id;
-    float x;
-    float y;
-    float z;
+    float n;
 
     ScaleEntityPacket()
     {
         id = 0;
-        x = 0.0f;
-        y = 0.0f;
-        z = 0.0f;
+        n = 1.0f;
 
         m_type = SCALE_ENTITY;
-        m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
+        m_size = 2 * sizeof(int) + sizeof(id) + sizeof(float);
     }
-    ScaleEntityPacket(uint32_t _id, float _x, float _y, float _z)
+    ScaleEntityPacket(uint32_t _id, float _n)
     {
         id = _id;
-        x = _x;
-        y = _y;
-        z = _z;
+        n = _n;
         
         m_type = SCALE_ENTITY;
-        m_size = 2 * sizeof(int) + sizeof(id) + 3 * sizeof(float);
+        m_size = 2 * sizeof(int) + sizeof(id) + sizeof(float);
     }
 
     char* Serialize()
@@ -721,13 +701,8 @@ public:
         
         std::memcpy(bufferCursor, &id, sizeof(id));
         bufferCursor += sizeof(id);
-        std::memcpy(bufferCursor, &x, sizeof(x));
-        bufferCursor += sizeof(x);
-        std::memcpy(bufferCursor, &y, sizeof(y));
-        bufferCursor += sizeof(y);
-        std::memcpy(bufferCursor, &z, sizeof(z));
-        bufferCursor += sizeof(z);
-
+        std::memcpy(bufferCursor, &n, sizeof(n));
+        bufferCursor += sizeof(n);
         return buffer;
     }
     void Deserialize(char* _message)
@@ -737,12 +712,8 @@ public:
         
         std::memcpy(&id, _message, sizeof(id));
         _message += sizeof(id);
-        std::memcpy(&x, _message, sizeof(x));
-        _message += sizeof(x);
-        std::memcpy(&y, _message, sizeof(y));
-        _message += sizeof(y);
-        std::memcpy(&z, _message, sizeof(z));
-        _message += sizeof(z);
+        std::memcpy(&n, _message, sizeof(n));
+        _message += sizeof(n);
     }
 };
 
