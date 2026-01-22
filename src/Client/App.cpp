@@ -195,27 +195,27 @@ void App::HandleInput()
 	
 	if (cpuInput.IsKey('Z'))
 	{
-		ClientMethods::RotateEntity(id, {0.0f, rotSpeed * dt, 0.0f});
+		ClientMethods::RotateEntity(id, {-rotSpeed * dt, 0.0f, 0.0f});
 	}
 	if (cpuInput.IsKey('S'))
 	{
-		ClientMethods::RotateEntity(id, {0.0f, -rotSpeed * dt, 0.0f});
+		ClientMethods::RotateEntity(id, {rotSpeed * dt, 0.0f, 0.0f});
 	}
 	if (cpuInput.IsKey('Q'))
 	{
-		ClientMethods::RotateEntity(id, {-speed * dt, 0.0f, 0.0f});
+		ClientMethods::RotateEntity(id, {0.0f, -rotSpeed * dt, 0.0f});
 	}
 	if (cpuInput.IsKey('D'))
 	{
-		ClientMethods::RotateEntity(id, {speed * dt, 0.0f, 0.0f});
+		ClientMethods::RotateEntity(id, {0.0f, rotSpeed * dt, 0.0f});
 	}
 	if (cpuInput.IsKey('A'))
 	{
-		ClientMethods::RotateEntity(id, {0.0f, 0.0f, speed * dt});
+		ClientMethods::RotateEntity(id, {0.0f, 0.0f, rotSpeed * dt});
 	}
 	if (cpuInput.IsKey('E'))
 	{
-		ClientMethods::RotateEntity(id, {0.0f, 0.0f, -speed * dt});
+		ClientMethods::RotateEntity(id, {0.0f, 0.0f, -rotSpeed * dt});
 	}
 // 	if (cpuInput.IsKey(VK_SPACE))
 // 	{

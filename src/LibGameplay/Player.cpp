@@ -18,7 +18,7 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 	}
 	
 	m_speedRotation = 0.8f;
-	m_speedMovement = 0.0f;
+	m_speedMovement = 1.0f;
 	m_maxSpeed = 10.0f;
 
 	m_shootCooldown = 0.2f;
@@ -36,7 +36,7 @@ Player::~Player()
 void Player::Update(float dt)
 {
 	XMFLOAT3 dir = GetTransform().dir;
-	Entity::Move(dt * m_speedMovement * dir.x, dt * m_speedMovement * dir.y, dt * m_speedMovement * dir.z);
+	// Move(dt * m_speedMovement * dir.x, dt * m_speedMovement * dir.y, dt * m_speedMovement * dir.z);
 }
 
 void Player::Accelerate(float dt)

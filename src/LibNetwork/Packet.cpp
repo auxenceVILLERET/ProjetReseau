@@ -4,6 +4,8 @@
 #include "Packet.h"
 
 #include <cstring>
+#include <iostream>
+#include <ostream>
 
 Packet::Packet()
 {
@@ -35,6 +37,11 @@ char* Packet::Serialize()
     bufferCursor += sizeof(m_type);
     
     return bufferCursor;
+}
+
+void Packet::PrintInfo()
+{
+    std::cout << "[" << PacketTypeNames[m_type] << "]";
 }
 
 #endif

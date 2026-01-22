@@ -55,12 +55,12 @@ bool ClientMethods::RotateEntity(uint32_t id, XMFLOAT3 rotation)
     return true;
 }
 
-bool ClientMethods::ScaleEntity(uint32_t id, XMFLOAT3 scale)
+bool ClientMethods::ScaleEntity(uint32_t id, float n)
 {
     Entity* entity = GameManager::GetInstance()->GetEntity(id);
     if (entity == nullptr) return false;
 
-    ScaleEntityPacket* packet = new ScaleEntityPacket(id, scale.x, scale.y, scale.z);
+    ScaleEntityPacket* packet = new ScaleEntityPacket(id, n);
     Client::GetInstance()->SendPacket(packet);
     return true;
 }

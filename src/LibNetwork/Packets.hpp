@@ -23,21 +23,6 @@ enum PacketType
     SCALE_ENTITY
 };
 
-inline std::vector<std::string> PacketTypeNames
-{
-    "BALL UPDATE",
-    "MESSAGE",
-    "PING PONG",
-    "CREATE ENTITY",
-    "SET PLAYER ID",
-    "SET ENTITY POS",
-    "SET ENTITY ROT",
-    "SET ENTITY SCALE",
-    "MOVE ENTITY",
-    "ROTATE ENTITY",
-    "SCALE ENTITY"
-};
-
 class BallUpdatePacket : public Packet
 {
 public:
@@ -476,6 +461,17 @@ public:
         std::memcpy(&z, _message, sizeof(w));
         _message += sizeof(w);
     }
+
+    void PrintInfo() override
+    {
+        Packet::PrintInfo();
+        void PrintInfo();
+        std::cout << "id: " << id << ", ";
+        std::cout << "x: " << x << ", ";
+        std::cout << "y: " << y << ", ";
+        std::cout << "z: " << z << ", ";
+        std::cout << "w: " << w << std::endl;
+    }
 };
 
 class SetEntityScale : public Packet
@@ -662,6 +658,15 @@ public:
         _message += sizeof(y);
         std::memcpy(&z, _message, sizeof(z));
         _message += sizeof(z);
+    }
+
+    void PrintInfo()
+    {
+        Packet::PrintInfo();
+        std::cout << "id: " << id << ", ";
+        std::cout << "x: " << x << ", ";
+        std::cout << "y: " << y << ", ";
+        std::cout << "z: " << z << std::endl;
     }
 };
 

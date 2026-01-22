@@ -61,7 +61,9 @@ void Client::Update()
 
 void Client::SendPacket(Packet* packet)
 {
-    std::cout << "Registered packet of type " << PacketTypeNames[packet->GetType()] << std::endl;
+    std::cout << "Registered Packet : ";
+    packet->PrintInfo();
+    std::cout << std::endl;
     
     if (m_pendingMessages.size() == 0)
     {
@@ -159,7 +161,9 @@ void Client::HandlePackets()
     {
         PacketType type = (PacketType)packet->GetType();
 
-        std::cout << "Received Packet Type: " << PacketTypeNames[type] << std::endl;
+        std::cout << "Received Packet : ";
+        packet->PrintInfo();
+        std::cout << std::endl;
         
         if (m_hasPinged && type == PING_PONG)
         {

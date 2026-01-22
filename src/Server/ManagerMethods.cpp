@@ -36,17 +36,17 @@ void ManagerMethods::HandleDirtyEntities()
         cpu_transform t = entity->GetTransform();
         uint32_t id = entity->GetID();
         
-        if (dirty && DIRTY_TYPES::POS)
+        if (dirty & DIRTY_TYPES::POS)
         {
             SetEntityPos* packet = new SetEntityPos(id, t.pos.x, t.pos.y, t.pos.z);
             Server::GetInstance()->SendPacket(packet);
         }
-        if (dirty && DIRTY_TYPES::ROTATION)
+        if (dirty & DIRTY_TYPES::ROTATION)
         {
             SetEntityRot* packet = new SetEntityRot(id, t.quat.x, t.quat.y, t.quat.z, t.quat.w);
             Server::GetInstance()->SendPacket(packet);
         }
-        if (dirty && DIRTY_TYPES::SCALE)
+        if (dirty & DIRTY_TYPES::SCALE)
         {
             float scale = t.sca.x * t.sca.y * t.sca.z / 3.0f;
             SetEntityScale* packet = new SetEntityScale(id, scale);
