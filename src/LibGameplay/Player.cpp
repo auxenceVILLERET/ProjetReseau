@@ -24,12 +24,6 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 	m_shootCooldown = 0.2f;
 	m_shootTimer = 0.0f;
 
-
-	m_pEmitter = cpuEngine.CreateParticleEmitter();
-	m_pEmitter->density = 3000.0f;
-	m_pEmitter->colorMin = cpu::ToColor(156, 0, 250);
-	m_pEmitter->colorMax = cpu::ToColor(213, 125, 255);
-
 	m_collider.radius = 1.0f;
 	m_type = EntityType::PLAYER;
 }
@@ -90,11 +84,16 @@ void Player::Shoot()
 }
 void Player::InitRenderElements()
 {
-
+	m_pEmitter = cpuEngine.CreateParticleEmitter();
+	m_pEmitter->density = 3000.0f;
+	m_pEmitter->colorMin = cpu::ToColor(156, 0, 250);
+	m_pEmitter->colorMax = cpu::ToColor(213, 125, 255);
 }
 
 void Player::UpdateRenderElements(float dt)
 {
+	if (m_pEmitter == nullptr) return;
+	
 	m_pEmitter->density = m_speedMovement * 500.0f;
 	m_pEmitter->pos = m_pCpuEntity->transform.pos;
 	m_pEmitter->dir = m_pCpuEntity->transform.dir;

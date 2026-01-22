@@ -1,6 +1,7 @@
 #ifndef GAMEMANAGER_INL_DEFINED
 #define GAMEMANAGER_INL_DEFINED
 
+#include "Entity.h"
 #include "GameManager.h"
 
 template<typename T>
@@ -14,6 +15,9 @@ T* GameManager::CreateEntity(bool isServerSide)
 		delete newEntity;
 		return nullptr;
 	}
+
+	if ( isServerSide == false )
+		castedEntity->InitRenderElements();
 	
 	m_entities.push_back(castedEntity);
 	return newEntity;

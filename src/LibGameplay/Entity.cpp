@@ -34,7 +34,7 @@ void Entity::Render()
 
 void Entity::UpdateCollider()
 {
-	XMFLOAT3 pos = m_pCpuEntity->transform.pos;
+	XMFLOAT3 pos = GetTransform().pos;
 	m_collider.center = pos;
 }
 

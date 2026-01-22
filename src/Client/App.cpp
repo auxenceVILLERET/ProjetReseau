@@ -48,7 +48,6 @@ void App::OnStart()
 
 	m_texture.Load("../../res/Client/CarreRougeVie.png");
 	GameManager::GetInstance();
-	GameManager::GetInstance()->InitRenderElements();
 	m_font.Create(12);
 
 
@@ -75,12 +74,12 @@ void App::OnStart()
 	Client* client = Client::GetInstance();
 	
 	m_font.Create(12);
-	m_loginFont.Create(30);
+	m_loginFont.Create(15);
 	m_loginHeader.SetText("Please enter your username:");
 	m_loginHeader.SetAnchor(CPU_TEXT_CENTER);
-	m_loginHeader.SetPos({ cpuWindow.GetWidth() / 2, cpuWindow.GetHeight() / 2 - 30 });
+	m_loginHeader.SetPos({ 256, 128 - 10 });
 	m_loginInput.SetAnchor(CPU_TEXT_CENTER);
-	m_loginInput.SetPos({ cpuWindow.GetWidth() / 2, cpuWindow.GetHeight() / 2 + 30 });
+	m_loginInput.SetPos({ 256, 128 + 10 });
 }
 
 void App::OnUpdate()
@@ -222,6 +221,10 @@ void App::HandleInput()
 // 	{
 // 		m_pPlayer->Shoot();
 // 	}
+// if(cpuInput.IsKeyDown('H'))
+// {
+// 	m_pPlayer->TakeDamage(5.0f);
+// }
 }
 
 void App::LoginUpdate(float dt)
@@ -264,10 +267,6 @@ void App::LoginUpdate(float dt)
 		m_loginInput.Reset();
 		m_isConnecting = true;
 		Client::GetInstance()->Connect(m_serverIp, m_serverPort, m_username);
-	}
-	if(cpuInput.IsKeyDown('H'))
-	{
-		m_pPlayer->TakeDamage(5.0f);
 	}
 
 	m_loginInput.HandleInput();

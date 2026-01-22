@@ -79,16 +79,6 @@ void GameManager::Exit()
 	}
 }
 
-void GameManager::InitRenderElements()
-{
-	for (auto it = m_entities.begin(); it != m_entities.end(); )
-	{
-		Entity* entity = *it;
-		entity->InitRenderElements();
-		++it;
-	}
-}
-
 void GameManager::UpdateRenderElements(float dt)
 {
 	for (auto it = m_entities.begin(); it != m_entities.end(); )
