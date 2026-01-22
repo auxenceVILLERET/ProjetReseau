@@ -150,6 +150,16 @@ void Server::HandlePackets()
 
             SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
         }
+        if (type == ROTATE_ENTITY)
+        {
+            RotateEntityPacket* casted = dynamic_cast<RotateEntityPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            e->Rotate(casted->x, casted->y, casted->z);
+        }
     }
 
     for (int i = 0; i < m_packets.size(); i++)

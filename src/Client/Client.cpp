@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "ClientMethods.h"
+#include "GameManager.h"
 #include "Message.h"
 #include "Packets.hpp"
 
@@ -184,6 +185,16 @@ void Client::HandlePackets()
             if (casted == nullptr) continue;
 
             m_playerID = casted->id;
+        }
+        if (type == SET_ENTITY_ROT)
+        {
+            SetEntityRot* casted = dynamic_cast<SetEntityRot*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            e->SetRotation(casted->x, casted->y, casted->z, casted->w);
         }
     }
 
