@@ -71,4 +71,25 @@ void Entity::Scale(float scale)
 	SetDirtyFlag(DIRTY_TYPES::SCALE);
 }
 
+void Entity::SetPos(float x, float y, float z)
+{
+	GetTransform().pos.x = x;
+	GetTransform().pos.y = y;
+	GetTransform().pos.z = z;
+	SetDirtyFlag(DIRTY_TYPES::POS);
+}
+
+void Entity::SetRotation(float x, float y, float z, float w)
+{
+	GetTransform().quat = XMFLOAT4(x, y, z, w);
+	GetTransform().SetRotationFromQuaternion();
+	SetDirtyFlag(DIRTY_TYPES::ROTATION);
+}
+
+void Entity::SetScale(float scale)
+{
+	GetTransform().SetScaling(scale);
+	SetDirtyFlag(DIRTY_TYPES::SCALE);
+}
+
 #endif

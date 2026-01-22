@@ -29,7 +29,7 @@ void Asteroid::Init(float size)
 	m_collider.radius = size;
 }
 
-void Asteroid::SetYPR(float yaw, float pitch, float roll)
+void Asteroid::SetRotDir(float yaw, float pitch, float roll)
 {
 	m_YPR = XMFLOAT3(yaw, pitch, roll);
 }

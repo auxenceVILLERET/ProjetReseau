@@ -47,6 +47,10 @@ public:
 	void Rotate(float x, float y, float z);
 	void Scale(float scale);
 
+	void SetPos(float x, float y, float z);
+	void SetRotation(float x, float y, float z, float w);
+	void SetScale(float scale);
+
 protected:
 	cpu_entity* m_pCpuEntity;
 	SphereCollider m_collider;
