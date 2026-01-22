@@ -11,6 +11,13 @@ struct SphereCollider
 	float radius;
 };
 
+enum DIRTY_TYPES
+{
+	POS			= 0b100,
+	ROTATION	= 0b010,
+	SCALE		= 0b001
+};
+
 class Entity
 {
 public:
@@ -32,6 +39,10 @@ public:
 
 	virtual void OnCollision(Entity* other) {}
 
+	void SetDirtyFlag(DIRTY_TYPES type) { m_dirtyFlags |= type; }
+	int GetDirtyFlags() const { return m_dirtyFlags; }
+	void ClearDirtyFlags() { m_dirtyFlags = 0; }
+
 protected:
 	cpu_entity* m_pCpuEntity;
 	SphereCollider m_collider;
@@ -40,6 +51,7 @@ protected:
 	bool m_toDestroy = false;
 	bool m_isServerSide = false;
 	
+	int m_dirtyFlags = 0;
 private:
 	static uint32_t ID_COUNT;
 	uint32_t m_id;
