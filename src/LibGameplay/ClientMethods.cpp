@@ -11,6 +11,10 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
 {
     EntityType type = entityPacket->type;
     Entity* pEntity = nullptr;
+
+    Entity* search = GameManager::GetInstance()->GetEntity(entityPacket->id);
+    if (search != nullptr) return search;
+    
     switch (type)
     {
     case EntityType::PLAYER:

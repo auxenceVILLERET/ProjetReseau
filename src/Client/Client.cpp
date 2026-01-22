@@ -99,13 +99,17 @@ DWORD Client::ReceiveThread(LPVOID lpParam)
             continue;
         }
 
+        // std::cout << "Received message ";
         
         Message msg;
         std::vector<Packet*> packets = msg.Deserialize(responseBuffer);
 
+        // std::cout << "containing " << packets.size() << " packets" << std::endl;
+        
         pInstance->m_packetProtection.Enter();
         for (int i = 0; i < packets.size(); i++)
         {
+            // std::cout << "Registered packet of type : " << packets[i]->GetType() << std::endl;
             pInstance->m_packets.push_back(packets[i]);
         }
         pInstance->m_packetProtection.Leave();

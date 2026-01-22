@@ -44,6 +44,8 @@ void App::OnUpdate()
 	float dt = cpuTime.delta;
 	float time = cpuTime.total;
 
+	Client::GetInstance()->HandlePackets();
+	
 	if (m_isConnected == false)
 		LoginUpdate(dt);
 	else

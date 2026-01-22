@@ -83,7 +83,7 @@ void Server::GlobalMsg(const char* msg)
 {
     for (ClientInfo client : m_vClients)
     {
-        std::cout << "Sent global message to " << client.username << "\n";
+        // std::cout << "Sent global message to " << client.username << "\n";
         m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client.sockAddr);
     }
 }
@@ -219,7 +219,7 @@ void Server::Update()
 {
     HandlePackets();
     GameManager::GetInstance()->Update();
-
+    
     for (Message msg : m_pendingMessages)
     {
         msg.Serialize(m_buffer);
