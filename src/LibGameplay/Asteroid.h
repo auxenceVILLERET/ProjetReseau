@@ -7,6 +7,7 @@ class Asteroid : public Entity
 public:
 	Asteroid(bool isServerSide);
 	~Asteroid();
+
 	void Update(float dt) override;
 	void Init(float size);
 	void SetPos(XMFLOAT3 pos) { m_pCpuEntity->transform.pos = pos; }

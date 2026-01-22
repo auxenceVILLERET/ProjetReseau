@@ -12,8 +12,6 @@ public:
 	void Accelerate(float dt);
 	void Brake(float dt);
 	
-	void Rotate(float x, float y,float z, float dt);
-	
 	void UpdateCamera();
 
 	void Shoot();
