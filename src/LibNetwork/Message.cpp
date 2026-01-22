@@ -119,6 +119,15 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::SET_ENTITY_SCALE:
                 packet = new SetEntityScale();
                 break;
+            case PacketType::MOVE_ENTITY:
+                packet = new MoveEntityPacket();
+                break;
+            case PacketType::ROTATE_ENTITY:
+                packet = new RotateEntityPacket();
+                break;
+            case PacketType::SCALE_ENTITY:
+                packet = new ScaleEntityPacket();
+                break;
         }
 
         if (packet == nullptr) continue;

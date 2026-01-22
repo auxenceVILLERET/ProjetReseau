@@ -5,6 +5,7 @@
 
 #include "UDPSocket.h"
 #include "CriticalSection.h"
+#include "Message.h"
 
 class Packet;
 
@@ -18,7 +19,9 @@ public:
     UDPSocket* GetSocket();
 
     void Init();
+    void Update();
     bool Connect(std::string ip, int port, std::string username);
+    void SendPacket(Packet* packet);
     void Exit() { m_isRunning = false; }
 
     static DWORD WINAPI ReceiveThread(LPVOID lpParam);
@@ -32,11 +35,13 @@ private:
 
     CriticalSection m_packetProtection;
     std::vector<Packet*> m_packets;
+    std::vector<Message> m_pendingMessages;
     
     UDPSocket m_udpSocket;
 
     char m_buffer[1024];
-    
+
+    sockaddr_in m_serverAddr;
     std::string m_serverIp;
     int m_serverPort = 1888;
     std::string m_username;

@@ -26,6 +26,9 @@ public:
 	float GetHealth() const { return m_health; }
 	void TakeDamage(float damage) { m_health -= damage; }
 
+	float GetSpeed()			{ return m_speedMovement; }
+	float GetRotationSpeed()	{ return m_speedRotation; }
+
 private:
 	float m_health;
 

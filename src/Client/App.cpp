@@ -6,6 +6,8 @@
 #include "Asteroid.h"
 #include <iostream>
 
+#include "ClientMethods.h"
+
 const float ARENA_MIN_X = -50.0f;
 const float ARENA_MAX_X = 50.0f;
 const float ARENA_MIN_Y = -50.0f;
@@ -88,10 +90,9 @@ void App::OnUpdate()
 
 	float dt = cpuTime.delta;
 	float time = cpuTime.total;
-
-	GameManager::GetInstance()->Update();
+	
 	GameManager::GetInstance()->UpdateRenderElements(dt);
-	Client::GetInstance()->HandlePackets();
+	Client::GetInstance()->Update();
 	
 	if (m_isConnected == false)
 		LoginUpdate(dt);
@@ -185,30 +186,37 @@ void App::OnRender(int pass)
 
 void App::HandleInput()
 {
-// 	if (cpuInput.IsKey('Z'))
-// 	{
-// 		m_pPlayer->Rotate(0.0f, 1.0f, 0.0f, cpuTime.delta);
-// 	}
-// 	if (cpuInput.IsKey('S'))
-// 	{
-// 		m_pPlayer->Rotate(0.0f, -1.0f, 0.0f, cpuTime.delta);
-// 	}
-// 	if (cpuInput.IsKey('Q'))
-// 	{
-// 		m_pPlayer->Rotate(-1.0f, 0.0f, 0.0f, cpuTime.delta);
-// 	}
-// 	if (cpuInput.IsKey('D'))
-// 	{
-// 		m_pPlayer->Rotate(1.0f, 0.0f, 0.0f, cpuTime.delta);
-// 	}
-// 	if (cpuInput.IsKey('A'))
-// 	{
-// 		m_pPlayer->Rotate(0.0f, 0.0f, 1.0f, cpuTime.delta);
-// 	}
-// 	if (cpuInput.IsKey('E'))
-// 	{
-// 		m_pPlayer->Rotate(0.0f, 0.0f, -1.0f, cpuTime.delta);
-// 	}
+	XMFLOAT3 dir = m_pPlayer->GetTransform().dir;
+	float rotSpeed = m_pPlayer->GetRotationSpeed();
+	float speed = m_pPlayer->GetSpeed();
+	uint32_t id = m_pPlayer->GetID();
+
+	float dt = cpuTime.delta;
+	
+	if (cpuInput.IsKey('Z'))
+	{
+		ClientMethods::RotateEntity(id, {0.0f, rotSpeed * dt, 0.0f});
+	}
+	if (cpuInput.IsKey('S'))
+	{
+		ClientMethods::RotateEntity(id, {0.0f, -rotSpeed * dt, 0.0f});
+	}
+	if (cpuInput.IsKey('Q'))
+	{
+		ClientMethods::RotateEntity(id, {-speed * dt, 0.0f, 0.0f});
+	}
+	if (cpuInput.IsKey('D'))
+	{
+		ClientMethods::RotateEntity(id, {speed * dt, 0.0f, 0.0f});
+	}
+	if (cpuInput.IsKey('A'))
+	{
+		ClientMethods::RotateEntity(id, {0.0f, 0.0f, speed * dt});
+	}
+	if (cpuInput.IsKey('E'))
+	{
+		ClientMethods::RotateEntity(id, {0.0f, 0.0f, -speed * dt});
+	}
 // 	if (cpuInput.IsKey(VK_SPACE))
 // 	{
 // 		m_pPlayer->Accelerate(cpuTime.delta);

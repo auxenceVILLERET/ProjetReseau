@@ -45,6 +45,38 @@ void Client::Init()
     CreateThread(NULL, 0, ReceiveThread, this, 0, NULL);
 }
 
+void Client::Update()
+{
+    HandlePackets();
+
+    for (Message msg : m_pendingMessages)
+    {
+        msg.Serialize(m_buffer);
+        m_udpSocket.SendTo(m_buffer, 1025, m_serverAddr);
+        msg.ClearPackets();
+    }
+    m_pendingMessages.clear();
+}
+
+void Client::SendPacket(Packet* packet)
+{
+    std::cout << "Registered packet of type " << PacketTypeNames[packet->GetType()] << std::endl;
+    
+    if (m_pendingMessages.size() == 0)
+    {
+        Message msg;
+        m_pendingMessages.push_back(msg);
+    }
+
+    Message* lastMessage = &m_pendingMessages.back();
+    if (lastMessage->AddPacket(packet) == false)
+    {
+        Message msg;
+        msg.AddPacket(packet);
+        m_pendingMessages.push_back(msg);
+    }
+}
+
 bool Client::Connect(std::string ip, int port, std::string username)
 {
     m_username = username;
@@ -59,13 +91,14 @@ bool Client::Connect(std::string ip, int port, std::string username)
     sockaddr_in target;
     if ( inet_pton(AF_INET, m_serverIp.c_str(), &target.sin_addr)<=0 )
     {
-        std::cout << "Unvalid Server address, please try again" << std::endl;
+        std::cout << "Unvalid Client address, please try again" << std::endl;
         return false;
     }
     target.sin_family = AF_INET;
     target.sin_port = htons(m_serverPort);
+    m_serverAddr = target;
         
-    if (m_udpSocket.SendTo(m_buffer, 1025, target) != SOCKET_ERROR)
+    if (m_udpSocket.SendTo(m_buffer, 1025, m_serverAddr) != SOCKET_ERROR)
     {
         m_hasPinged = true;
         Sleep(1000);
