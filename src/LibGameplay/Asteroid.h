@@ -5,7 +5,7 @@ class Asteroid : public Entity
 {
 
 public:
-	Asteroid();
+	Asteroid(bool isServerSide);
 	~Asteroid();
 	void Update(float dt) override;
 	void Init(float size);
@@ -18,8 +18,6 @@ public:
 	void InitRenderElements() override;
 	void UpdateRenderElements(float dt) override;
 	void Render() override;
-
-	EntityType GetType() const override { return EntityType::Asteroid; }
 
 private:
 	XMFLOAT3 m_YPR;

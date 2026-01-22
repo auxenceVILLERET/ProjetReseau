@@ -8,8 +8,6 @@ public:
 	void Update(float dt) override;
 	void Init(cpu_transform& transform);
 	void OnCollision(Entity* other) override;
-
-	EntityType GetType() const override { return EntityType::Bullet; }
 private:
 	float m_speed;
 	cpu_mesh m_mesh;

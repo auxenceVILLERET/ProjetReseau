@@ -110,7 +110,7 @@ void Player::Render()
 
 void Player::OnCollision(Entity* other)
 {
-	if(other->GetType() == EntityType::Asteroid)
+	if(other->GetType() == EntityType::ASTEROID)
 	{
 		m_health -= 100.0f;
 		if (m_health <= 0.0f)

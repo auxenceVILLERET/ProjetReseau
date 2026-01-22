@@ -23,7 +23,6 @@ public:
 	void Render() override;
 	void OnCollision(Entity* other) override;
 
-	EntityType GetType() const override { return EntityType::Player; }
 	float GetHealth() const { return m_health; }
 	void TakeDamage(float damage) { m_health -= damage; }
 

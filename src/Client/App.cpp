@@ -51,9 +51,8 @@ void App::OnStart()
 	GameManager::GetInstance()->InitRenderElements();
 	m_font.Create(12);
 
-	CreateHealthSprite();
 
-	for (int i = 0; i < ASTEROID_COUNT; ++i)
+	/*for (int i = 0; i < ASTEROID_COUNT; ++i)
 	{
 		Asteroid* asteroid = GameManager::GetInstance()->CreateEntity<Asteroid>();
 
@@ -72,7 +71,7 @@ void App::OnStart()
 		asteroid->SetColor(cpu::ToColor(r, g, b));
 
 		asteroid->SetYPR(RandomRange(-1.0f, 1.0f), RandomRange(-1.0f, 1.0f), RandomRange(-1.0f, 1.0f));
-	}
+	}*/
 	Client* client = Client::GetInstance();
 	
 	m_font.Create(12);
@@ -102,7 +101,7 @@ void App::OnUpdate()
 		GameManager::GetInstance()->Update();
 		if (m_pPlayer != nullptr)
 		{
-			HandleInut();
+			HandleInput();
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
 		}
@@ -110,6 +109,8 @@ void App::OnUpdate()
 		{
 			Entity* entity = GameManager::GetInstance()->GetEntity(Client::GetInstance()->GetPlayerID());
 			m_pPlayer = dynamic_cast<Player*>(entity);
+			if(m_pPlayer != nullptr)
+				CreateHealthSprite();
 		}
 	}
 
