@@ -460,7 +460,22 @@ public:
         bufferCursor += sizeof(w);
         return buffer;
     }
-    void Deserialize(char* _message);
+    void Deserialize(char* _message)
+    {
+        Packet::Deserialize(_message);
+        _message += sizeof(m_type) + sizeof(m_size);
+
+        std::memcpy(&id, _message, sizeof(id));
+        _message += sizeof(id);
+        std::memcpy(&x, _message, sizeof(x));
+        _message += sizeof(x);
+        std::memcpy(&y, _message, sizeof(y));
+        _message += sizeof(y);
+        std::memcpy(&z, _message, sizeof(z));
+        _message += sizeof(z);
+        std::memcpy(&z, _message, sizeof(w));
+        _message += sizeof(w);
+    }
 };
 
 class SetEntityScale : public Packet
