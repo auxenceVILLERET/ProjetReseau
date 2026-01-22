@@ -43,6 +43,14 @@ public:
 	int GetDirtyFlags() const { return m_dirtyFlags; }
 	void ClearDirtyFlags() { m_dirtyFlags = 0; }
 
+	void Move(float x, float y, float z);
+	void Rotate(float x, float y, float z);
+	void Scale(float scale);
+
+	void SetPos(float x, float y, float z);
+	void SetRotation(float x, float y, float z, float w);
+	void SetScale(float scale);
+
 protected:
 	cpu_entity* m_pCpuEntity;
 	SphereCollider m_collider;

@@ -20,17 +20,16 @@ Asteroid::~Asteroid()
 
 void Asteroid::Update(float dt)
 {
-	m_pCpuEntity->transform.AddYPR(m_YPR.x * dt, m_YPR.y * dt, m_YPR.z * dt );
-
+	Rotate(m_YPR.x * dt, m_YPR.y * dt, m_YPR.z * dt);
 }
 
 void Asteroid::Init(float size)
 {
-	m_pCpuEntity->transform.SetScaling(size);
+	Scale(size);
 	m_collider.radius = size;
 }
 
-void Asteroid::SetYPR(float yaw, float pitch, float roll)
+void Asteroid::SetRotDir(float yaw, float pitch, float roll)
 {
 	m_YPR = XMFLOAT3(yaw, pitch, roll);
 }

@@ -7,11 +7,11 @@ class Asteroid : public Entity
 public:
 	Asteroid(bool isServerSide);
 	~Asteroid();
+
 	void Update(float dt) override;
 	void Init(float size);
-	void SetPos(XMFLOAT3 pos) { m_pCpuEntity->transform.pos = pos; }
+	void SetRotDir(float yaw, float pitch, float roll);
 	void SetColor(XMFLOAT3 color) { m_material.color = color; }
-	void SetYPR(float yaw, float pitch, float roll);
 	void OnCollision(Entity* other) override;
 	void ExplosionParticul();
 
