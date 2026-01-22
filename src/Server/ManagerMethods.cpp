@@ -43,7 +43,7 @@ void ManagerMethods::HandleDirtyEntities()
         }
         if (dirty & DIRTY_TYPES::ROTATION)
         {
-            SetEntityRot* packet = new SetEntityRot(id, t.quat.x, t.quat.y, t.quat.z, t.quat.w);
+            SetEntityRot* packet = new SetEntityRot(id, entity->GetTransform().rot);
             Server::GetInstance()->SendPacket(packet);
         }
         if (dirty & DIRTY_TYPES::SCALE)

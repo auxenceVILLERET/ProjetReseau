@@ -48,7 +48,7 @@ public:
 	void Scale(float scale);
 
 	void SetPos(float x, float y, float z);
-	void SetRotation(float x, float y, float z, float w);
+	void SetRotation(XMFLOAT4X4& rot);
 	void SetScale(float scale);
 
 protected:

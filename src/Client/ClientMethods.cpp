@@ -65,4 +65,9 @@ bool ClientMethods::ScaleEntity(uint32_t id, float n)
     return true;
 }
 
+bool ClientMethods::ChangePlayerSpeed(uint32_t id, bool isPositive)
+{
+    
+}
+
 #endif

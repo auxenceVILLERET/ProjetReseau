@@ -395,31 +395,46 @@ class SetEntityRot : public Packet
 {
 public:
     uint32_t id;
-    float x;
-    float y;
-    float z;
-    float w;
+    float _11;
+    float _12;
+    float _13;
+    float _21;
+    float _22;
+    float _23;
+    float _31;
+    float _32;
+    float _33;
 
     SetEntityRot()
     {
         id = 0;
-        x = 0.0f;
-        y = 0.0f;
-        z = 0.0f;
-        w = 0.0f;
+        _11 = 0.0f;
+        _12 = 0.0f;
+        _13 = 0.0f;
+        _21 = 0.0f;
+        _22 = 0.0f;
+        _23 = 0.0f;
+        _31 = 0.0f;
+        _32 = 0.0f;
+        _33 = 0.0f;
 
-        m_size = 2 * sizeof(int) + sizeof(id) + 4 * sizeof(float);
+        m_size = 2 * sizeof(int) + sizeof(id) + 9 * sizeof(float);
         m_type = SET_ENTITY_ROT;
     }
-    SetEntityRot(uint32_t _id, float _x, float _y, float _z, float _w)
+    SetEntityRot(uint32_t _id, XMFLOAT4X4 _rotation)
     {
         id = _id;
-        x = _x;
-        y = _y;
-        z = _z;
-        w = _w;
+        _11 = _rotation._11;
+        _12 = _rotation._12;
+        _13 = _rotation._13;
+        _21 = _rotation._21;
+        _22 = _rotation._22;
+        _23 = _rotation._23;
+        _31 = _rotation._31;
+        _32 = _rotation._32;
+        _33 = _rotation._33;
         
-        m_size = 2 * sizeof(int) + sizeof(id) + 4 * sizeof(float);
+        m_size = 2 * sizeof(int) + sizeof(id) + 9 * sizeof(float);
         m_type = SET_ENTITY_ROT;
     }
 
@@ -435,14 +450,26 @@ public:
         bufferCursor += sizeof(m_size);
         std::memcpy(bufferCursor, &id, sizeof(id));
         bufferCursor += sizeof(id);
-        std::memcpy(bufferCursor, &x, sizeof(x));
-        bufferCursor += sizeof(x);
-        std::memcpy(bufferCursor, &y, sizeof(y));
-        bufferCursor += sizeof(y);
-        std::memcpy(bufferCursor, &z, sizeof(z));
-        bufferCursor += sizeof(z);
-        std::memcpy(bufferCursor, &w, sizeof(w));
-        bufferCursor += sizeof(w);
+        
+        std::memcpy(bufferCursor, &_11, sizeof(_11));
+        bufferCursor += sizeof(_11);
+        std::memcpy(bufferCursor, &_12, sizeof(_12));
+        bufferCursor += sizeof(_12);
+        std::memcpy(bufferCursor, &_13, sizeof(_13));
+        bufferCursor += sizeof(_13);
+        std::memcpy(bufferCursor, &_21, sizeof(_21));
+        bufferCursor += sizeof(_21);
+        std::memcpy(bufferCursor, &_22, sizeof(_22));
+        bufferCursor += sizeof(_22);
+        std::memcpy(bufferCursor, &_23, sizeof(_23));
+        bufferCursor += sizeof(_23);
+        std::memcpy(bufferCursor, &_31, sizeof(_31));
+        bufferCursor += sizeof(_31);
+        std::memcpy(bufferCursor, &_32, sizeof(_32));
+        bufferCursor += sizeof(_32);
+        std::memcpy(bufferCursor, &_33, sizeof(_33));
+        bufferCursor += sizeof(_33);
+        
         return buffer;
     }
     void Deserialize(char* _message)
@@ -452,25 +479,24 @@ public:
 
         std::memcpy(&id, _message, sizeof(id));
         _message += sizeof(id);
-        std::memcpy(&x, _message, sizeof(x));
-        _message += sizeof(x);
-        std::memcpy(&y, _message, sizeof(y));
-        _message += sizeof(y);
-        std::memcpy(&z, _message, sizeof(z));
-        _message += sizeof(z);
-        std::memcpy(&z, _message, sizeof(w));
-        _message += sizeof(w);
-    }
-
-    void PrintInfo() override
-    {
-        Packet::PrintInfo();
-        void PrintInfo();
-        std::cout << "id: " << id << ", ";
-        std::cout << "x: " << x << ", ";
-        std::cout << "y: " << y << ", ";
-        std::cout << "z: " << z << ", ";
-        std::cout << "w: " << w << std::endl;
+        std::memcpy(&_11, _message, sizeof(_11));
+        _message += sizeof(_11);
+        std::memcpy(&_12, _message, sizeof(_12));
+        _message += sizeof(_12);
+        std::memcpy(&_13, _message, sizeof(_13));
+        _message += sizeof(_13);
+        std::memcpy(&_21, _message, sizeof(_21));
+        _message += sizeof(_21);
+        std::memcpy(&_22, _message, sizeof(_22));
+        _message += sizeof(_22);
+        std::memcpy(&_23, _message, sizeof(_23));
+        _message += sizeof(_23);
+        std::memcpy(&_31, _message, sizeof(_31));
+        _message += sizeof(_31);
+        std::memcpy(&_32, _message, sizeof(_32));
+        _message += sizeof(_32);
+        std::memcpy(&_33, _message, sizeof(_33));
+        _message += sizeof(_33);
     }
 };
 

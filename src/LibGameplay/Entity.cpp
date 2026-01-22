@@ -79,14 +79,11 @@ void Entity::SetPos(float x, float y, float z)
 	SetDirtyFlag(DIRTY_TYPES::POS);
 }
 
-void Entity::SetRotation(float x, float y, float z, float w)
+void Entity::SetRotation(XMFLOAT4X4& rot)
 {
-	XMFLOAT4 t = XMFLOAT4(x, y, z, w);
-	XMVECTOR tNorm = XMQuaternionNormalize(XMLoadFloat4(&t));
-	XMStoreFloat4(&t, tNorm);
+	GetTransform().rot = rot;
 	
-	GetTransform().quat = t;
-	GetTransform().SetRotationFromQuaternion();
+	GetTransform().SetRotationFromMatrix();
 	SetDirtyFlag(DIRTY_TYPES::ROTATION);
 }
 

@@ -198,7 +198,25 @@ void Client::HandlePackets()
             Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
             if (e == nullptr) continue;
 
-            e->SetRotation(casted->x, casted->y, casted->z, casted->w);
+            XMFLOAT4X4 rot;
+            rot._11 = casted->_11;
+            rot._12 = casted->_12;
+            rot._13 = casted->_13;
+            rot._14 = 0.0f;
+            rot._21 = casted->_21;
+            rot._22 = casted->_22;
+            rot._23 = casted->_23;
+            rot._24 = 0.0f;
+            rot._31 = casted->_31;
+            rot._32 = casted->_32;
+            rot._33 = casted->_33;
+            rot._34 = 0.0f;
+            rot._41 = 0.0f;
+            rot._42 = 0.0f;
+            rot._43 = 0.0f;
+            rot._44 = 1.0f;
+
+            e->SetRotation(rot);
         }
     }
 

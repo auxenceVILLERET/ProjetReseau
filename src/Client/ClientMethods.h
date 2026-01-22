@@ -11,6 +11,7 @@ public:
 	static bool MoveEntity(uint32_t id, XMFLOAT3 position);
 	static bool RotateEntity(uint32_t id, XMFLOAT3 rotation);
 	static bool ScaleEntity(uint32_t id, float n);
+	static bool ChangePlayerSpeed(uint32_t id, bool isPositive);
 };
 
 #endif
