@@ -23,7 +23,8 @@ Projectile::~Projectile()
 
 void Projectile::Update(float dt)
 {
-	GetTransform().Move(1.0f * dt * m_speed);
+	XMFLOAT3 dir = GetTransform().dir;
+	Entity::Move(dt * m_speed * dir.x, dt * m_speed * dir.y, dt * m_speed * dir.z);
 
 	m_distTraveled += dt * m_speed;
 	if (m_distTraveled >= m_distMax)

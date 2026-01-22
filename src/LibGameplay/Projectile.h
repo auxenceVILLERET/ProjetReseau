@@ -8,6 +8,7 @@ public:
 	void Update(float dt) override;
 	void Init(cpu_transform& transform);
 	void OnCollision(Entity* other) override;
+
 private:
 	float m_speed;
 	cpu_mesh m_mesh;

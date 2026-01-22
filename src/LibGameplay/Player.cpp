@@ -35,7 +35,8 @@ Player::~Player()
 
 void Player::Update(float dt)
 {
-	GetTransform().Move(dt * m_speedMovement);
+	XMFLOAT3 dir = GetTransform().dir;
+	Entity::Move(dt * m_speedMovement * dir.x, dt * m_speedMovement * dir.y, dt * m_speedMovement * dir.z);
 }
 
 void Player::Accelerate(float dt)
@@ -66,11 +67,6 @@ void Player::UpdateCamera()
 	cpuEngine.GetCamera()->transform.AddYPR(0.0f, 0.1f / speedMult, 0.0f);
 }
 
-void Player::Rotate(float x, float y,float z, float dt)
-{
-	GetTransform().AddYPR(x * dt * m_speedRotation, y * dt * m_speedRotation, z * dt * m_speedRotation * 1.5f);
-
-}
 
 void Player::Shoot()
 {
@@ -118,6 +114,7 @@ void Player::OnCollision(Entity* other)
 		}
 	}
 }
+
 
 
 #endif

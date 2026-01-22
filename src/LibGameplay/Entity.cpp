@@ -51,4 +51,24 @@ cpu_transform& Entity::GetTransform()
 		return m_pCpuEntity->transform;
 }
 
+void Entity::Move(float x, float y, float z)
+{
+	GetTransform().pos.x += x;
+	GetTransform().pos.y += y;
+	GetTransform().pos.z += z;
+	SetDirtyFlag(DIRTY_TYPES::POS);
+}
+
+void Entity::Rotate(float x, float y, float z)
+{
+	GetTransform().AddYPR(x, y, z);
+	SetDirtyFlag(DIRTY_TYPES::ROTATION);
+}
+
+void Entity::Scale(float scale)
+{
+	GetTransform().Scale(scale);
+	SetDirtyFlag(DIRTY_TYPES::SCALE);
+}
+
 #endif
