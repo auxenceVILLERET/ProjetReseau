@@ -1,4 +1,6 @@
 #include "pch.h"
+
+#include "Client.h"
 #include "Player.h"
 #include "GameManager.h"
 #include "Asteroid.h"
@@ -18,7 +20,7 @@ float RandomRange(float min, float max)
 	return min + static_cast<float>(rand()) / RAND_MAX * (max - min);
 }
 
-App::App()
+App::App() : m_loginInput(m_loginFont), m_loginHeader(m_loginFont)
 {
 	s_pApp = this;
 	CPU_CALLBACK_START(OnStart);
@@ -33,9 +35,9 @@ App::~App()
 	
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 void App::OnStart()
 {
@@ -48,8 +50,6 @@ void App::OnStart()
 	GameManager::GetInstance();
 	GameManager::GetInstance()->InitRenderElements();
 	m_font.Create(12);
-
-	m_pPlayer = GameManager::GetInstance()->CreateEntity<Player>();
 
 	CreateHealthSprite();
 
@@ -73,6 +73,15 @@ void App::OnStart()
 
 		asteroid->SetYPR(RandomRange(-1.0f, 1.0f), RandomRange(-1.0f, 1.0f), RandomRange(-1.0f, 1.0f));
 	}
+	Client* client = Client::GetInstance();
+	
+	m_font.Create(12);
+	m_loginFont.Create(30);
+	m_loginHeader.SetText("Please enter your username:");
+	m_loginHeader.SetAnchor(CPU_TEXT_CENTER);
+	m_loginHeader.SetPos({ cpuWindow.GetWidth() / 2, cpuWindow.GetHeight() / 2 - 30 });
+	m_loginInput.SetAnchor(CPU_TEXT_CENTER);
+	m_loginInput.SetPos({ cpuWindow.GetWidth() / 2, cpuWindow.GetHeight() / 2 + 30 });
 }
 
 void App::OnUpdate()
@@ -84,10 +93,25 @@ void App::OnUpdate()
 
 	GameManager::GetInstance()->Update();
 	GameManager::GetInstance()->UpdateRenderElements(dt);
+	Client::GetInstance()->HandlePackets();
 	
-	HandleInput();
-	m_pPlayer->UpdateCamera();
-	UpdateHealthSprite();
+	if (m_isConnected == false)
+		LoginUpdate(dt);
+	else
+	{
+		GameManager::GetInstance()->Update();
+		if (m_pPlayer != nullptr)
+		{
+			HandleInut();
+			m_pPlayer->UpdateCamera();
+			UpdateHealthSprite();
+		}
+		else
+		{
+			Entity* entity = GameManager::GetInstance()->GetEntity(Client::GetInstance()->GetPlayerID());
+			m_pPlayer = dynamic_cast<Player*>(entity);
+		}
+	}
 
 	// Quit
 	if ( cpuInput.IsKeyDown(VK_ESCAPE) )
@@ -99,12 +123,18 @@ void App::OnExit()
 	// YOUR CODE HERE
 	GameManager::GetInstance()->Exit();
 	delete GameManager::GetInstance();
-
+	Client::GetInstance()->Exit();
+	delete Client::GetInstance();
 }
 
 void App::OnRender(int pass)
 {
-
+	if (!m_isConnected)
+	{
+		m_loginHeader.Render();
+		m_loginInput.Render();
+	}		
+	
 	switch (pass)
 	{
 	case CPU_PASS_PARTICLE_BEGIN:
@@ -155,47 +185,93 @@ void App::OnRender(int pass)
 
 void App::HandleInput()
 {
-	if (cpuInput.IsKey('Z'))
+// 	if (cpuInput.IsKey('Z'))
+// 	{
+// 		m_pPlayer->Rotate(0.0f, 1.0f, 0.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('S'))
+// 	{
+// 		m_pPlayer->Rotate(0.0f, -1.0f, 0.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('Q'))
+// 	{
+// 		m_pPlayer->Rotate(-1.0f, 0.0f, 0.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('D'))
+// 	{
+// 		m_pPlayer->Rotate(1.0f, 0.0f, 0.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('A'))
+// 	{
+// 		m_pPlayer->Rotate(0.0f, 0.0f, 1.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey('E'))
+// 	{
+// 		m_pPlayer->Rotate(0.0f, 0.0f, -1.0f, cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey(VK_SPACE))
+// 	{
+// 		m_pPlayer->Accelerate(cpuTime.delta);
+// 	}
+// 	if (cpuInput.IsKey(VK_CONTROL))
+// 	{
+// 		m_pPlayer->Brake(cpuTime.delta);
+// 	}
+// 	if(cpuInput.IsKey(VK_LBUTTON))
+// 	{
+// 		m_pPlayer->Shoot();
+// 	}
+}
+
+void App::LoginUpdate(float dt)
+{
+	if (m_isConnecting)
 	{
-		m_pPlayer->Rotate(0.0f, 1.0f, 0.0f, cpuTime.delta);
+		m_requestTime += dt;
+		if (m_requestTime >= 2 * m_requestCooldown && m_isConnected == false)
+		{
+			m_serverIp.clear();
+			m_serverPort = -1;
+			m_requestTime = 0.0f;
+			m_isConnecting = false;
+			m_loginInput.Reset();
+			m_loginHeader.SetText("Please enter the server IP :");
+		}
+		else if (m_requestTime >= m_requestCooldown && m_isConnected == false)
+		{
+			m_loginHeader.SetText("Connexion attempt failed");
+		}
+		return;
 	}
-	if (cpuInput.IsKey('S'))
+	
+	if (m_username.size() == 0 && m_loginInput.IsFinished())
 	{
-		m_pPlayer->Rotate(0.0f, -1.0f, 0.0f, cpuTime.delta);
+		m_loginHeader.SetText("Please enter the server IP :");
+		m_username = m_loginInput.GetText();
+		m_loginInput.Reset();
 	}
-	if (cpuInput.IsKey('Q'))
+	else if (m_serverIp.size() == 0 && m_loginInput.IsFinished())
 	{
-		m_pPlayer->Rotate(-1.0f, 0.0f, 0.0f, cpuTime.delta);
+		m_loginHeader.SetText("Please enter the server port :");
+		m_serverIp = m_loginInput.GetText();
+		m_loginInput.Reset();
 	}
-	if (cpuInput.IsKey('D'))
+	else if (m_serverPort == -1 && m_loginInput.IsFinished())
 	{
-		m_pPlayer->Rotate(1.0f, 0.0f, 0.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey('A'))
-	{
-		m_pPlayer->Rotate(0.0f, 0.0f, 1.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey('E'))
-	{
-		m_pPlayer->Rotate(0.0f, 0.0f, -1.0f, cpuTime.delta);
-	}
-	if (cpuInput.IsKey(VK_SPACE))
-	{
-		m_pPlayer->Accelerate(cpuTime.delta);
-	}
-	if (cpuInput.IsKey(VK_CONTROL))
-	{
-		m_pPlayer->Brake(cpuTime.delta);
-	}
-	if(cpuInput.IsKey(VK_LBUTTON))
-	{
-		m_pPlayer->Shoot();
+		m_loginHeader.SetText("Connexion Request Sent");
+		m_serverPort = std::stoi( m_loginInput.GetText() );
+		m_loginInput.Reset();
+		m_isConnecting = true;
+		Client::GetInstance()->Connect(m_serverIp, m_serverPort, m_username);
 	}
 	if(cpuInput.IsKeyDown('H'))
 	{
 		m_pPlayer->TakeDamage(5.0f);
 	}
 
+	m_loginInput.HandleInput();
+
+	m_isConnected = Client::GetInstance()->GetIsConnected();
 }
 
 void App::UpdateHealthSprite()
@@ -231,6 +307,6 @@ void App::MyPixelShader(cpu_ps_io& io)
 	io.color = io.p.color;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////

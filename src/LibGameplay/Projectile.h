@@ -2,8 +2,8 @@
 #include "Entity.h"
 class Projectile : public Entity
 {
-	public:
-	Projectile();
+public:
+	Projectile(bool isServerSide);
 	~Projectile();
 	void Update(float dt) override;
 	void Init(cpu_transform& transform);

@@ -1,9 +1,26 @@
 ﻿#ifndef SERVER_H_DEFINED
 #define SERVER_H_DEFINED
 
+#include <map>
 #include <vector>
 
+#include "Message.h"
+#include "CriticalSection.h"
 #include "../LibNetwork/UDPSocket.h"
+
+struct ClientInfo
+{
+    sockaddr_in sockAddr;
+    std::string ip;
+    int port;
+    std::string username;
+};
+
+struct ReceivedPacket
+{
+    Packet* packet;
+    sockaddr_in sockAddr;
+};
 
 class Server
 {
@@ -14,15 +31,30 @@ public:
     static Server* GetInstance();
     UDPSocket* GetSocket();
 
-    void LogUser(sockaddr_in newAddr);
+    bool LogUser(sockaddr_in newAddr, std::string username);
     void GlobalMsg(const char* msg);
     void PrintMessage(const char* msg, sockaddr_in addr);
+
+    static DWORD WINAPI ReceiveThread(LPVOID lpParam);
+    void HandlePackets();
+    
+    void SendPacket(Packet* packet);
+    void SendTargetedPacket(Packet* packet, ClientInfo* target);
+    ClientInfo* FindClient(std::string username);
+    
+    void Update();
         
 private:
     static Server* m_pInstance;
     UDPSocket m_udpSocket;
 
-    std::vector<sockaddr_in> m_vClients;
+    CriticalSection m_packetProtection;
+    std::vector<ReceivedPacket> m_packets;
+    std::vector<Message> m_pendingMessages;
+    std::map<ClientInfo*, std::vector<Message>> m_pendingTargetedMessage;
+    std::vector<ClientInfo> m_vClients;
+
+    char m_buffer[1024];
     
     void Init();
 };

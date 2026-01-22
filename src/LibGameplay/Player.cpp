@@ -5,14 +5,17 @@
 #include "Projectile.h"
 #include "GameManager.h"
 
-Player::Player()
+Player::Player(bool isServerSide) : Entity(isServerSide)
 {
 	m_health = 100.0f;
-	
-	m_mesh.CreateSpaceship();
-	m_material.color = cpu::ToColor(0, 0, 255);
-	m_pCpuEntity->pMesh = &m_mesh;
-	m_pCpuEntity->pMaterial = &m_material;
+
+	if (!m_isServerSide)
+	{
+		m_mesh.CreateSpaceship();
+		m_material.color = cpu::ToColor(255, 128, 0);
+		m_pCpuEntity->pMesh = &m_mesh;
+		m_pCpuEntity->pMaterial = &m_material;
+	}
 	
 	m_speedRotation = 0.8f;
 	m_speedMovement = 0.0f;
@@ -28,6 +31,7 @@ Player::Player()
 	m_pEmitter->colorMax = cpu::ToColor(213, 125, 255);
 
 	m_collider.radius = 1.0f;
+	m_type = EntityType::PLAYER;
 }
 
 Player::~Player()
@@ -37,9 +41,7 @@ Player::~Player()
 
 void Player::Update(float dt)
 {
-	m_pCpuEntity->transform.Move(dt * m_speedMovement);
-	
-
+	GetTransform().Move(dt * m_speedMovement);
 }
 
 void Player::Accelerate(float dt)
@@ -55,24 +57,24 @@ void Player::Brake(float dt)
 
 void Player::UpdateCamera()
 {
-	XMFLOAT3 pos = m_pCpuEntity->transform.pos;
+	XMFLOAT3 pos = GetTransform().pos;
 	XMFLOAT3 camPos = pos;
 
 	float speedMult = (m_speedMovement) / 10.0f + 1.0f; 
 	
-	camPos.x -= m_pCpuEntity->transform.dir.x * 6.0f * speedMult - m_pCpuEntity->transform.up.x * 2.0f;
-	camPos.y -= m_pCpuEntity->transform.dir.y * 6.0f * speedMult - m_pCpuEntity->transform.up.y * 2.0f;
-	camPos.z -= m_pCpuEntity->transform.dir.z * 6.0f * speedMult - m_pCpuEntity->transform.up.z * 2.0f;
+	camPos.x -= GetTransform().dir.x * 6.0f * speedMult - GetTransform().up.x * 2.0f;
+	camPos.y -= GetTransform().dir.y * 6.0f * speedMult - GetTransform().up.y * 2.0f;
+	camPos.z -= GetTransform().dir.z * 6.0f * speedMult - GetTransform().up.z * 2.0f;
 	
 	cpuEngine.GetCamera()->transform.pos = camPos;
 
-	cpuEngine.GetCamera()->transform.SetRotation(m_pCpuEntity->transform);
+	cpuEngine.GetCamera()->transform.SetRotation(GetTransform());
 	cpuEngine.GetCamera()->transform.AddYPR(0.0f, 0.1f / speedMult, 0.0f);
 }
 
 void Player::Rotate(float x, float y,float z, float dt)
 {
-	m_pCpuEntity->transform.AddYPR(x * dt * m_speedRotation, y * dt * m_speedRotation, z * dt * m_speedRotation * 1.5f);
+	GetTransform().AddYPR(x * dt * m_speedRotation, y * dt * m_speedRotation, z * dt * m_speedRotation * 1.5f);
 
 }
 
@@ -82,7 +84,7 @@ void Player::Shoot()
 	if (m_shootTimer >= m_shootCooldown)
 	{
 		Projectile* pProjectile = GameManager::GetInstance()->CreateEntity<Projectile>();
-		pProjectile->Init(m_pCpuEntity->transform);
+		pProjectile->Init(GetTransform());
 		m_shootTimer = 0.0f;
 	}
 }

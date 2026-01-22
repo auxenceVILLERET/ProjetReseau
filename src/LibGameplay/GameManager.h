@@ -7,7 +7,6 @@ class SphereCollider;
 class GameManager
 {
 public:
-
 	void Start();
 	void InitRenderElements();
 	void UpdateRenderElements(float dt);
@@ -22,7 +21,10 @@ public:
 	static GameManager* GetInstance();
 
 	template<typename T>
-	T* CreateEntity();
+	T* CreateEntity(bool isServerSide = false);
+
+	std::vector<Entity*>& GetEntities();
+	Entity* GetEntity(uint32_t id);
 
 	~GameManager();
 	

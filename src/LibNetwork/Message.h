@@ -10,17 +10,19 @@ class Message
 {
 public:
     Message(bool isNew = false);
-    ~Message() = default;
+    ~Message();
     
-    char* Serialize();
+    void Serialize(char* buffer);
     std::vector<Packet*> Deserialize(char* message);
     bool AddPacket(Packet* packet);
+
+    void ClearPackets();
     
+    static constexpr uint32_t BUFFER_SIZE = 1024;
     
 private:
     static uint32_t ID_COUNT;
     static constexpr uint32_t MAX_ID = 1000;
-    static constexpr uint32_t BUFFER_SIZE = 1024;
     static constexpr uint16_t MAGIC_WORD = 0b1010101111001101;
     
     uint32_t m_id;
