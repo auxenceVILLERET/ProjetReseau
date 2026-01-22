@@ -20,7 +20,8 @@ enum PacketType
     SET_ENTITY_SCALE,
     MOVE_ENTITY,
     ROTATE_ENTITY,
-    SCALE_ENTITY
+    SCALE_ENTITY,
+    CHANGE_PLAYER_SPEED,
 };
 
 class BallUpdatePacket : public Packet
@@ -745,6 +746,57 @@ public:
         _message += sizeof(id);
         std::memcpy(&n, _message, sizeof(n));
         _message += sizeof(n);
+    }
+};
+
+class ChangePlayerSpeedPacket: public Packet
+{
+public:
+    uint32_t id;
+    bool isPositive;
+
+    ChangePlayerSpeedPacket()
+    {
+        id = 0;
+        isPositive = true;
+
+        m_type = CHANGE_PLAYER_SPEED;
+        m_size = 2 * sizeof(int) + sizeof(id) + sizeof(bool);
+    }
+    ChangePlayerSpeedPacket(uint32_t _id, bool _isPositive)
+    {
+        id = _id;
+        isPositive = _isPositive;
+
+        m_type = CHANGE_PLAYER_SPEED;
+        m_size = 2 * sizeof(int) + sizeof(id) + sizeof(bool);
+    }
+
+    char* Serialize()
+    {
+        char* buffer = new char[m_size];
+        char* bufferCursor = buffer;
+        std::memset(buffer, 0, m_size);
+
+        std::memcpy(bufferCursor, &m_type, sizeof(m_type));
+        bufferCursor += sizeof(m_type);
+        std::memcpy(bufferCursor, &m_size, sizeof(m_size));
+        bufferCursor += sizeof(m_size);
+        
+        std::memcpy(bufferCursor, &id, sizeof(id));
+        bufferCursor += sizeof(id);
+        std::memcpy(bufferCursor, &isPositive, sizeof(isPositive));
+        bufferCursor += sizeof(isPositive);
+    }
+
+    void Deserialize(char* _message)
+    {
+        Packet::Deserialize(_message);
+        _message += sizeof(m_type) + sizeof(m_size);
+        std::memcpy(&id, _message, sizeof(id));
+        _message += sizeof(id);
+        std::memcpy(&isPositive, _message, sizeof(isPositive));
+        _message += sizeof(isPositive);
     }
 };
 
