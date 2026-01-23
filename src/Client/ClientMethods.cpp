@@ -28,6 +28,7 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
     if (pEntity == nullptr) return pEntity;
 
     pEntity->GetTransform().pos = XMFLOAT3(entityPacket->x, entityPacket->y, entityPacket->z);
+    pEntity->SetScale(entityPacket->scale);
     pEntity->SetID(entityPacket->id);
     return pEntity;
 }
