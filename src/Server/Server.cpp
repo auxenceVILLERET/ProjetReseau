@@ -44,7 +44,7 @@ void Server::Init()
     }
 
     m_chrono.Start();
-    //CreateThread(nullptr, 0, ReceiveThread, this, 0, nullptr);
+    CreateThread(nullptr, 0, ReceiveThread, this, 0, nullptr);
 	ManagerMethods::InitMap();
     
     std::cout << "Connection established.\n";
@@ -134,8 +134,7 @@ void Server::HandlePackets()
         Packet* packet = rPacket.packet;
         PacketType type = (PacketType)packet->GetType();
 
-        // packet->PrintInfo();
-        // std::cout << std::endl;
+        packet->PrintInfo(false);
         
         if (type == PING_PONG)
         {
@@ -192,18 +191,18 @@ void Server::HandlePackets()
 void Server::SendPacket(Packet* packet)
 {
     // std::cout << "Registered Global Packet : ";
-    packet->PrintInfo();
+    packet->PrintInfo(true);
     
     if (m_pendingMessages.size() == 0)
     {
-        Message* msg = new Message();
+        Message* msg = new Message(true);
         m_pendingMessages.push_back(msg);
     }
 
     Message* lastMessage = m_pendingMessages.back();
     if (lastMessage->AddPacket(packet) == false)
     {
-        Message* msg = new Message();
+        Message* msg = new Message(true);
         msg->AddPacket(packet);
         m_pendingMessages.push_back(msg);
     }
@@ -221,14 +220,14 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
 
     if (m_pendingMessages.size() == 0)
     {
-        Message* msg = new Message();
+        Message* msg = new Message(true);
         m_pendingTargetedMessage[pTarget].push_back(msg);
     }
 
     Message* lastMessage = m_pendingTargetedMessage[pTarget].back();
     if (lastMessage->AddPacket(packet) == false)
     {
-        Message* msg = new Message();
+        Message* msg = new Message(true);
         msg->AddPacket(packet);
         m_pendingTargetedMessage[pTarget].push_back(msg);
     }

@@ -20,7 +20,7 @@ Message::Message(bool isNew)
         ID_COUNT = MAX_ID;
 
     m_id = ID_COUNT;
-
+    m_packetCount = 0;
     m_size = sizeof(MAGIC_WORD) + sizeof(m_id) + sizeof(m_packetCount) + sizeof(m_isSystemMsg);
 }
 
@@ -152,7 +152,9 @@ bool Message::AddPacket(Packet* packet)
     if (size > BUFFER_SIZE)
         return false;
 
+    m_packetCount++;
     m_vPackets.push_back(packet);
+    m_size = size;
     return true;
 }
 

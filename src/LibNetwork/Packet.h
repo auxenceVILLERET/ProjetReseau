@@ -32,7 +32,7 @@ public:
     virtual void Deserialize(char* message);
     virtual char* Serialize();
 
-    virtual void PrintInfo();
+    virtual void PrintInfo(bool isSent);
     
 protected:
     int m_size;

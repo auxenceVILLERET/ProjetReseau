@@ -39,9 +39,14 @@ char* Packet::Serialize()
     return bufferCursor;
 }
 
-void Packet::PrintInfo()
+void Packet::PrintInfo(bool isSent)
 {
-    std::cout << "[" << PacketTypeNames[m_type] << "]" << std::endl;
+    std::cout << "[" << PacketTypeNames[m_type] << "] ";
+    if (isSent)
+        std::cout << "SENT";
+    else
+        std::cout << "RECEIVED";
+    std::cout << std::endl;
 }
 
 #endif

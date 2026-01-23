@@ -82,7 +82,7 @@ public:
         message += sizeof(z);
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 class MessagePacket : public Packet
@@ -134,7 +134,7 @@ public:
         _message += len;
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 class PingPongPacket : public Packet
@@ -201,7 +201,10 @@ public:
         message += sizeof(isPing);
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent)
+    {
+        Packet::PrintInfo(isSent);
+    }
 };
 
 class CreateEntity : public Packet
@@ -287,9 +290,9 @@ public:
         _message += sizeof(scale);
     }
 
-    void PrintInfo()
+    void PrintInfo(bool isSent)
     {
-        Packet::PrintInfo();
+        Packet::PrintInfo(isSent);
     }
 };
 
@@ -336,7 +339,7 @@ public:
         _message += sizeof(id);
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 class SetEntityPos : public Packet
@@ -405,9 +408,9 @@ public:
         _message += sizeof(z);
     }
 
-    void PrintInfo()
+    void PrintInfo(bool isSent)
     {
-        // Packet::PrintInfo();
+        // Packet::PrintInfo(bool isSent);
         // std::cout << " x : " << x << ", y : " << y << " , z : " << z << std::endl;
     }
 };
@@ -520,7 +523,7 @@ public:
         _message += sizeof(_33);
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 class SetEntityScale : public Packet
@@ -575,7 +578,7 @@ public:
         _message += sizeof(n);
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 class MoveEntityPacket : public Packet
@@ -644,7 +647,7 @@ public:
         _message += sizeof(z);
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 class RotateEntityPacket : public Packet
@@ -713,7 +716,7 @@ public:
         _message += sizeof(z);
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 class ScaleEntityPacket : public Packet
@@ -767,7 +770,7 @@ public:
         _message += sizeof(n);
     }
     
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 class ChangePlayerSpeedPacket: public Packet
@@ -823,7 +826,10 @@ public:
         _message += sizeof(delta);
     }
     
-    void PrintInfo() {}
+    void PrintInfo(bool isSent)
+    {
+        Packet::PrintInfo(isSent);
+    }
 };
 
 class SetPlayerSpeedPacket : public Packet
@@ -875,7 +881,7 @@ public:
         _message += sizeof(speed);
     }
 
-    void PrintInfo() {}
+    void PrintInfo(bool isSent) {}
 };
 
 #endif

@@ -73,19 +73,18 @@ void Client::Update()
 
 void Client::SendPacket(Packet* packet)
 {
-    // packet->PrintInfo();
-    // std::cout << std::endl;
+    packet->PrintInfo(true);
     
     if (m_pendingMessages.size() == 0)
     {
-        Message* msg = new Message();
+        Message* msg = new Message(true);
         m_pendingMessages.push_back(msg);
     }
 
     Message* lastMessage = m_pendingMessages.back();
     if (lastMessage->AddPacket(packet) == false)
     {
-        Message* msg = new Message();
+        Message* msg = new Message(true);
         msg->AddPacket(packet);
         m_pendingMessages.push_back(msg);
     }
@@ -94,11 +93,11 @@ void Client::SendPacket(Packet* packet)
 bool Client::Connect(std::string ip, int port, std::string username)
 {
     m_username = username;
-    Message msg;
+    Message* msg = new Message(true);
     PingPongPacket* packet = new PingPongPacket(m_username, true);
-    msg.AddPacket(packet);
+    msg->AddPacket(packet);
 
-    msg.Serialize(m_buffer);
+    msg->Serialize(m_buffer);
     m_serverIp = ip;
     m_serverPort = port;
 
@@ -119,6 +118,7 @@ bool Client::Connect(std::string ip, int port, std::string username)
         HandlePackets();
     }
 
+    delete msg;
     memset(m_buffer, 0, 1024);
     return true;
 }
@@ -172,7 +172,7 @@ void Client::HandlePackets()
     {
         PacketType type = (PacketType)packet->GetType();
         
-        packet->PrintInfo();
+        packet->PrintInfo(false);
         
         if (m_hasPinged && type == PING_PONG)
         {
