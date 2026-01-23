@@ -44,7 +44,7 @@ App::~App()
 void App::OnStart()
 {
 	srand(time(NULL));
-	cpuEngine.GetCamera()->far = 200.0f;
+	cpuEngine.GetCamera()->far = 500.0f;
 	cpuEngine.GetCamera()->UpdateProjection();
 	cpuEngine.GetParticleData()->Create(1000000);
 

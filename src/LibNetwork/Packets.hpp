@@ -81,6 +81,8 @@ public:
         std::memcpy(&z, message, sizeof(z));
         message += sizeof(z);
     }
+
+    void PrintInfo() {}
 };
 
 class MessagePacket : public Packet
@@ -131,6 +133,8 @@ public:
         text.assign(_message, len - 1);
         _message += len;
     }
+
+    void PrintInfo() {}
 };
 
 class PingPongPacket : public Packet
@@ -196,6 +200,8 @@ public:
         std::memcpy(&isPing, message, sizeof(isPing));
         message += sizeof(isPing);
     }
+
+    void PrintInfo() {}
 };
 
 class CreateEntity : public Packet
@@ -280,6 +286,11 @@ public:
         std::memcpy(&scale, _message, sizeof(scale));
         _message += sizeof(scale);
     }
+
+    void PrintInfo()
+    {
+        Packet::PrintInfo();
+    }
 };
 
 class SetPlayerIDPacket : public Packet
@@ -324,6 +335,8 @@ public:
         std::memcpy(&id, _message, sizeof(id));
         _message += sizeof(id);
     }
+
+    void PrintInfo() {}
 };
 
 class SetEntityPos : public Packet
@@ -394,8 +407,8 @@ public:
 
     void PrintInfo()
     {
-        Packet::PrintInfo();
-        std::cout << " x : " << x << ", y : " << y << " , z : " << z << std::endl;
+        // Packet::PrintInfo();
+        // std::cout << " x : " << x << ", y : " << y << " , z : " << z << std::endl;
     }
 };
 
@@ -506,6 +519,8 @@ public:
         std::memcpy(&_33, _message, sizeof(_33));
         _message += sizeof(_33);
     }
+
+    void PrintInfo() {}
 };
 
 class SetEntityScale : public Packet
@@ -559,6 +574,8 @@ public:
         std::memcpy(&n, _message, sizeof(n));
         _message += sizeof(n);
     }
+
+    void PrintInfo() {}
 };
 
 class MoveEntityPacket : public Packet
@@ -626,6 +643,8 @@ public:
         std::memcpy(&z, _message, sizeof(z));
         _message += sizeof(z);
     }
+
+    void PrintInfo() {}
 };
 
 class RotateEntityPacket : public Packet
@@ -694,14 +713,7 @@ public:
         _message += sizeof(z);
     }
 
-    void PrintInfo()
-    {
-        Packet::PrintInfo();
-        std::cout << "id: " << id << ", ";
-        std::cout << "x: " << x << ", ";
-        std::cout << "y: " << y << ", ";
-        std::cout << "z: " << z << std::endl;
-    }
+    void PrintInfo() {}
 };
 
 class ScaleEntityPacket : public Packet
@@ -754,6 +766,8 @@ public:
         std::memcpy(&n, _message, sizeof(n));
         _message += sizeof(n);
     }
+    
+    void PrintInfo() {}
 };
 
 class ChangePlayerSpeedPacket: public Packet
@@ -808,6 +822,8 @@ public:
         std::memcpy(&delta, _message, sizeof(delta));
         _message += sizeof(delta);
     }
+    
+    void PrintInfo() {}
 };
 
 class SetPlayerSpeedPacket : public Packet
@@ -859,11 +875,7 @@ public:
         _message += sizeof(speed);
     }
 
-    void PrintInfo()
-    {
-        Packet::PrintInfo();
-        std::cout << "speed : " << speed << std::endl;
-    }
+    void PrintInfo() {}
 };
 
 #endif

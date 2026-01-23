@@ -68,9 +68,8 @@ void Client::Update()
 
 void Client::SendPacket(Packet* packet)
 {
-    std::cout << "Registered Packet : ";
-    packet->PrintInfo();
-    std::cout << std::endl;
+    // packet->PrintInfo();
+    // std::cout << std::endl;
     
     if (m_pendingMessages.size() == 0)
     {
@@ -167,8 +166,7 @@ void Client::HandlePackets()
     for (Packet* packet : m_packets)
     {
         PacketType type = (PacketType)packet->GetType();
-
-        std::cout << "Received Packet : ";
+        
         packet->PrintInfo();
         std::cout << std::endl;
         

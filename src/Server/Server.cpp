@@ -131,9 +131,8 @@ void Server::HandlePackets()
         Packet* packet = rPacket.packet;
         PacketType type = (PacketType)packet->GetType();
 
-        std::cout << "Received Packet : ";
-        packet->PrintInfo();
-        std::cout << std::endl;
+        // packet->PrintInfo();
+        // std::cout << std::endl;
         
         if (type == PING_PONG)
         {
@@ -189,7 +188,7 @@ void Server::HandlePackets()
 
 void Server::SendPacket(Packet* packet)
 {
-    std::cout << "Registered Global Packet : ";
+    // std::cout << "Registered Global Packet : ";
     packet->PrintInfo();
     std::cout << std::endl;
     
@@ -210,7 +209,7 @@ void Server::SendPacket(Packet* packet)
 
 void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
 {
-    std::cout << "Registered packet of type " << PacketTypeNames[packet->GetType()] << " for " << pTarget->username << std::endl;
+    // std::cout << "Registered packet of type " << PacketTypeNames[packet->GetType()] << " for " << pTarget->username << std::endl;
     if (pTarget == nullptr) return;
     
     if (!m_pendingTargetedMessage.contains(pTarget))
