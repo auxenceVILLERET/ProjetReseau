@@ -8,19 +8,7 @@
 
 #include "ClientMethods.h"
 
-const float ARENA_MIN_X = -50.0f;
-const float ARENA_MAX_X = 50.0f;
-const float ARENA_MIN_Y = -50.0f;
-const float ARENA_MAX_Y = 50.0f;
-const float ARENA_MIN_Z = -50.0f;
-const float ARENA_MAX_Z = 50.0f;
 
-const int ASTEROID_COUNT = 160;
-
-float RandomRange(float min, float max)
-{
-	return min + static_cast<float>(rand()) / RAND_MAX * (max - min);
-}
 
 App::App() : m_loginInput(m_loginFont), m_loginHeader(m_loginFont)
 {
@@ -42,8 +30,7 @@ App::~App()
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 void App::OnStart()
-{
-	srand(time(NULL));
+{;
 	cpuEngine.GetCamera()->far = 500.0f;
 	cpuEngine.GetCamera()->UpdateProjection();
 	cpuEngine.GetParticleData()->Create(1000000);
@@ -53,26 +40,6 @@ void App::OnStart()
 	m_font.Create(12);
 
 
-	/*for (int i = 0; i < ASTEROID_COUNT; ++i)
-	{
-		Asteroid* asteroid = GameManager::GetInstance()->CreateEntity<Asteroid>();
-
-		XMFLOAT3 pos;
-		pos.x = RandomRange(ARENA_MIN_X, ARENA_MAX_X);
-		pos.y = RandomRange(ARENA_MIN_Y, ARENA_MAX_Y);
-		pos.z = RandomRange(ARENA_MIN_Z, ARENA_MAX_Z);
-
-		asteroid->SetPos(pos);
-		float size = RandomRange(0.5f, 5.0f);
-		asteroid->Init(size);
-		int r = static_cast<int>(RandomRange(80, 130));
-		int g = static_cast<int>(r * RandomRange(0.45f, 0.50f));
-		int b = static_cast<int>(r * RandomRange(0, 0));
-
-		asteroid->SetColor(cpu::ToColor(r, g, b));
-
-		asteroid->SetYPR(RandomRange(-1.0f, 1.0f), RandomRange(-1.0f, 1.0f), RandomRange(-1.0f, 1.0f));
-	}*/
 	Client* client = Client::GetInstance();
 	
 	m_font.Create(12);

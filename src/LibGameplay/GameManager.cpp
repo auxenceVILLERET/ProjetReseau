@@ -101,13 +101,17 @@ void GameManager::Render(int pass)
 
 void GameManager::CheckCollisions()
 {
+	int a = 0;
 	for (int i = 0; i < m_entities.size(); ++i)
 	{
 		Entity* a = m_entities[i];
+		if (a == nullptr) continue;
 		a->UpdateCollider();
+
 		for (int j = i + 1; j < m_entities.size(); ++j)
 		{
 			Entity* b = m_entities[j];
+			if (b == nullptr) continue;
 			b->UpdateCollider();
 			if (SphereCollision(a->m_collider, b->m_collider))
 			{

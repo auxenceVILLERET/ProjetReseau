@@ -34,7 +34,6 @@ private:
 	cpu_font m_loginFont;
 
 	Player* m_pPlayer = nullptr;
-	Asteroid* m_pAsteroid = nullptr;
 	cpu_texture m_texture;
 	std::vector<cpu_sprite*> m_healthSprites;
 

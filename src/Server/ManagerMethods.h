@@ -14,6 +14,8 @@ public:
     static std::vector<Packet*>& GetCreationPackets();
 
     static void HandleDirtyEntities();
+
+    static void InitMap();
 };
 
 #endif

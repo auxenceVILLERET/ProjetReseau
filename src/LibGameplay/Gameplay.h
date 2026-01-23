@@ -3,6 +3,7 @@
 
 #define BORDER_MAX 50.0f
 #define BORDER_MIN (-50.0f)
+#define ASTEROID_COUNT 160
 
 enum EntityType
 {
@@ -29,4 +30,9 @@ inline XMFLOAT3 GetSpawnPoint()
     return SPAWN_POINTS[i];
 }
 
+
+inline float RandomRange(float min, float max)
+{
+    return min + static_cast<float>(rand()) / RAND_MAX * (max - min);
+}
 #endif

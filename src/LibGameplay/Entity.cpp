@@ -19,7 +19,10 @@ Entity::Entity(bool isServerSize)
 
 Entity::~Entity()
 {
-	cpuEngine.Release(m_pCpuEntity);
+	if (m_isServerSide == false)
+	{
+		cpuEngine.Release(m_pCpuEntity);
+	}
 }
 
 void Entity::Update(float dt)
