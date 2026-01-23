@@ -57,11 +57,11 @@ void Client::Update()
 {
     HandlePackets();
 
-    for (Message msg : m_pendingMessages)
+    for (Message* msg : m_pendingMessages)
     {
-        msg.Serialize(m_buffer);
+        msg->Serialize(m_buffer);
         m_udpSocket.SendTo(m_buffer, 1025, m_serverAddr);
-        msg.ClearPackets();
+        msg->ClearPackets();
     }
     
     for (int i = 0; i < m_pendingMessages.size(); i++)
