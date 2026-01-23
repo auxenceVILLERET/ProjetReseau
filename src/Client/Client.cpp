@@ -22,7 +22,12 @@ Client::Client() : m_udpSocket()
 
 Client::~Client()
 {
+    for (int i = 0; i < m_packets.size(); i++)
+    {
+        delete m_packets[i];
+    }
     
+    m_packets.clear();
 }
 
 Client* Client::GetInstance()
