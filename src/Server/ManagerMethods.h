@@ -3,15 +3,15 @@
 #include <DirectXMath.h>
 #include <vector>
 
-#include "Packet.h"
-
 using namespace DirectX;
+
+struct ClientInfo;
 
 class ManagerMethods
 {
 public:
     static void Init();
-    static std::vector<Packet*>& GetCreationPackets();
+    static void SendCreationPackets(ClientInfo* pTarget);
 
     static void HandleDirtyEntities();
 };

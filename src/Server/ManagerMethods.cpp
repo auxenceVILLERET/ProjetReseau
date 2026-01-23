@@ -13,19 +13,18 @@ void ManagerMethods::Init()
     
 }
 
-std::vector<Packet*>& ManagerMethods::GetCreationPackets()
+void ManagerMethods::SendCreationPackets(ClientInfo* pTarget)
 {
-    std::vector<Packet*> creationPackets;
-
-    std::vector<Entity*> entities = GameManager::GetInstance()->GetEntities();
-    for (Entity* entity : entities)
+    for (Entity* entity : GameManager::GetInstance()->GetEntities())
     {
-        CreateEntity* p = new CreateEntity(entity->GetID(), entity->GetType(),
-            entity->GetTransform().pos.x, entity->GetTransform().pos.y, entity->GetTransform().pos.z);
-        creationPackets.push_back(p);
-    }
+        EntityType type = entity->GetType();
+        cpu_transform t = entity->GetTransform();
+        XMFLOAT3 pos = t.pos;
+        float scale = t.sca.x + t.sca.y + t.sca.z / 3.0f;
 
-    return creationPackets;
+        CreateEntity* packet = new CreateEntity(entity->GetID(), type, pos.x, pos.y, pos.z, scale);
+        Server::GetInstance()->SendTargetedPacket(packet, pTarget);
+    }
 }
 
 void ManagerMethods::HandleDirtyEntities()
