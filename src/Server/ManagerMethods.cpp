@@ -23,7 +23,7 @@ void ManagerMethods::SendCreationPackets(ClientInfo* pTarget)
         EntityType type = entity->GetType();
         cpu_transform t = entity->GetTransform();
         XMFLOAT3 pos = t.pos;
-        float scale = t.sca.x + t.sca.y + t.sca.z / 3.0f;
+        float scale = (t.sca.x + t.sca.y + t.sca.z) / 3.0f;
 
         CreateEntity* packet = new CreateEntity(entity->GetID(), type, pos.x, pos.y, pos.z, scale);
         Server::GetInstance()->SendTargetedPacket(packet, pTarget);

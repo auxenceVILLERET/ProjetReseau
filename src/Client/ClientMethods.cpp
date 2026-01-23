@@ -7,6 +7,7 @@
 #include "GameManager.h"
 #include "Player.h"
 #include "Projectile.h"
+#include "Asteroid.h"
 
 Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
 {
@@ -20,6 +21,9 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
         break;
     case EntityType::PROJECTILE:
         pEntity = GameManager::GetInstance()->CreateEntity<Projectile>();
+        break;
+    case EntityType::ASTEROID:
+        pEntity = GameManager::GetInstance()->CreateEntity<Asteroid>();
         break;
     default:
         break;

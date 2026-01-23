@@ -147,6 +147,7 @@ void Server::HandlePackets()
             PingPongPacket* responsePkt = new PingPongPacket(casted->username, false);
             SendTargetedPacket(responsePkt, pClient);
             
+            ManagerMethods::SendCreationPackets(pClient);
             Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
             p->GetTransform().pos = GetSpawnPoint();
             CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
