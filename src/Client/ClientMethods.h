@@ -12,6 +12,7 @@ public:
 	static bool RotateEntity(uint32_t id, XMFLOAT3 rotation);
 	static bool ScaleEntity(uint32_t id, float n);
 	static bool ChangePlayerSpeed(uint32_t id, float delta);
+	static bool ShootProjectile(uint32_t shooterId, XMFLOAT3 position, XMFLOAT3 direction);
 };
 
 #endif

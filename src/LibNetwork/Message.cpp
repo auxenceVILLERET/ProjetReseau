@@ -134,6 +134,9 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::CHANGE_PLAYER_SPEED:
                 packet = new ChangePlayerSpeedPacket();
                 break;
+			case PacketType::SHOOT_PROJECTILE:
+				packet = new ShootProjectilePacket();
+				break;
         }
 
         if (packet == nullptr) continue;

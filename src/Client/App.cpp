@@ -192,10 +192,10 @@ void App::HandleInput()
 	{
 		ClientMethods::ChangePlayerSpeed(id, -dt * 8.0f);
 	}
-// 	if(cpuInput.IsKey(VK_LBUTTON))
-// 	{
-// 		m_pPlayer->Shoot();
-// 	}
+ 	if(cpuInput.IsKey(VK_LBUTTON))
+ 	{
+		ClientMethods::ShootProjectile(id, m_pPlayer->GetTransform().pos, dir);
+ 	}
 // if(cpuInput.IsKeyDown('H'))
 // {
 // 	m_pPlayer->TakeDamage(5.0f);
