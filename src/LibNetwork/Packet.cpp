@@ -41,7 +41,7 @@ char* Packet::Serialize()
 
 void Packet::PrintInfo()
 {
-    std::cout << "[" << PacketTypeNames[m_type] << "]";
+    std::cout << "[" << PacketTypeNames[m_type] << "]" << std::endl;
 }
 
 #endif

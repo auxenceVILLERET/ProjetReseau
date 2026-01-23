@@ -168,7 +168,6 @@ void Client::HandlePackets()
         PacketType type = (PacketType)packet->GetType();
         
         packet->PrintInfo();
-        std::cout << std::endl;
         
         if (m_hasPinged && type == PING_PONG)
         {

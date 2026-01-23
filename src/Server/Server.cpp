@@ -190,7 +190,6 @@ void Server::SendPacket(Packet* packet)
 {
     // std::cout << "Registered Global Packet : ";
     packet->PrintInfo();
-    std::cout << std::endl;
     
     if (m_pendingMessages.size() == 0)
     {
