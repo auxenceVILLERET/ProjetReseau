@@ -2,13 +2,13 @@
     "projects": {
         "30F16733-7E0D-2C0C-2C1A-28C22B842B7F": {
             "config-debug": {
-                "additionalDependencies": [],
+                "additionalDependencies": [ "Winmm.lib" ],
                 "additionalIncludeDirectories": [],
                 "additionalLibraryDirectories": [],
                 "preprocessorDefinitions": []
             },
             "config-release": {
-                "additionalDependencies": [],
+                "additionalDependencies": [ "Winmm.lib" ],
                 "additionalIncludeDirectories": [],
                 "additionalLibraryDirectories": [],
                 "preprocessorDefinitions": []

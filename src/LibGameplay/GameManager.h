@@ -9,7 +9,7 @@ class GameManager
 public:
 	void Start();
 	void UpdateRenderElements(float dt);
-	void Update();
+	void Update(float dt);
 	void Exit();
 	void Render(int pass);
 	void CheckCollisions();

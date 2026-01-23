@@ -12,9 +12,6 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
 {
     EntityType type = entityPacket->type;
     Entity* pEntity = nullptr;
-
-    Entity* search = GameManager::GetInstance()->GetEntity(entityPacket->id);
-    if (search != nullptr) return search;
     
     switch (type)
     {
@@ -37,9 +34,6 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
 
 bool ClientMethods::MoveEntity(uint32_t id, XMFLOAT3 position)
 {
-    Entity* entity = GameManager::GetInstance()->GetEntity(id);
-    if (entity == nullptr) return false;
-
     MoveEntityPacket* packet = new MoveEntityPacket(id, position.x, position.y, position.z);
     Client::GetInstance()->SendPacket(packet);
     return true;
@@ -47,9 +41,6 @@ bool ClientMethods::MoveEntity(uint32_t id, XMFLOAT3 position)
 
 bool ClientMethods::RotateEntity(uint32_t id, XMFLOAT3 rotation)
 {
-    Entity* entity = GameManager::GetInstance()->GetEntity(id);
-    if (entity == nullptr) return false;
-
     RotateEntityPacket* packet = new RotateEntityPacket(id, rotation.x, rotation.y, rotation.z);
     Client::GetInstance()->SendPacket(packet);
     return true;
@@ -57,17 +48,16 @@ bool ClientMethods::RotateEntity(uint32_t id, XMFLOAT3 rotation)
 
 bool ClientMethods::ScaleEntity(uint32_t id, float n)
 {
-    Entity* entity = GameManager::GetInstance()->GetEntity(id);
-    if (entity == nullptr) return false;
-
     ScaleEntityPacket* packet = new ScaleEntityPacket(id, n);
     Client::GetInstance()->SendPacket(packet);
     return true;
 }
 
-bool ClientMethods::ChangePlayerSpeed(uint32_t id, bool isPositive)
+bool ClientMethods::ChangePlayerSpeed(uint32_t id, float delta)
 {
-    
+    ChangePlayerSpeedPacket* packet = new ChangePlayerSpeedPacket(id, delta);
+    Client::GetInstance()->SendPacket(packet);
+    return true;
 }
 
 #endif

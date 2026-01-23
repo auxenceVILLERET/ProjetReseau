@@ -9,21 +9,21 @@ public:
 	~Player();
 	
 	void Update(float dt) override;
-	void Accelerate(float dt);
-	void Brake(float dt);
 	
 	void UpdateCamera();
 
 	void Shoot();
 
-	void InitRenderElements() override;
+	void InitRenderElements()			override;
 	void UpdateRenderElements(float dt) override;
-	void Render() override;
-	void OnCollision(Entity* other) override;
+	void Render()						override;
+	void OnCollision(Entity* other)		override;
 
-	float GetHealth() const { return m_health; }
-	void TakeDamage(float damage) { m_health -= damage; }
+	float GetHealth() const			{ return m_health; }
+	void TakeDamage(float damage)	{ m_health -= damage; }
 
+	void SetSpeed(float speed)	{ m_speedMovement = std::clamp(speed, 1.0f, m_maxSpeed); }
+	void AddSpeed(float delta)  { SetSpeed(m_speedMovement + delta); }
 	float GetSpeed()			{ return m_speedMovement; }
 	float GetRotationSpeed()	{ return m_speedRotation; }
 

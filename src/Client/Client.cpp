@@ -10,6 +10,8 @@
 #include "GameManager.h"
 #include "Message.h"
 #include "Packets.hpp"
+#include "Entity.h"
+#include "Player.h"
 
 Client* Client::m_pInstance = nullptr;
 
@@ -217,6 +219,27 @@ void Client::HandlePackets()
             rot._44 = 1.0f;
 
             e->SetRotation(rot);
+        }
+        if (type == SET_ENTITY_POS)
+        {
+            SetEntityPos* casted = dynamic_cast<SetEntityPos*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            e->SetPos(casted->x, casted->y, casted->z);
+        }
+        if (type == SET_PLAYER_SPEED)
+        {
+            SetPlayerSpeedPacket* casted = dynamic_cast<SetPlayerSpeedPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            Player* p = dynamic_cast<Player*>(GameManager::GetInstance()->GetEntity(casted->id));
+            if (p == nullptr) continue;
+
+            p->SetSpeed(casted->speed);
         }
     }
 

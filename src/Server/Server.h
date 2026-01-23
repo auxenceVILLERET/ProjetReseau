@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 
+#include "Chrono.h"
 #include "Message.h"
 #include "CriticalSection.h"
 #include "../LibNetwork/UDPSocket.h"
@@ -57,6 +58,7 @@ private:
     char m_buffer[1024];
     
     void Init();
+    Chrono m_chrono;
 };
 
 #endif

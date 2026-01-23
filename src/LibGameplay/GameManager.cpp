@@ -43,9 +43,9 @@ void GameManager::Start()
 	
 }
 
-void GameManager::Update()
+void GameManager::Update(float dt)
 {
-	m_deltaTime = cpuTime.delta;
+	m_deltaTime = dt;
 	CheckCollisions();
 	for (auto it = m_entities.begin(); it != m_entities.end(); )
 	{

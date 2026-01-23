@@ -36,18 +36,7 @@ Player::~Player()
 void Player::Update(float dt)
 {
 	XMFLOAT3 dir = GetTransform().dir;
-	// Move(dt * m_speedMovement * dir.x, dt * m_speedMovement * dir.y, dt * m_speedMovement * dir.z);
-}
-
-void Player::Accelerate(float dt)
-{
-	m_speedMovement = std::min(m_speedMovement + dt * 3.0f, m_maxSpeed);
-
-}
-
-void Player::Brake(float dt)
-{
-	m_speedMovement = std::max(m_speedMovement - dt * 8.0f, 1.0f);
+	Move(dt * m_speedMovement * dir.x, dt * m_speedMovement * dir.y, dt * m_speedMovement * dir.z);
 }
 
 void Player::UpdateCamera()

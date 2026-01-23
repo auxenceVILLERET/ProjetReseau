@@ -98,7 +98,6 @@ void App::OnUpdate()
 		LoginUpdate(dt);
 	else
 	{
-		GameManager::GetInstance()->Update();
 		if (m_pPlayer != nullptr)
 		{
 			HandleInput();
@@ -218,14 +217,14 @@ void App::HandleInput()
 	{
 		ClientMethods::RotateEntity(id, {0.0f, 0.0f, -rotSpeed * dt});
 	}
-// 	if (cpuInput.IsKey(VK_SPACE))
-// 	{
-// 		m_pPlayer->Accelerate(cpuTime.delta);
-// 	}
-// 	if (cpuInput.IsKey(VK_CONTROL))
-// 	{
-// 		m_pPlayer->Brake(cpuTime.delta);
-// 	}
+	if (cpuInput.IsKey(VK_SPACE))
+	{
+		ClientMethods::ChangePlayerSpeed(id, dt * 3.0f);
+	}
+	if (cpuInput.IsKey(VK_CONTROL))
+	{
+		ClientMethods::ChangePlayerSpeed(id, -dt * 8.0f);
+	}
 // 	if(cpuInput.IsKey(VK_LBUTTON))
 // 	{
 // 		m_pPlayer->Shoot();

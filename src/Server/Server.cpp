@@ -41,7 +41,8 @@ void Server::Init()
     {
         std::cout << "Connexion attempt failed.\n" << Sockets::GetError() << "\n";
     }
-    
+
+    m_chrono.Start();
     CreateThread(nullptr, 0, ReceiveThread, this, 0, nullptr);
     
     std::cout << "Connection established.\n";
@@ -162,6 +163,19 @@ void Server::HandlePackets()
 
             e->Rotate(casted->x, casted->y, casted->z);
         }
+        if (type == CHANGE_PLAYER_SPEED)
+        {
+            ChangePlayerSpeedPacket* casted = dynamic_cast<ChangePlayerSpeedPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            Player* p = dynamic_cast<Player*>(GameManager::GetInstance()->GetEntity(casted->id));
+            if (p == nullptr) continue;
+
+            p->AddSpeed(casted->delta);
+            SetPlayerSpeedPacket* nPacket = new SetPlayerSpeedPacket(p->GetID(), p->GetSpeed());
+            SendPacket(nPacket);
+        }
     }
 
     for (int i = 0; i < m_packets.size(); i++)
@@ -233,7 +247,7 @@ ClientInfo* Server::FindClient(std::string username)
 void Server::Update()
 {
     HandlePackets();
-    GameManager::GetInstance()->Update();
+    GameManager::GetInstance()->Update(m_chrono.Reset());
 
     ManagerMethods::HandleDirtyEntities();
     

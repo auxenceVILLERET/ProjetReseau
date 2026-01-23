@@ -128,6 +128,12 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::SCALE_ENTITY:
                 packet = new ScaleEntityPacket();
                 break;
+            case PacketType::SET_PLAYER_SPEED:
+                packet = new SetPlayerSpeedPacket();
+                break;
+            case PacketType::CHANGE_PLAYER_SPEED:
+                packet = new ChangePlayerSpeedPacket();
+                break;
         }
 
         if (packet == nullptr) continue;
