@@ -63,6 +63,11 @@ void Client::Update()
         m_udpSocket.SendTo(m_buffer, 1025, m_serverAddr);
         msg.ClearPackets();
     }
+    
+    for (int i = 0; i < m_pendingMessages.size(); i++)
+    {
+        delete m_pendingMessages[i];
+    }
     m_pendingMessages.clear();
 }
 
@@ -73,15 +78,15 @@ void Client::SendPacket(Packet* packet)
     
     if (m_pendingMessages.size() == 0)
     {
-        Message msg;
+        Message* msg = new Message();
         m_pendingMessages.push_back(msg);
     }
 
-    Message* lastMessage = &m_pendingMessages.back();
+    Message* lastMessage = m_pendingMessages.back();
     if (lastMessage->AddPacket(packet) == false)
     {
-        Message msg;
-        msg.AddPacket(packet);
+        Message* msg = new Message();
+        msg->AddPacket(packet);
         m_pendingMessages.push_back(msg);
     }
 }

@@ -42,6 +42,7 @@ public:
     void SendPacket(Packet* packet);
     void SendTargetedPacket(Packet* packet, ClientInfo* target);
     ClientInfo* FindClient(std::string username);
+    void ClearMessages();
     
     void Update();
         

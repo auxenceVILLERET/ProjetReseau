@@ -110,9 +110,10 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
         sockaddr_in target;
         int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1024, target);
         
-        Message msg;
-        std::vector<Packet*> packets = msg.Deserialize(responseBuffer);
-
+        Message* msg = new Message();
+        std::vector<Packet*> packets = msg->Deserialize(responseBuffer);
+        delete msg;
+        
         pInstance->m_packetProtection.Enter();
         for (int i = 0; i < packets.size(); i++)
         {
@@ -195,15 +196,15 @@ void Server::SendPacket(Packet* packet)
     
     if (m_pendingMessages.size() == 0)
     {
-        Message msg;
+        Message* msg = new Message();
         m_pendingMessages.push_back(msg);
     }
 
-    Message* lastMessage = &m_pendingMessages.back();
+    Message* lastMessage = m_pendingMessages.back();
     if (lastMessage->AddPacket(packet) == false)
     {
-        Message msg;
-        msg.AddPacket(packet);
+        Message* msg = new Message();
+        msg->AddPacket(packet);
         m_pendingMessages.push_back(msg);
     }
 }
@@ -215,23 +216,22 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
     
     if (!m_pendingTargetedMessage.contains(pTarget))
     {
-        m_pendingTargetedMessage[pTarget] = std::vector<Message>();
+        m_pendingTargetedMessage[pTarget] = std::vector<Message*>();
     }
 
     if (m_pendingMessages.size() == 0)
     {
-        Message msg;
+        Message* msg = new Message();
         m_pendingTargetedMessage[pTarget].push_back(msg);
     }
 
-    Message* lastMessage = &m_pendingTargetedMessage[pTarget].back();
+    Message* lastMessage = m_pendingTargetedMessage[pTarget].back();
     if (lastMessage->AddPacket(packet) == false)
     {
-        Message msg;
-        msg.AddPacket(packet);
+        Message* msg = new Message();
+        msg->AddPacket(packet);
         m_pendingTargetedMessage[pTarget].push_back(msg);
     }
-    
 }
 
 ClientInfo* Server::FindClient(std::string username)
@@ -242,6 +242,24 @@ ClientInfo* Server::FindClient(std::string username)
             return &client;
     }
     return nullptr;
+}
+
+void Server::ClearMessages()
+{
+    for (int i = 0; i < m_pendingMessages.size(); i++)
+    {
+        delete m_pendingMessages[i];
+    }
+    m_pendingMessages.clear();
+
+    for ( auto& [key, value] : m_pendingTargetedMessage)
+    {
+        for (int i = 0; i < value.size(); i++)
+        {
+            delete value[i];
+        }
+        value.clear();
+    }
 }
 
 void Server::Update()
@@ -270,7 +288,8 @@ void Server::Update()
         }
         value.clear();
     }
-    
+
+    ClearMessages();
 }
 
 #endif

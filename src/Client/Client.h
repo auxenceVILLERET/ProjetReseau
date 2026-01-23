@@ -35,7 +35,7 @@ private:
 
     CriticalSection m_packetProtection;
     std::vector<Packet*> m_packets;
-    std::vector<Message> m_pendingMessages;
+    std::vector<Message*> m_pendingMessages;
     
     UDPSocket m_udpSocket;
 
