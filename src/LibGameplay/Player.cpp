@@ -79,7 +79,7 @@ void Player::UpdateRenderElements(float dt)
 {
 	if (m_pEmitter == nullptr) return;
 	
-	m_pEmitter->density = m_speedMovement * 500.0f;
+	m_pEmitter->density = m_speedMovement * 200.0f;
 	m_pEmitter->pos = m_pCpuEntity->transform.pos;
 	m_pEmitter->dir = m_pCpuEntity->transform.dir;
 	m_pEmitter->dir.x = -m_pEmitter->dir.x;

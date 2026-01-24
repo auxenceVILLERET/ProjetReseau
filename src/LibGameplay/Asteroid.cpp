@@ -11,6 +11,7 @@ Asteroid::Asteroid(bool isServerSide) : Entity(isServerSide)
 		m_pCpuEntity->pMaterial = &m_material;
 	}
 	m_YPR = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_rotationSpeed = 1.0f;
 	m_type = EntityType::ASTEROID;
 }
 
@@ -21,16 +22,13 @@ Asteroid::~Asteroid()
 
 void Asteroid::Update(float dt)
 {
-	if (m_YPR.x != 0.0f || m_YPR.y != 0.0f || m_YPR.z != 0.0f)
-	{
-		Rotate(m_YPR.x * dt, m_YPR.y * dt, m_YPR.z * dt);
-	}
+	
 }
 
 void Asteroid::Init(float size)
 {
 	Scale(size);
-	m_collider.radius = size;
+	m_collider.radius = size * 0.5f;
 }
 
 void Asteroid::SetRotDir(float yaw, float pitch, float roll)
@@ -72,11 +70,18 @@ void Asteroid::InitRenderElements()
 	int b = static_cast<int>(r * RandomRange(0, 0));
 
 	SetColor(cpu::ToColor(r, g, b));
+
+	m_rotationSpeed = RandomRange(0.1f, 0.8f);
+	float x = RandomRange(-1.0f, 1.0f);
+	float y = RandomRange(-1.0f, 1.0f);
+	float z = RandomRange(-1.0f, 1.0f);
+	SetRotDir(x, y, z);
 }
 
 void Asteroid::UpdateRenderElements(float dt)
 {
-
+	Rotate(m_YPR.x * dt * m_rotationSpeed, m_YPR.y * dt * m_rotationSpeed, m_YPR.z * dt * m_rotationSpeed);
+	
 	if (m_Explo == true)
 	{
 		m_timerParticul += dt;
