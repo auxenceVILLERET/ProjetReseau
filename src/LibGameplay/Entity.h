@@ -51,6 +51,8 @@ public:
 	void SetRotation(XMFLOAT4X4& rot);
 	void SetScale(float scale);
 
+	float GetScale();
+
 protected:
 	cpu_entity* m_pCpuEntity;
 	SphereCollider m_collider;

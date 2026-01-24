@@ -12,7 +12,7 @@ public:
 	
 	void UpdateCamera();
 
-	void Shoot();
+	bool Shoot();
 
 	void InitRenderElements()			override;
 	void UpdateRenderElements(float dt) override;

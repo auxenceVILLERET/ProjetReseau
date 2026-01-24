@@ -37,6 +37,7 @@ void Player::Update(float dt)
 {
 	XMFLOAT3 dir = GetTransform().dir;
 	Move(dt * m_speedMovement * dir.x, dt * m_speedMovement * dir.y, dt * m_speedMovement * dir.z);
+	m_shootTimer += dt;
 }
 
 void Player::UpdateCamera()
@@ -57,15 +58,14 @@ void Player::UpdateCamera()
 }
 
 
-void Player::Shoot()
+bool Player::Shoot()
 {
-	m_shootTimer += cpuTime.delta;
 	if (m_shootTimer >= m_shootCooldown)
 	{
-		Projectile* pProjectile = GameManager::GetInstance()->CreateEntity<Projectile>();
-		pProjectile->Init(GetTransform());
 		m_shootTimer = 0.0f;
+		return true;
 	}
+	return false;
 }
 void Player::InitRenderElements()
 {
@@ -77,14 +77,14 @@ void Player::InitRenderElements()
 
 void Player::UpdateRenderElements(float dt)
 {
+	m_shootTimer += dt;
 	if (m_pEmitter == nullptr) return;
 	
 	m_pEmitter->density = m_speedMovement * 200.0f;
-	m_pEmitter->pos = m_pCpuEntity->transform.pos;
-	m_pEmitter->dir = m_pCpuEntity->transform.dir;
-	m_pEmitter->dir.x = -m_pEmitter->dir.x;
-	m_pEmitter->dir.y = -m_pEmitter->dir.y;
-	m_pEmitter->dir.z = -m_pEmitter->dir.z;
+	m_pEmitter->pos = GetTransform().pos;
+	m_pEmitter->dir.x = -GetTransform().dir.x;
+	m_pEmitter->dir.y = -GetTransform().dir.y;
+	m_pEmitter->dir.z = -GetTransform().dir.z;
 }
 
 void Player::Render()

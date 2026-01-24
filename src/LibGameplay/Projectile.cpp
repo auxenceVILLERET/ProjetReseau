@@ -14,6 +14,7 @@ Projectile::Projectile(bool isServerSide) : Entity(isServerSide)
 	GetTransform().SetScaling(0.2f);
 	m_speed = 20.0f;
 	m_collider.radius = 0.2f;
+	m_type = EntityType::PROJECTILE;
 }
 
 Projectile::~Projectile()
@@ -33,13 +34,13 @@ void Projectile::Update(float dt)
 	}
 }
 
-void Projectile::Init(cpu_transform& transform)
+void Projectile::Init(XMFLOAT3 pos, XMFLOAT3 dir)
 {
-	GetTransform().pos = transform.pos;
-	GetTransform().pos.x += transform.dir.x * 2.0f;
-	GetTransform().pos.y += transform.dir.y * 2.0f;
-	GetTransform().pos.z += transform.dir.z * 2.0f;
-	GetTransform().SetRotation(transform);
+	GetTransform().pos = pos;
+	GetTransform().LookTo(dir);
+	GetTransform().pos.x += dir.x * 2.0f;
+	GetTransform().pos.y += dir.y * 2.0f;
+	GetTransform().pos.z += dir.z * 2.0f;
 }
 
 void Projectile::OnCollision(Entity* other)

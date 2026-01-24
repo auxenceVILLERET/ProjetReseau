@@ -11,6 +11,7 @@
 #include "Message.h"
 #include "Packets.hpp"
 #include "Player.h"
+#include "Projectile.h"
 #include "../LibNetwork/Socket.h"
 
 Server* Server::m_pInstance = nullptr;
@@ -176,6 +177,18 @@ void Server::HandlePackets()
 
             p->AddSpeed(casted->delta);
             SetPlayerSpeedPacket* nPacket = new SetPlayerSpeedPacket(p->GetID(), p->GetSpeed());
+            SendPacket(nPacket);
+        }
+        if (type == SHOOT_PROJECTILE)
+        {
+            ShootProjectilePacket* casted = dynamic_cast<ShootProjectilePacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Projectile* e = GameManager::GetInstance()->CreateEntity<Projectile>(true);
+            if (e == nullptr) continue;
+            e->Init({casted->px, casted->py, casted->pz}, {casted->dx, casted->dy, casted->dz});
+
+            CreateEntity* nPacket = new CreateEntity(e->GetID(), e->GetType(), e->GetTransform().pos, e->GetTransform().dir, e->GetScale());
             SendPacket(nPacket);
         }
     }

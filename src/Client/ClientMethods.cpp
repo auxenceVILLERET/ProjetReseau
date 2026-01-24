@@ -34,6 +34,8 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
     pEntity->GetTransform().pos = XMFLOAT3(entityPacket->x, entityPacket->y, entityPacket->z);
     pEntity->SetScale(entityPacket->scale);
     pEntity->SetID(entityPacket->id);
+    if (entityPacket->dx != 0 || entityPacket->dy != 0 || entityPacket->dz != 0)
+        pEntity->GetTransform().LookTo(entityPacket->dx, entityPacket->dy, entityPacket->dz);
     return pEntity;
 }
 
@@ -65,9 +67,9 @@ bool ClientMethods::ChangePlayerSpeed(uint32_t id, float delta)
     return true;
 }
 
-bool ClientMethods::ShootProjectile(uint32_t shooterId, XMFLOAT3 position, XMFLOAT3 direction)
+bool ClientMethods::ShootProjectile(XMFLOAT3 pos, XMFLOAT3 dir)
 {
-    ShootProjectilePacket* packet = new ShootProjectilePacket(shooterId, position.x, position.y, position.z, direction.x, direction.y, direction.z);
+    ShootProjectilePacket* packet = new ShootProjectilePacket(pos.x, pos.y, pos.z, dir.x, dir.y, dir.z);
     Client::GetInstance()->SendPacket(packet);
     return true;
 }

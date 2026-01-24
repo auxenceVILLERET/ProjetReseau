@@ -6,7 +6,7 @@ public:
 	Projectile(bool isServerSide);
 	~Projectile();
 	void Update(float dt) override;
-	void Init(cpu_transform& transform);
+	void Init(XMFLOAT3 pos, XMFLOAT3 dir);
 	void OnCollision(Entity* other) override;
 
 private:
@@ -14,7 +14,7 @@ private:
 	cpu_mesh m_mesh;
 	cpu_material m_material;
 
-	float m_distMax = 50.0f;
+	float m_distMax = 100.0f;
 	float m_distTraveled = 0.0f;
 
 

@@ -96,4 +96,9 @@ void Entity::SetScale(float scale)
 	SetDirtyFlag(DIRTY_TYPES::SCALE);
 }
 
+float Entity::GetScale()
+{
+	return (GetTransform().sca.x + GetTransform().sca.y + GetTransform().sca.z) / 3.0f;
+}
+
 #endif

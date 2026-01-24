@@ -124,11 +124,11 @@ void App::OnRender(int pass)
 		// Debug
 		cpu_stats& stats = *cpuEngine.GetStats();
 		std::string info = CPU_STR(cpuTime.fps) + " fps, ";
-		info += CPU_STR(stats.drawnTriangleCount) + " triangles, ";
-		info += CPU_STR(stats.clipEntityCount) + " clipped entities\n";
+		// info += CPU_STR(stats.drawnTriangleCount) + " triangles, ";
+		// info += CPU_STR(stats.clipEntityCount) + " clipped entities\n";
 		info += CPU_STR(cpuEngine.GetParticleData()->alive) + " particles, ";
-		info += CPU_STR(stats.threadCount) + " threads, ";
-		info += CPU_STR(stats.tileCount) + " tiles";
+		// info += CPU_STR(stats.threadCount) + " threads, ";
+		// info += CPU_STR(stats.tileCount) + " tiles";
 
 		// Ray cast
 		cpu_ray ray;
@@ -194,7 +194,8 @@ void App::HandleInput()
 	}
  	if(cpuInput.IsKey(VK_LBUTTON))
  	{
-		ClientMethods::ShootProjectile(id, m_pPlayer->GetTransform().pos, dir);
+ 		if (m_pPlayer->Shoot())
+			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
  	}
 // if(cpuInput.IsKeyDown('H'))
 // {

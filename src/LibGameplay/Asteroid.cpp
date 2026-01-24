@@ -28,7 +28,7 @@ void Asteroid::Update(float dt)
 void Asteroid::Init(float size)
 {
 	Scale(size);
-	m_collider.radius = size * 0.5f;
+	m_collider.radius = size * 0.6f;
 }
 
 void Asteroid::SetRotDir(float yaw, float pitch, float roll)
@@ -40,13 +40,14 @@ void Asteroid::OnCollision(Entity* other)
 {
 	if(other->GetType() == EntityType::PROJECTILE)
 	{
-		m_pCpuEntity->pMesh->Clear();
-		ExplosionParticul();
+		if (m_isServerSide == false)
+			ExplosionParticul();
 	}
 }
 
 void Asteroid::ExplosionParticul()
 {
+	m_pCpuEntity->pMesh->Clear();
 	m_pEmitter->pos = m_pCpuEntity->transform.pos;
 	m_pEmitter->dir = m_pCpuEntity->transform.dir;
 	m_pEmitter->dir.x = 0;
@@ -65,9 +66,10 @@ void Asteroid::InitRenderElements()
 	m_pEmitter->colorMax = cpu::ToColor(255, 125, 0);
 	m_timerParticul = 0.0f;
 	m_durationParticul = 0.2f;
+	
 	int r = static_cast<int>(RandomRange(80, 130));
-	int g = static_cast<int>(r * RandomRange(0.45f, 0.50f));
-	int b = static_cast<int>(r * RandomRange(0, 0));
+	int g = static_cast<int>(r * RandomRange(0.40f, 0.60f));
+	int b = 0;
 
 	SetColor(cpu::ToColor(r, g, b));
 

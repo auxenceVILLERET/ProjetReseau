@@ -216,6 +216,9 @@ public:
     float x;
     float y;
     float z;
+    float dx;
+    float dy;
+    float dz;
     float scale;
 
     CreateEntity()
@@ -225,22 +228,28 @@ public:
         x = 0.0f;
         y = 0.0f;
         z = 0.0f;
+        dx = 0.0f;
+        dy = 0.0f;
+        dz = 0.0f;
         scale = 1.0f;
 
         m_type = CREATE_ENTITY;
-        m_size = 2 * sizeof(int) + sizeof(id) + sizeof(type) + 4 * sizeof(float);
+        m_size = 2 * sizeof(int) + sizeof(id) + sizeof(type) + 7 * sizeof(float);
     }
-    CreateEntity(uint32_t _id, EntityType _type, float _x = 0.0f, float _y = 0.0f, float _z = 0.0f, float _scale = 1.0f)
+    CreateEntity(uint32_t _id, EntityType _type, XMFLOAT3 pos = {0.0f, 0.0f, 0.0f}, XMFLOAT3 dir = {0.0f, 0.0f, 0.0f}, float _scale = 1.0f)
     {
         id = _id;
         type = _type;
-        x = _x;
-        y = _y;
-        z = _z;
+        x = pos.x;
+        y = pos.y;
+        z = pos.z;
+        dx = dir.x;
+        dy = dir.y;
+        dz = dir.z;
         scale = _scale;
         
         m_type = CREATE_ENTITY;
-        m_size = 2 * sizeof(int) + sizeof(id) + sizeof(type) + 4 * sizeof(float);
+        m_size = 2 * sizeof(int) + sizeof(id) + sizeof(type) + 7 * sizeof(float);
     }
     
     char* Serialize()
@@ -265,6 +274,12 @@ public:
         bufferCursor += sizeof(y);
         std::memcpy(bufferCursor, &z, sizeof(z));
         bufferCursor += sizeof(z);
+        std::memcpy(bufferCursor, &dx, sizeof(dx));
+        bufferCursor += sizeof(dx);
+        std::memcpy(bufferCursor, &dy, sizeof(dy));
+        bufferCursor += sizeof(dy);
+        std::memcpy(bufferCursor, &dz, sizeof(dz));
+        bufferCursor += sizeof(dz);
         
         std::memcpy(bufferCursor, &scale, sizeof(scale));
         bufferCursor += sizeof(scale);
@@ -287,6 +302,12 @@ public:
         _message += sizeof(y);
         std::memcpy(&z, _message, sizeof(z));
         _message += sizeof(z);
+        std::memcpy(&dx, _message, sizeof(dx));
+        _message += sizeof(dx);
+        std::memcpy(&dy, _message, sizeof(dy));
+        _message += sizeof(dy);
+        std::memcpy(&dz, _message, sizeof(dz));
+        _message += sizeof(dz);
         std::memcpy(&scale, _message, sizeof(scale));
         _message += sizeof(scale);
     }
@@ -829,7 +850,7 @@ public:
     
     void PrintInfo(bool isSent)
     {
-        Packet::PrintInfo(isSent);
+        // Packet::PrintInfo(isSent);
     }
 };
 
@@ -888,7 +909,6 @@ public:
 class ShootProjectilePacket : public Packet
 {
 public:
-    uint32_t shooterID;
     float px;
     float py;
     float pz;
@@ -899,17 +919,15 @@ public:
 
     ShootProjectilePacket()
     {
-        shooterID = 0;
         px = py = pz = 0.0f;
         dx = dy = dz = 0.0f;
 
         m_type = SHOOT_PROJECTILE;
-        m_size = 2 * sizeof(int) + sizeof(shooterID) + 6 * sizeof(float);
+        m_size = 2 * sizeof(int) + 6 * sizeof(float);
     }
 
-    ShootProjectilePacket(uint32_t _shooterID, float _px, float _py, float _pz, float _dx, float _dy, float _dz)
+    ShootProjectilePacket(float _px, float _py, float _pz, float _dx, float _dy, float _dz)
     {
-        shooterID = _shooterID;
         px = _px;
         py = _py;
         pz = _pz;
@@ -918,7 +936,7 @@ public:
         dz = _dz;
 
         m_type = SHOOT_PROJECTILE;
-        m_size = 2 * sizeof(int) + sizeof(shooterID) + 6 * sizeof(float);
+        m_size = 2 * sizeof(int) + 6 * sizeof(float);
     }
 
     char* Serialize()
@@ -930,8 +948,7 @@ public:
         bufferCursor += sizeof(m_type);
         std::memcpy(bufferCursor, &m_size, sizeof(m_size));
         bufferCursor += sizeof(m_size);
-        std::memcpy(bufferCursor, &shooterID, sizeof(shooterID));
-        bufferCursor += sizeof(shooterID);
+
         std::memcpy(bufferCursor, &px, sizeof(px));
         bufferCursor += sizeof(px);
         std::memcpy(bufferCursor, &py, sizeof(py));
@@ -951,8 +968,7 @@ public:
     {
         Packet::Deserialize(_message);
         _message += sizeof(m_type) + sizeof(m_size);
-        std::memcpy(&shooterID, _message, sizeof(shooterID));
-        _message += sizeof(shooterID);
+        
         std::memcpy(&px, _message, sizeof(px));
         _message += sizeof(px);
         std::memcpy(&py, _message, sizeof(py));
@@ -967,7 +983,10 @@ public:
         _message += sizeof(dz);
     }
 
-	void PrintInfo(bool isSent) {}
+	void PrintInfo(bool isSent)
+    {
+        Packet::PrintInfo(isSent);
+    }
 
 };
 
