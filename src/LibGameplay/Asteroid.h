@@ -21,6 +21,8 @@ public:
 
 private:
 	XMFLOAT3 m_YPR;
+	float m_rotationSpeed;
+	
 	cpu_mesh m_mesh;
 	cpu_material m_material;
 
