@@ -9,6 +9,8 @@ public:
 	~Asteroid();
 
 	void Update(float dt) override;
+	void Destroy() override;
+	
 	void Init(float size);
 	void SetRotDir(float yaw, float pitch, float roll);
 	void SetColor(XMFLOAT3 color) { m_material.color = color; }

@@ -248,6 +248,15 @@ void Client::HandlePackets()
 
             p->SetSpeed(casted->speed);
         }
+        if (type == DESTROY_ENTITY)
+        {
+            DestroyEntityPacket* casted = dynamic_cast<DestroyEntityPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+            e->Destroy();
+        }
     }
 
     for (int i = 0; i < m_packets.size(); i++)

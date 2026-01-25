@@ -32,7 +32,9 @@ public:
 	virtual void UpdateRenderElements(float dt) {}
 	virtual void Render();
 
-	void Destroy();
+	virtual void Destroy();
+	bool GetToDestroy() { return m_toDestroy; };
+	
 	uint32_t GetID() const { return m_id; }
 	cpu_transform& GetTransform();
 	EntityType GetType() const { return m_type; }

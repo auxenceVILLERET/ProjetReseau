@@ -7,14 +7,15 @@ using namespace DirectX;
 
 struct ClientInfo;
 
-class ManagerMethods
+class ServerMethods
 {
 public:
     static void Init();
     static void SendCreationPackets(ClientInfo* pTarget);
 
     static void HandleDirtyEntities();
-
+    static void HandleDestroyedEntities();
+    
     static void InitMap();
 };
 

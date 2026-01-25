@@ -1,7 +1,7 @@
 #ifndef MANAGERMETHODS_CPP_DEFINED
 #define MANAGERMETHODS_CPP_DEFINED
 
-#include "ManagerMethods.h"
+#include "ServerMethods.h"
 
 #include "Entity.h"
 #include "GameManager.h"
@@ -11,12 +11,12 @@
 #include "Asteroid.h"
 
 
-void ManagerMethods::Init()
+void ServerMethods::Init()
 {
     
 }
 
-void ManagerMethods::SendCreationPackets(ClientInfo* pTarget)
+void ServerMethods::SendCreationPackets(ClientInfo* pTarget)
 {
     for (Entity* entity : GameManager::GetInstance()->GetEntities())
     {
@@ -31,7 +31,7 @@ void ManagerMethods::SendCreationPackets(ClientInfo* pTarget)
     }
 }
 
-void ManagerMethods::HandleDirtyEntities()
+void ServerMethods::HandleDirtyEntities()
 {
     for (Entity* entity : GameManager::GetInstance()->GetEntities())
     {
@@ -61,7 +61,18 @@ void ManagerMethods::HandleDirtyEntities()
     }
 }
 
-void ManagerMethods::InitMap()
+void ServerMethods::HandleDestroyedEntities()
+{
+    for (Entity* entity : GameManager::GetInstance()->GetEntities())
+    {
+        if (entity->GetToDestroy() == false) continue;
+
+        DestroyEntityPacket* packet = new DestroyEntityPacket(entity->GetID());
+        Server::GetInstance()->SendPacket(packet);
+    }
+}
+
+void ServerMethods::InitMap()
 {
     for (int i = 0; i < ASTEROID_COUNT; ++i)
     {

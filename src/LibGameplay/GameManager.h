@@ -10,6 +10,7 @@ public:
 	void Start();
 	void UpdateRenderElements(float dt);
 	void Update(float dt);
+	void ClearDestroyedEntities();
 	void Exit();
 	void Render(int pass);
 	void CheckCollisions();

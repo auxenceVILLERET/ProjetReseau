@@ -7,7 +7,7 @@
 #include <WS2tcpip.h>
 
 #include "GameManager.h"
-#include "ManagerMethods.h"
+#include "ServerMethods.h"
 #include "Message.h"
 #include "Packets.hpp"
 #include "Player.h"
@@ -46,7 +46,7 @@ void Server::Init()
 
     m_chrono.Start();
     CreateThread(nullptr, 0, ReceiveThread, this, 0, nullptr);
-	ManagerMethods::InitMap();
+	ServerMethods::InitMap();
     
     std::cout << "Connection established.\n";
 }
@@ -148,7 +148,7 @@ void Server::HandlePackets()
             PingPongPacket* responsePkt = new PingPongPacket(casted->username, false);
             SendTargetedPacket(responsePkt, pClient);
             
-            ManagerMethods::SendCreationPackets(pClient);
+            ServerMethods::SendCreationPackets(pClient);
             Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
             p->GetTransform().pos = GetSpawnPoint();
             CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
@@ -279,8 +279,9 @@ void Server::Update()
 {
     HandlePackets();
     GameManager::GetInstance()->Update(m_chrono.Reset());
-
-    ManagerMethods::HandleDirtyEntities();
+    ServerMethods::HandleDirtyEntities();
+    ServerMethods::HandleDestroyedEntities();
+    GameManager::GetInstance()->ClearDestroyedEntities();
     
     for (Message* msg : m_pendingMessages)
     {

@@ -18,7 +18,8 @@ inline std::vector<std::string> PacketTypeNames
     "SCALE ENTITY",
     "CHANGE PLAYER SPEED",
     "SET PLAYER SPEED",
-    "SHOOT PROJECTILE"
+    "SHOOT PROJECTILE",
+    "Destroy Entity"
 };
 
 class Packet

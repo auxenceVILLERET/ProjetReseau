@@ -12,7 +12,7 @@ Projectile::Projectile(bool isServerSide) : Entity(isServerSide)
 	}
 	
 	GetTransform().SetScaling(0.2f);
-	m_speed = 20.0f;
+	m_speed = 40.0f;
 	m_collider.radius = 0.2f;
 	m_type = EntityType::PROJECTILE;
 }

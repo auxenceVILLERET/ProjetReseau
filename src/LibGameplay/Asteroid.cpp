@@ -25,13 +25,21 @@ void Asteroid::Update(float dt)
 	
 }
 
+void Asteroid::Destroy()
+{
+	if (m_isServerSide)
+		m_toDestroy = true;
+	else
+		ExplosionParticul();
+}
+
 void Asteroid::Init(float size)
 {
 	Scale(size);
-	m_collider.radius = size * 0.6f;
+	m_collider.radius = size * 0.9f;
 }
 
-void Asteroid::SetRotDir(float yaw, float pitch, float roll)
+void Asteroid::SetRotDir(float yaw, float pitch, float roll)	
 {
 	m_YPR = XMFLOAT3(yaw, pitch, roll);
 }
@@ -40,8 +48,7 @@ void Asteroid::OnCollision(Entity* other)
 {
 	if(other->GetType() == EntityType::PROJECTILE)
 	{
-		if (m_isServerSide == false)
-			ExplosionParticul();
+		Destroy();
 	}
 }
 
@@ -92,7 +99,7 @@ void Asteroid::UpdateRenderElements(float dt)
 			m_pEmitter->density = 0.0f;
 			m_timerParticul = 0.0f;
 			delete m_pEmitter;
-			Destroy();
+			m_toDestroy = true;
 		}
 	}
 }

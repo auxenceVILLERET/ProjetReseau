@@ -21,7 +21,7 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 	m_speedMovement = 1.0f;
 	m_maxSpeed = 10.0f;
 
-	m_shootCooldown = 0.2f;
+	m_shootCooldown = 0.1f;
 	m_shootTimer = 0.0f;
 
 	m_collider.radius = 1.0f;

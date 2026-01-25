@@ -137,6 +137,9 @@ std::vector<Packet*> Message::Deserialize(char* message)
 			case PacketType::SHOOT_PROJECTILE:
 				packet = new ShootProjectilePacket();
 				break;
+            case PacketType::DESTROY_ENTITY:
+                packet = new DestroyEntityPacket();
+                break;
         }
 
         if (packet == nullptr) continue;

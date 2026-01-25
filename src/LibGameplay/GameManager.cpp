@@ -16,6 +16,7 @@ GameManager* GameManager::GetInstance()
 
 GameManager::GameManager() : m_deltaTime(0.0f)
 {
+	
 }
 
 std::vector<Entity*>& GameManager::GetEntities()
@@ -53,9 +54,12 @@ void GameManager::Update(float dt)
 		entity->Update(m_deltaTime);
 		++it;
 	}
+}
+
+void GameManager::ClearDestroyedEntities()
+{
 	for (auto it = m_entities.begin(); it != m_entities.end(); )
 	{
-
 		Entity* entity = *it;
 		if (entity->m_toDestroy)
 		{

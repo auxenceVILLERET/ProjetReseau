@@ -80,6 +80,8 @@ void App::OnUpdate()
 		}
 	}
 
+	GameManager::GetInstance()->ClearDestroyedEntities();
+	
 	// Quit
 	if ( cpuInput.IsKeyDown(VK_ESCAPE) )
 		cpuEngine.Quit();
