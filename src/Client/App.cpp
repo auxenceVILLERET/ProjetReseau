@@ -110,7 +110,8 @@ void App::OnUpdate()
 					ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
 					m_pPlayer->SetAlive(true);
 					m_pPlayer->Heal(0.0f);
-
+					ResetHealthSprites();
+					CreateHealthSprite();
 				}
 			}
 
@@ -253,10 +254,10 @@ void App::HandleInput()
  		if (m_pPlayer->Shoot())
 			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
  	}
-// if(cpuInput.IsKeyDown('H'))
-// {
-// 	m_pPlayer->TakeDamage(5.0f);
-// }
+	if (cpuInput.IsKeyDown('H'))
+	{
+		m_pPlayer->TakeDamage(10.0f);
+	}
 }
 
 void App::LoginUpdate(float dt)
@@ -397,6 +398,15 @@ void App::CreateHealthSprite()
 		m_pSprite->y = 50 + (i * 20);
 		m_healthSprites.push_back(m_pSprite);
 	}
+}
+
+void App::ResetHealthSprites()
+{
+	for (cpu_sprite* sprite : m_healthSprites)
+	{
+		cpuEngine.Release(sprite);
+	}
+	m_healthSprites.clear();
 }
 
 void App::MyPixelShader(cpu_ps_io& io)

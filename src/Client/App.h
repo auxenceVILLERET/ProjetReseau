@@ -24,6 +24,7 @@ public:
 
 	void UpdateHealthSprite();
 	void CreateHealthSprite();
+	void ResetHealthSprites();
 
 	void LoginUpdate(float dt);
 
