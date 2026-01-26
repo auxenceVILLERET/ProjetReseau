@@ -36,7 +36,7 @@ void App::OnStart()
 	cpuEngine.GetCamera()->UpdateProjection();
 	cpuEngine.GetParticleData()->Create(1000000);
 
-	m_texture.Load("../../res/Client/CarreRougeVie.png");
+	m_texture.Load("../../res/Client/vie.png");
 	GameManager::GetInstance();
 	m_font.Create(12, { 1.0f, 1.0f, 1.0f });
 
