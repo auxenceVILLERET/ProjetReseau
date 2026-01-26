@@ -197,7 +197,7 @@ void App::HandleInput()
  	if(cpuInput.IsKey(VK_LBUTTON))
  	{
  		if (m_pPlayer->Shoot())
-			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
+			ClientMethods::ShootProjectile(m_pPlayer->GetID(), m_pPlayer->GetTransform().pos, dir);
  	}
 // if(cpuInput.IsKeyDown('H'))
 // {
