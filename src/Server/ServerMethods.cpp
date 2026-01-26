@@ -5,7 +5,7 @@
 
 #include "Entity.h"
 #include "GameManager.h"
-#include "Packets.hpp"
+#include "Packets/Packets.h"
 #include "Server.h"
 #include "Gameplay.h"
 #include "Asteroid.h"

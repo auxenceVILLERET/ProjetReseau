@@ -1,7 +1,7 @@
 #ifndef CLIENTMETHODS_H_DEFINED
 #define CLIENTMETHODS_H_DEFINED
 #include "Entity.h"
-#include "LibNetwork/Packets.hpp"
+#include "LibNetwork/Packets/Packets.h"
 
 class ClientMethods 
 {

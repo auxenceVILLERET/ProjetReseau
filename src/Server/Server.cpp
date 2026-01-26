@@ -9,7 +9,7 @@
 #include "GameManager.h"
 #include "ServerMethods.h"
 #include "Message.h"
-#include "Packets.hpp"
+#include "Packets/Packets.h"
 #include "Player.h"
 #include "Projectile.h"
 #include "../LibNetwork/Socket.h"

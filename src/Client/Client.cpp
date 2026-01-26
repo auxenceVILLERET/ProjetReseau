@@ -9,7 +9,7 @@
 #include "ClientMethods.h"
 #include "GameManager.h"
 #include "Message.h"
-#include "Packets.hpp"
+#include "Packets/Packets.h"
 #include "Entity.h"
 #include "Player.h"
 
