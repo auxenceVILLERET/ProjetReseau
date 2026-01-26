@@ -4,9 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "Packet.h"
-#include "Packets.hpp"
-
+#include "Packets/Packets.h"
 
 uint32_t Message::ID_COUNT = 0;
 
@@ -94,9 +92,6 @@ std::vector<Packet*> Message::Deserialize(char* message)
         switch (packetType)
         {
             default:
-                break;
-            case PacketType::BALL_UPDATE:
-                packet = new BallUpdatePacket();
                 break;
             case PacketType::MESSAGE:
                 packet = new MessagePacket();

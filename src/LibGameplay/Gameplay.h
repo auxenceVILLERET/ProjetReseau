@@ -5,6 +5,11 @@
 #define BORDER_MIN (-50.0f)
 #define ASTEROID_COUNT 160
 
+#include <DirectXMath.h>
+#include <vector>
+
+using namespace DirectX;
+
 enum EntityType
 {
     PLAYER,
