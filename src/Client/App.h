@@ -32,6 +32,7 @@ public:
 	void OutOfArenaUpdate(float dt);
 
 	void Respawn();
+	void ChatUpdate();
 
 private:
 	
@@ -70,6 +71,12 @@ private:
 
 	////////// USERNAME //////////////
 	InputText m_usernameText;
+	////////////////////////////////
+
+	///////// CHAT ////////////////
+	bool m_chatOpen = false;
+	InputText m_chatInput;
+	InputText m_chatText;
 	////////////////////////////////
 };
 

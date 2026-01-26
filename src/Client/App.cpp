@@ -61,6 +61,15 @@ void App::OnStart()
 	m_usernameText.Create(12, { 1.0f, 1.0f, 1.0f });
 	m_usernameText.SetAnchor(CPU_TEXT_CENTER);
 	m_usernameText.SetPos({ 256, 220 });
+
+	m_chatText.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_chatText.SetAnchor(CPU_TEXT_LEFT);
+	m_chatText.SetPos({ 340, 220 });
+	m_chatText.SetText("Chat:");
+	
+	m_chatInput.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_chatInput.SetAnchor(CPU_TEXT_LEFT);
+	m_chatInput.SetPos({ 400, 220 });
 }	
 
 void App::OnUpdate()
@@ -83,6 +92,7 @@ void App::OnUpdate()
 			OutOfArenaUpdate(dt);
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
+			ChatUpdate();
 			if (m_pPlayer->IsAlive() == false)
 			{
 				if (m_pPlayer->GetActiveState() == true)
@@ -164,6 +174,23 @@ void App::Respawn()
 	CreateHealthSprite();
 }
 
+void App::ChatUpdate()
+{
+	if (m_chatOpen)
+	{
+		m_chatInput.HandleInput();
+
+		if (m_chatInput.IsFinished())
+		{
+			ClientMethods::SendChatMessage(m_pPlayer->GetID(),m_chatInput.GetText().c_str());
+			m_chatOpen = false;
+		}
+
+		return; 
+	}
+
+}
+
 void App::OnRender(int pass)
 {
 	if (!m_isConnected)
@@ -176,6 +203,22 @@ void App::OnRender(int pass)
 	{
 		m_usernameText.SetText(m_username);
 		m_usernameText.Render();
+	}
+
+	if (m_chatOpen)
+	{
+		m_chatInput.Render();
+		m_chatText.Render();
+		float y = 240.0f;
+
+		for (const ChatLine& line : ClientMethods::s_chatMessages)
+		{
+			std::string msg = "[" + line.user + "] " + line.text;
+
+			cpuDevice.DrawText(&m_font,msg.c_str(),380,y,CPU_TEXT_LEFT);
+
+			y += 16.0f;
+		}
 	}
 
 	if(m_pPlayer != nullptr && m_pPlayer->IsAlive() == false && m_respawnTimer < m_timeRespawn)
@@ -283,9 +326,10 @@ void App::HandleInput()
  		if (m_pPlayer->Shoot())
 			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
  	}
-	if (cpuInput.IsKeyDown('H'))
+	if(cpuInput.IsKey('T'))
 	{
-		m_pPlayer->TakeDamage(10.0f);
+		m_chatOpen = !m_chatOpen;
+		m_chatInput.Reset();
 	}
 }
 
