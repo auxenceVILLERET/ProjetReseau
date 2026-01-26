@@ -206,8 +206,17 @@ void Server::HandlePackets()
             else
                 e->SetInactive();
 
-			SendPacket(casted);
+			SetActiveStatePacket* nPacket = new SetActiveStatePacket(casted->id, casted->isActive);
+			SendPacket(nPacket);
 		}
+        if (type == SET_ENTITY_POS)
+        {
+            SetEntityPos* casted = dynamic_cast<SetEntityPos*>(packet);
+            if (casted == nullptr) continue;
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+            e->SetPos(casted->x, casted->y, casted->z);
+        }
     }
 
     for (int i = 0; i < m_packets.size(); i++)

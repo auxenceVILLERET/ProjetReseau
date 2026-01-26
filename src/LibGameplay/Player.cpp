@@ -8,6 +8,7 @@
 Player::Player(bool isServerSide) : Entity(isServerSide)
 {
 	m_health = 100.0f;
+	m_maxHealth = 100.0f;
 
 	if (!m_isServerSide)
 	{
@@ -96,24 +97,26 @@ void Player::OnCollision(Entity* other)
 {
 	if(other->GetType() == EntityType::ASTEROID)
 	{
-		m_health -= 100.0f;
-		if (m_health <= 0.0f)
-		{
-			m_isAlive = false;
-		}
+		TakeDamage(100.0f);
 	}
 }
 
 void Player::SetActive()
 {
 	m_isActive = true;
-	m_pCpuEntity->visible = true;
+	if (m_isServerSide == false)
+	{
+		m_pCpuEntity->visible = true;
+	}
 }
 
 void Player::SetInactive()
 {
 	m_isActive = false;
-	m_pCpuEntity->visible = false;
+	if (m_isServerSide == false)
+	{
+		m_pCpuEntity->visible = false;
+	}
 }
 
 

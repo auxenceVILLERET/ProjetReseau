@@ -19,9 +19,6 @@ public:
 	void Render()						override;
 	void OnCollision(Entity* other)		override;
 
-	float GetHealth() const				{ return m_health; }
-	void TakeDamage(float damage)		{ m_health -= damage; }
-
 	void SetSpeed(float speed)			{ m_speedMovement = std::clamp(speed, 1.0f, m_maxSpeed); }
 	void AddSpeed(float delta)			{ SetSpeed(m_speedMovement + delta); }
 	float GetSpeed()					{ return m_speedMovement; }
@@ -30,12 +27,8 @@ public:
 
 	void SetActive()					override;
 	void SetInactive()					override;
-
-	bool GetActiveState() { return m_isActive; }
-	bool IsAlive() { return m_isAlive; }
-	void SetAlive(bool newState) { m_isAlive = newState; }
+	
 private:
-	float m_health;
 
 	float m_speedRotation;
 	float m_speedMovement;
@@ -44,8 +37,6 @@ private:
 	float m_shootCooldown;
 	float m_shootTimer;
 
-	bool m_isActive = true;
-	bool m_isAlive = true;
 
 	cpu_mesh m_mesh;
 	cpu_material m_material;

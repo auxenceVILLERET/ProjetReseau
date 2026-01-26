@@ -56,6 +56,11 @@ void ServerMethods::HandleDirtyEntities()
             SetEntityScale* packet = new SetEntityScale(id, scale);
             Server::GetInstance()->SendPacket(packet);
         }
+        if(dirty & DIRTY_TYPES::HEALTH)
+        {
+            SetEntityHealthPacket* packet = new SetEntityHealthPacket(id, entity->GetHealth());
+            Server::GetInstance()->SendPacket(packet);
+		}
 
         entity->ClearDirtyFlags();
     }

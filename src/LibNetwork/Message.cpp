@@ -140,6 +140,12 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::DESTROY_ENTITY:
                 packet = new DestroyEntityPacket();
                 break;
+			case PacketType::SET_ACTIVE_STATE:
+				packet = new SetActiveStatePacket();
+				break;
+            case PacketType::SET_HEALTH:
+                packet = new SetEntityHealthPacket();
+				break;
         }
 
         if (packet == nullptr) continue;

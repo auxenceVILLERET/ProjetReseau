@@ -257,6 +257,31 @@ void Client::HandlePackets()
             if (e == nullptr) continue;
             e->Destroy();
         }
+        if(type == SET_ACTIVE_STATE)
+        {
+            SetActiveStatePacket* casted = dynamic_cast<SetActiveStatePacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            if (casted->isActive)
+                e->SetActive();
+            else
+                e->SetInactive();
+		}
+        if (type == SET_HEALTH)
+        {
+            SetEntityHealthPacket* casted = dynamic_cast<SetEntityHealthPacket*>(packet);
+
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+
+            if (e == nullptr) continue;
+
+            e->SetHealth(casted->health);
+        }
     }
 
     for (int i = 0; i < m_packets.size(); i++)

@@ -20,7 +20,8 @@ inline std::vector<std::string> PacketTypeNames
     "SET PLAYER SPEED",
     "SHOOT PROJECTILE",
     "DESTROY ENTITY",
-	"SET ACTIVE STATE"
+	"SET ACTIVE STATE",
+	"SET HEALTH",
 };
 
 class Packet

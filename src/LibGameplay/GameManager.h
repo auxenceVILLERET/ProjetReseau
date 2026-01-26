@@ -2,7 +2,7 @@
 #define GAMEMANAGER_H_DEFINED
 
 class Entity;
-class SphereCollider;
+struct SphereCollider;
 
 class GameManager
 {

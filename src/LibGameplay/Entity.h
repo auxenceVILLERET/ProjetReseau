@@ -59,6 +59,16 @@ public:
 
 	float GetScale();
 
+	bool IsAlive() { return m_isAlive; }
+	void SetAlive(bool newState) { m_isAlive = newState; }
+
+	void SetHealth(float health);
+	void SetMaxHealth(float maxHealth) { m_maxHealth = maxHealth; }
+	float GetHealth() { return m_health; }
+	void TakeDamage(float damage);
+	void Heal(float amount);
+
+	bool GetActiveState() { return m_isActive; }
 protected:
 	cpu_entity* m_pCpuEntity;
 	SphereCollider m_collider;
@@ -68,6 +78,12 @@ protected:
 	bool m_isServerSide = false;
 	
 	int m_dirtyFlags = 0;
+
+	bool m_isAlive = true;
+	float m_health = 100.0f;
+	float m_maxHealth = 100.0f;
+	bool m_isActive = true;
+
 private:
 	static uint32_t ID_COUNT;
 	uint32_t m_id;

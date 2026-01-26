@@ -83,7 +83,7 @@ bool ClientMethods::SetActiveState(uint32_t id, bool isActive)
 
 bool ClientMethods::SetPosition(uint32_t id, XMFLOAT3 position)
 {
-    MoveEntityPacket* packet = new MoveEntityPacket(id, position.x, position.y, position.z);
+    SetEntityPos* packet = new SetEntityPos(id, position.x, position.y, position.z);
     Client::GetInstance()->SendPacket(packet);
     return true;
 }
