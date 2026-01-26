@@ -176,6 +176,7 @@ void Server::HandlePackets()
             if (p == nullptr) continue;
 
             p->AddSpeed(casted->delta);
+
             SetPlayerSpeedPacket* nPacket = new SetPlayerSpeedPacket(p->GetID(), p->GetSpeed());
             SendPacket(nPacket);
         }
@@ -191,6 +192,22 @@ void Server::HandlePackets()
             CreateEntity* nPacket = new CreateEntity(e->GetID(), e->GetType(), e->GetTransform().pos, e->GetTransform().dir, e->GetScale());
             SendPacket(nPacket);
         }
+        if(type == SET_ACTIVE_STATE)
+        {
+            SetActiveStatePacket* casted = dynamic_cast<SetActiveStatePacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+
+            if (e == nullptr) continue;
+
+            if (casted->isActive)
+                e->SetActive();
+            else
+                e->SetInactive();
+
+			SendPacket(casted);
+		}
     }
 
     for (int i = 0; i < m_packets.size(); i++)

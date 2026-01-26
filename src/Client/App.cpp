@@ -5,6 +5,7 @@
 #include "GameManager.h"
 #include "Asteroid.h"
 #include <iostream>
+#include "Gameplay.h"
 
 #include "ClientMethods.h"
 
@@ -70,6 +71,26 @@ void App::OnUpdate()
 			HandleInput();
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
+			if (m_pPlayer->IsAlive() == false)
+			{
+				if (m_pPlayer->GetActiveState() == true)
+				{
+					ClientMethods::SetActiveState(m_pPlayer->GetID(), false);
+				}
+			}
+
+			if (m_respawnTimer < m_timeRespawn && m_pPlayer->IsAlive() == false)
+			{
+				m_respawnTimer += dt;
+				if (m_respawnTimer >= m_timeRespawn)
+				{
+					m_respawnTimer = 0.0f;
+					ClientMethods::SetActiveState(m_pPlayer->GetID(), true);
+					XMFLOAT3 spawnPos = GetSpawnPoint();
+					ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
+					m_pPlayer->SetAlive(true);
+				}
+			}
 		}
 		else
 		{

@@ -99,9 +99,21 @@ void Player::OnCollision(Entity* other)
 		m_health -= 100.0f;
 		if (m_health <= 0.0f)
 		{
-			Destroy();
+			m_isAlive = false;
 		}
 	}
+}
+
+void Player::SetActive()
+{
+	m_isActive = true;
+	m_pCpuEntity->visible = true;
+}
+
+void Player::SetInactive()
+{
+	m_isActive = false;
+	m_pCpuEntity->visible = false;
 }
 
 

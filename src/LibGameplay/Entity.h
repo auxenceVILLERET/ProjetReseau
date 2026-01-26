@@ -13,9 +13,10 @@ struct SphereCollider
 
 enum DIRTY_TYPES
 {
-	POS			= 0b100,
-	ROTATION	= 0b010,
-	SCALE		= 0b001
+	POS			= 0b1000,
+	ROTATION	= 0b0100,
+	SCALE		= 0b0010,
+	HEALTH		= 0b0001
 };
 
 class Entity
@@ -31,6 +32,9 @@ public:
 	virtual void InitRenderElements() {}
 	virtual void UpdateRenderElements(float dt) {}
 	virtual void Render();
+
+	virtual void SetActive() {}
+	virtual void SetInactive() {}
 
 	virtual void Destroy();
 	bool GetToDestroy() { return m_toDestroy; };

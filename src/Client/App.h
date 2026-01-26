@@ -37,6 +37,8 @@ private:
 	cpu_texture m_texture;
 	std::vector<cpu_sprite*> m_healthSprites;
 
+	float m_timeRespawn = 3.0f;
+	float m_respawnTimer = 0.0f;
 
 	////////// LOGIN //////////////
 	bool m_isConnected = false;
