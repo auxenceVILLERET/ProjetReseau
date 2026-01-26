@@ -141,6 +141,9 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::SET_HEALTH:
                 packet = new SetEntityHealthPacket();
 				break;
+			case PacketType::SET_ENTITY_DIR:
+				packet = new SetEntityDirPacket();
+				break;
         }
 
         if (packet == nullptr) continue;

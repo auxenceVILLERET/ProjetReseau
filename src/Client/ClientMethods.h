@@ -15,6 +15,7 @@ public:
 	static bool ShootProjectile(XMFLOAT3 position, XMFLOAT3 direction);
 	static bool SetActiveState(uint32_t id, bool isActive);
 	static bool SetPosition(uint32_t id, XMFLOAT3 position);
+	static bool SetDirection(uint32_t id, XMFLOAT3 rotation);
 };
 
 #endif

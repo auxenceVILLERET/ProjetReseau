@@ -21,7 +21,8 @@ inline std::vector<std::string> PacketTypeNames
     "SHOOT PROJECTILE",
     "DESTROY ENTITY",
 	"SET ACTIVE STATE",
-    "SET HEALTH"
+    "SET HEALTH",
+	"SET ENTITY DIR"
 };
 
 enum PacketType
@@ -42,7 +43,8 @@ enum PacketType
     SHOOT_PROJECTILE,
     DESTROY_ENTITY,
     SET_ACTIVE_STATE,
-    SET_HEALTH
+    SET_HEALTH,
+	SET_ENTITY_DIR
 };
 
 class Packet

@@ -88,6 +88,13 @@ bool ClientMethods::SetPosition(uint32_t id, XMFLOAT3 position)
     return true;
 }
 
+bool ClientMethods::SetDirection(uint32_t id, XMFLOAT3 rotation)
+{
+    SetEntityDirPacket* packet = new SetEntityDirPacket(id, rotation.x, rotation.y, rotation.z);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
 
 
 #endif

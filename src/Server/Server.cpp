@@ -151,6 +151,18 @@ void Server::HandlePackets()
             ServerMethods::SendCreationPackets(pClient);
             Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
             p->GetTransform().pos = GetSpawnPoint();
+            XMFLOAT3 dir;
+			dir.x = 0.0f - p->GetTransform().pos.x;
+			dir.y = 0.0f - p->GetTransform().pos.y;
+			dir.z = 0.0f - p->GetTransform().pos.z;
+			float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+            if (length > 0.0001f)
+            {
+                dir.x /= length;
+                dir.y /= length;
+                dir.z /= length;
+            }
+			p->GetTransform().LookTo(dir.x, dir.y, dir.z);
             CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
             SendPacket(createPacket);
 
@@ -216,6 +228,16 @@ void Server::HandlePackets()
             Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
             if (e == nullptr) continue;
             e->SetPos(casted->x, casted->y, casted->z);
+        }
+        if (type == SET_ENTITY_DIR)
+        {
+            SetEntityDirPacket* casted = dynamic_cast<SetEntityDirPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
         }
     }
 

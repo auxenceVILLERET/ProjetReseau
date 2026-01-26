@@ -9,6 +9,7 @@
 
 #include "ClientMethods.h"
 
+const XMFLOAT3 ARENEA_CENTER = { 0.0f, 0.0f, 0.0f };
 
 
 App::App()
@@ -108,6 +109,19 @@ void App::OnUpdate()
 					ClientMethods::SetActiveState(m_pPlayer->GetID(), true);
 					XMFLOAT3 spawnPos = GetSpawnPoint();
 					ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
+					XMFLOAT3 dir;
+					dir.x = ARENEA_CENTER.x - spawnPos.x;
+					dir.y = ARENEA_CENTER.y - spawnPos.y;
+					dir.z = ARENEA_CENTER.z - spawnPos.z;
+					float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+					if(length > 0.0001f)
+					{
+						dir.x /= length;
+						dir.y /= length;
+						dir.z /= length;
+					}
+					ClientMethods::SetDirection(m_pPlayer->GetID(), dir);
+
 					m_pPlayer->SetAlive(true);
 					m_pPlayer->Heal(0.0f);
 					ResetHealthSprites();

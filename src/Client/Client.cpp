@@ -282,6 +282,14 @@ void Client::HandlePackets()
 
             e->SetHealth(casted->health);
         }
+        if(type == SET_ENTITY_DIR)
+        {
+            SetEntityDirPacket* casted = dynamic_cast<SetEntityDirPacket*>(packet);
+            if (casted == nullptr) continue;
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+            e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
+		}
     }
 
     for (int i = 0; i < m_packets.size(); i++)

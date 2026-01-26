@@ -17,5 +17,6 @@
 #include "SetPlayerIDPacket.hpp"
 #include "SetPlayerSpeedPacket.hpp"
 #include "ShootProjectilePacket.hpp"
+#include "SetEntityDirPacket.hpp"
 
 #endif
