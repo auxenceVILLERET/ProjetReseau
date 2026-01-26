@@ -109,6 +109,8 @@ void App::OnUpdate()
 					XMFLOAT3 spawnPos = GetSpawnPoint();
 					ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
 					m_pPlayer->SetAlive(true);
+					m_pPlayer->Heal(0.0f);
+
 				}
 			}
 
