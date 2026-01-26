@@ -71,7 +71,7 @@ bool Player::Shoot()
 void Player::InitRenderElements()
 {
 	m_pEmitter = cpuEngine.CreateParticleEmitter();
-	m_pEmitter->density = 3000.0f;
+	m_pEmitter->density = 1500.0f;
 	m_pEmitter->colorMin = cpu::ToColor(156, 0, 250);
 	m_pEmitter->colorMax = cpu::ToColor(213, 125, 255);
 }
@@ -81,7 +81,7 @@ void Player::UpdateRenderElements(float dt)
 	m_shootTimer += dt;
 	if (m_pEmitter == nullptr) return;
 	
-	m_pEmitter->density = m_speedMovement * 200.0f;
+	m_pEmitter->density = m_speedMovement * 100.0f;
 	m_pEmitter->pos = GetTransform().pos;
 	m_pEmitter->dir.x = -GetTransform().dir.x;
 	m_pEmitter->dir.y = -GetTransform().dir.y;
@@ -99,6 +99,10 @@ void Player::OnCollision(Entity* other)
 	{
 		TakeDamage(100.0f);
 	}
+	if(other->GetType() == EntityType::PROJECTILE)
+	{
+		TakeDamage(10.0f);
+	}
 }
 
 void Player::SetActive()
@@ -107,15 +111,19 @@ void Player::SetActive()
 	if (m_isServerSide == false)
 	{
 		m_pCpuEntity->visible = true;
+
 	}
 }
 
 void Player::SetInactive()
 {
 	m_isActive = false;
+	m_speedMovement = 1.0f;
+
 	if (m_isServerSide == false)
 	{
 		m_pCpuEntity->visible = false;
+		m_pEmitter->density = 0.0f;
 	}
 }
 

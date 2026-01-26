@@ -27,18 +27,29 @@ public:
 
 	void LoginUpdate(float dt);
 
+	bool InArena();
+	void OutOfArenaUpdate(float dt);
+
 private:
 	
 	inline static App* s_pApp = nullptr;
 	cpu_font m_font;
-	cpu_font m_loginFont;
 
 	Player* m_pPlayer = nullptr;
 	cpu_texture m_texture;
 	std::vector<cpu_sprite*> m_healthSprites;
 
+	////////// OUT OF ARENA //////////////
+	float m_timeBeforeOut = 8.0f;
+	float m_outTimer = 0.0f;
+	InputText m_outOfArenaText;
+	////////////////////////////////////
+
+	//////// RESPAWN //////////////
 	float m_timeRespawn = 3.0f;
 	float m_respawnTimer = 0.0f;
+	InputText m_respawnText;
+	//////////////
 
 	////////// LOGIN //////////////
 	bool m_isConnected = false;

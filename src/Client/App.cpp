@@ -11,14 +11,13 @@
 
 
 
-App::App() : m_loginInput(m_loginFont), m_loginHeader(m_loginFont)
+App::App()
 {
 	s_pApp = this;
 	CPU_CALLBACK_START(OnStart);
 	CPU_CALLBACK_UPDATE(OnUpdate);
 	CPU_CALLBACK_EXIT(OnExit);
 	CPU_CALLBACK_RENDER(OnRender);
-
 }
 
 App::~App()
@@ -38,19 +37,26 @@ void App::OnStart()
 
 	m_texture.Load("../../res/Client/CarreRougeVie.png");
 	GameManager::GetInstance();
-	m_font.Create(12);
-
+	m_font.Create(12, { 1.0f, 1.0f, 1.0f });
 
 	Client* client = Client::GetInstance();
-	
-	m_font.Create(12);
-	m_loginFont.Create(15);
+
+	m_loginHeader.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_loginInput.Create(12, { 1.0f, 1.0f, 1.0f });
 	m_loginHeader.SetText("Please enter your username:");
 	m_loginHeader.SetAnchor(CPU_TEXT_CENTER);
 	m_loginHeader.SetPos({ 256, 128 - 10 });
 	m_loginInput.SetAnchor(CPU_TEXT_CENTER);
 	m_loginInput.SetPos({ 256, 128 + 10 });
-}
+
+	m_respawnText.Create(12, { 0.0f, 1.0f, 0.0f });
+	m_respawnText.SetAnchor(CPU_TEXT_CENTER);
+	m_respawnText.SetPos({ 256, 128 });
+
+	m_outOfArenaText.Create(12, { 1.0f, 0.0f, 0.0f });
+	m_outOfArenaText.SetAnchor(CPU_TEXT_CENTER);
+	m_outOfArenaText.SetPos({ 256, 128 - 10 });
+}	
 
 void App::OnUpdate()
 {
@@ -69,6 +75,7 @@ void App::OnUpdate()
 		if (m_pPlayer != nullptr)
 		{
 			HandleInput();
+			OutOfArenaUpdate(dt);
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
 			if (m_pPlayer->IsAlive() == false)
@@ -82,6 +89,19 @@ void App::OnUpdate()
 			if (m_respawnTimer < m_timeRespawn && m_pPlayer->IsAlive() == false)
 			{
 				m_respawnTimer += dt;
+				if (m_respawnTimer >= 2.0f)
+				{
+					m_respawnText.SetText("Respawning in 1...");
+				}
+				else if (m_respawnTimer >= 1.0f)
+				{
+					m_respawnText.SetText("Respawning in 2...");
+				}
+				else if (m_respawnTimer >= 0.0f)
+				{
+					m_respawnText.SetText("Respawning in 3...");
+				}
+
 				if (m_respawnTimer >= m_timeRespawn)
 				{
 					m_respawnTimer = 0.0f;
@@ -91,6 +111,7 @@ void App::OnUpdate()
 					m_pPlayer->SetAlive(true);
 				}
 			}
+
 		}
 		else
 		{
@@ -124,6 +145,16 @@ void App::OnRender(int pass)
 		m_loginHeader.Render();
 		m_loginInput.Render();
 	}		
+
+	if(m_pPlayer != nullptr && m_pPlayer->IsAlive() == false && m_respawnTimer < m_timeRespawn)
+	{
+		m_respawnText.Render();
+	}
+
+	if (m_pPlayer != nullptr && InArena() == true && m_pPlayer->IsAlive() == true)
+	{
+		m_outOfArenaText.Render();
+	}
 	
 	switch (pass)
 	{
@@ -271,6 +302,71 @@ void App::LoginUpdate(float dt)
 	m_loginInput.HandleInput();
 
 	m_isConnected = Client::GetInstance()->GetIsConnected();
+}
+
+bool App::InArena()
+{
+	if (m_pPlayer->GetPos().x > BORDER_MAX)
+		return true;
+	if(m_pPlayer->GetPos().x < BORDER_MIN)
+		return true;
+	if (m_pPlayer->GetPos().y > BORDER_MAX)
+		return true;
+	if (m_pPlayer->GetPos().y < BORDER_MIN)
+		return true;
+	if (m_pPlayer->GetPos().z > BORDER_MAX)
+		return true;
+	if (m_pPlayer->GetPos().z < BORDER_MIN)
+		return true;
+	return false;
+}
+
+void App::OutOfArenaUpdate(float dt)
+{
+	if (InArena() && m_pPlayer->IsAlive() == true)
+	{
+		m_outTimer += dt;
+		
+		if (m_outTimer >= 7.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 1...");
+		}
+		else if (m_outTimer >= 6.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 2...");
+		}
+		else if (m_outTimer >= 5.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 3...");
+		}
+		else if (m_outTimer >= 4.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 4...");
+		}
+		else if (m_outTimer >= 3.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 5...");
+		}
+		else if (m_outTimer >= 2.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 6...");
+		}
+		else if (m_outTimer >= 1.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 7...");
+		}
+		if (m_outTimer >= m_timeBeforeOut)
+		{
+			m_outTimer = 0.0f;
+			m_outOfArenaText.SetText("Return to the arena in 8...");
+			m_pPlayer->TakeDamage(100.0f);
+		}
+	}
+	else
+	{
+		m_outTimer = 0.0f;
+		m_outOfArenaText.SetText("Return to the arena in 8...");
+	}
 }
 
 void App::UpdateHealthSprite()

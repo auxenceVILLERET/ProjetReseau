@@ -54,6 +54,8 @@ public:
 	void Scale(float scale);
 
 	void SetPos(float x, float y, float z);
+	XMFLOAT3 GetPos() { return GetTransform().pos; }
+
 	void SetRotation(XMFLOAT4X4& rot);
 	void SetScale(float scale);
 

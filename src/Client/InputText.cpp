@@ -4,6 +4,16 @@
 
 #include "InputText.h"
 
+InputText::InputText()
+{
+	
+}
+
+void InputText::Create(int _size, XMFLOAT3 _color)
+{
+    m_font.Create(_size, _color);
+}
+
 void InputText::HandleInput()
 {
     if (m_finished)
@@ -44,7 +54,7 @@ void InputText::HandleInput()
 
 void InputText::Render()
 {
-    cpuDevice.DrawText(m_font,
+    cpuDevice.DrawText(&m_font,
         m_text.c_str(),
         m_pos.x, m_pos.y,
         m_anchor);
@@ -55,5 +65,6 @@ void InputText::Reset()
     m_text.clear();
     m_finished = false;
 }
+
 
 #endif
