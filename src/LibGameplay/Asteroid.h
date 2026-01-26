@@ -32,7 +32,7 @@ private:
 	float m_durationParticul;
 	bool m_Explo = false;
 
-	cpu_particle_emitter* m_pEmitter;
+	cpu_particle_emitter* m_pEmitter = nullptr;
 
 };
 

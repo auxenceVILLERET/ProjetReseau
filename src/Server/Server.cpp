@@ -18,7 +18,7 @@ Server* Server::m_pInstance = nullptr;
 
 Server::Server() : m_udpSocket()
 {
-    
+    memset(m_buffer, 0, sizeof(m_buffer));
 }
 
 Server::~Server()
@@ -38,7 +38,7 @@ Server* Server::GetInstance()
 
 void Server::Init()
 {
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     if (!m_udpSocket.Bind("127.0.0.1", 1888))
     {
         std::cout << "Connexion attempt failed.\n" << Sockets::GetError() << "\n";

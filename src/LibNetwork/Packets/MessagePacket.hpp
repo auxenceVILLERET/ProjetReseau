@@ -10,19 +10,22 @@
 class MessagePacket : public Packet
 {
 public:
-    uint32_t len;
+    size_t len;
     std::string text;
     
     MessagePacket()
     {
         len = 0;
+
+        m_type = MESSAGE;
+        m_size = 2 * sizeof(int) + sizeof(size_t) + (int)len;
     }
     MessagePacket(std::string _text) : text(_text)
     {
         m_type = MESSAGE;
 
         len = text.length() + 1;
-        m_size = 2 * sizeof(int) + sizeof(uint32_t) + len;
+        m_size = 2 * sizeof(int) + sizeof(size_t) + (int)len;
     }
 
     char* Serialize()

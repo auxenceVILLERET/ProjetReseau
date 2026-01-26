@@ -16,7 +16,7 @@ UDPSocket::UDPSocket()
 
 UDPSocket::~UDPSocket()
 {
-    Sockets::CloseSocket(mSocket);
+    Sockets::CloseSocket((int)mSocket);
 }
 
 bool UDPSocket::Bind(const std::string& ipaddress, unsigned short port)

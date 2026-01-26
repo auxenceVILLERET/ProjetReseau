@@ -15,6 +15,7 @@ Entity::Entity(bool isServerSize)
 	{
 		m_pCpuEntity = cpuEngine.CreateEntity();
 	}
+	m_type = EntityType::PLAYER;
 }
 
 Entity::~Entity()

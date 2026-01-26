@@ -17,6 +17,8 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 		m_pCpuEntity->pMesh = &m_mesh;
 		m_pCpuEntity->pMaterial = &m_material;
 	}
+
+	m_pEmitter = nullptr;
 	
 	m_speedRotation = 0.8f;
 	m_speedMovement = 1.0f;

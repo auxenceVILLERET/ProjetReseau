@@ -7,8 +7,8 @@
 
 struct SphereCollider
 {
-	XMFLOAT3 center;
-	float radius;
+	XMFLOAT3 center = { 0, 0, 0 };
+	float radius = 1.0f;
 };
 
 enum DIRTY_TYPES

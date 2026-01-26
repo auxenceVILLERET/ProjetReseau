@@ -16,7 +16,7 @@ TCPSocket::TCPSocket()
 
 TCPSocket::~TCPSocket()
 {
-    Sockets::CloseSocket(mSocket);
+    Sockets::CloseSocket((int)mSocket);
 }
 
 bool TCPSocket::Connect(const std::string& ipaddress, unsigned short port)

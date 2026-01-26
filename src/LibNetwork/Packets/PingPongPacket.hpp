@@ -6,7 +6,7 @@
 class PingPongPacket : public Packet
 {
 public:
-    uint32_t usernameLen;
+    size_t usernameLen;
     std::string username;
     bool isPing = true;
     
@@ -18,7 +18,7 @@ public:
 
         m_type = PING_PONG;
         
-        m_size = 2 * sizeof(int) + sizeof(usernameLen) + usernameLen + sizeof(isPing);
+        m_size = 2 * sizeof(int) + sizeof(usernameLen) + (int)usernameLen + sizeof(isPing);
     }
     PingPongPacket(const std::string& _username, bool _isPing)
     {
@@ -28,7 +28,7 @@ public:
 
         m_type = PING_PONG;
 
-        m_size = 2 * sizeof(int) + sizeof(usernameLen) + usernameLen + sizeof(isPing);
+        m_size = 2 * sizeof(int) + sizeof(usernameLen) + (int)usernameLen + sizeof(isPing);
     }
 
     char* Serialize()
