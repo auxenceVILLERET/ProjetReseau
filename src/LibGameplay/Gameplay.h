@@ -1,9 +1,9 @@
 #ifndef GAMEPLAY_H_DEFINED
 #define GAMEPLAY_H_DEFINED
 
-#define BORDER_MAX 50.0f
-#define BORDER_MIN (-50.0f)
-#define ASTEROID_COUNT 160
+#define BORDER_MAX 80.0f
+#define BORDER_MIN (-80.0f)
+#define ASTEROID_COUNT 360
 
 #include <DirectXMath.h>
 #include <vector>

@@ -34,7 +34,7 @@ void App::OnStart()
 {;
 	cpuEngine.GetCamera()->far = 500.0f;
 	cpuEngine.GetCamera()->UpdateProjection();
-	cpuEngine.GetParticleData()->Create(1000000);
+	cpuEngine.GetParticleData()->Create(20000);
 
 	m_texture.Load("../../res/Client/vie.png");
 	GameManager::GetInstance();
@@ -57,6 +57,10 @@ void App::OnStart()
 	m_outOfArenaText.Create(12, { 1.0f, 0.0f, 0.0f });
 	m_outOfArenaText.SetAnchor(CPU_TEXT_CENTER);
 	m_outOfArenaText.SetPos({ 256, 128 - 10 });
+
+	m_usernameText.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_usernameText.SetAnchor(CPU_TEXT_CENTER);
+	m_usernameText.SetPos({ 256, 220 });
 }	
 
 void App::OnUpdate()
@@ -106,26 +110,7 @@ void App::OnUpdate()
 				if (m_respawnTimer >= m_timeRespawn)
 				{
 					m_respawnTimer = 0.0f;
-					ClientMethods::SetActiveState(m_pPlayer->GetID(), true);
-					XMFLOAT3 spawnPos = GetSpawnPoint();
-					ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
-					XMFLOAT3 dir;
-					dir.x = ARENEA_CENTER.x - spawnPos.x;
-					dir.y = ARENEA_CENTER.y - spawnPos.y;
-					dir.z = ARENEA_CENTER.z - spawnPos.z;
-					float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
-					if(length > 0.0001f)
-					{
-						dir.x /= length;
-						dir.y /= length;
-						dir.z /= length;
-					}
-					ClientMethods::SetDirection(m_pPlayer->GetID(), dir);
-
-					m_pPlayer->SetAlive(true);
-					m_pPlayer->Heal(0.0f);
-					ResetHealthSprites();
-					CreateHealthSprite();
+					Respawn();
 				}
 			}
 
@@ -155,13 +140,43 @@ void App::OnExit()
 	delete Client::GetInstance();
 }
 
+void App::Respawn()
+{
+	ClientMethods::SetActiveState(m_pPlayer->GetID(), true);
+	XMFLOAT3 spawnPos = GetSpawnPoint();
+	ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
+	XMFLOAT3 dir;
+	dir.x = ARENEA_CENTER.x - spawnPos.x;
+	dir.y = ARENEA_CENTER.y - spawnPos.y;
+	dir.z = ARENEA_CENTER.z - spawnPos.z;
+	float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+	if (length > 0.0001f)
+	{
+		dir.x /= length;
+		dir.y /= length;
+		dir.z /= length;
+	}
+	ClientMethods::SetDirection(m_pPlayer->GetID(), dir);
+
+	m_pPlayer->SetAlive(true);
+	m_pPlayer->Heal(0.0f);
+	ResetHealthSprites();
+	CreateHealthSprite();
+}
+
 void App::OnRender(int pass)
 {
 	if (!m_isConnected)
 	{
 		m_loginHeader.Render();
 		m_loginInput.Render();
-	}		
+	}
+
+	if(m_isConnected)
+	{
+		m_usernameText.SetText(m_username);
+		m_usernameText.Render();
+	}
 
 	if(m_pPlayer != nullptr && m_pPlayer->IsAlive() == false && m_respawnTimer < m_timeRespawn)
 	{
