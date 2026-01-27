@@ -15,6 +15,8 @@ Asteroid::Asteroid(bool isServerSide) : Entity(isServerSide)
 	m_timerParticul = 0.0f;
 	m_durationParticul = 0.2f;
 	m_type = EntityType::ASTEROID;
+	m_Explo = false;
+	m_pEmitter = nullptr;
 }
 
 Asteroid::~Asteroid()

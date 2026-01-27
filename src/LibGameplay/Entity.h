@@ -77,15 +77,15 @@ protected:
 	SphereCollider m_collider;
 
 	EntityType m_type;
-	bool m_toDestroy = false;
-	bool m_isServerSide = false;
+	bool m_toDestroy;
+	bool m_isServerSide;
 	
-	int m_dirtyFlags = 0;
+	int m_dirtyFlags;
 
-	bool m_isAlive = true;
-	float m_health = 100.0f;
-	float m_maxHealth = 100.0f;
-	bool m_isActive = true;
+	bool m_isAlive;
+	float m_health;
+	float m_maxHealth;
+	bool m_isActive;
 
 private:
 	static uint32_t ID_COUNT;

@@ -163,6 +163,7 @@ void Server::HandlePackets()
                 dir.z /= length;
             }
 			p->GetTransform().LookTo(dir.x, dir.y, dir.z);
+            p->SetDirtyFlag(DIRTY_TYPES::ROTATION);
             CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
             SendPacket(createPacket);
 
@@ -238,6 +239,17 @@ void Server::HandlePackets()
             if (e == nullptr) continue;
 
             e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
+            e->SetDirtyFlag(DIRTY_TYPES::ROTATION);
+        }
+        if (type == SET_HEALTH)
+        {
+            SetEntityHealthPacket* casted = dynamic_cast<SetEntityHealthPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            e->SetHealth(casted->health);
         }
         if(type == CHAT_MESSAGE)
         {

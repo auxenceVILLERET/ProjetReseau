@@ -70,6 +70,8 @@ void App::OnStart()
 	m_chatInput.Create(10, { 1.0f, 1.0f, 1.0f });
 	m_chatInput.SetAnchor(CPU_TEXT_LEFT);
 	m_chatInput.SetPos({ 400, 220 });
+
+	CreateHealthSprite();
 }	
 
 void App::OnUpdate()
@@ -184,12 +186,6 @@ void App::Respawn()
 		dir.z /= length;
 	}
 	ClientMethods::SetDirection(id, dir);
-
-	m_pPlayer->SetAlive(true);
-	m_pPlayer->FullHeal();
-
-	ResetHealthSprites();
-	CreateHealthSprite();
 }
 
 void App::ChatUpdate()
@@ -231,7 +227,7 @@ void App::OnRender(int pass)
 		{
 			std::string msg = "[" + line.user + "] " + line.text;
 
-			cpuDevice.DrawText(&m_font,msg.c_str(),360,y,CPU_TEXT_LEFT);
+			cpuDevice.DrawText(&m_font,msg.c_str(),380, (int)y,CPU_TEXT_LEFT);
 
 			y += 10.0f;
 		}
@@ -467,22 +463,19 @@ void App::OutOfArenaUpdate(float dt)
 
 void App::UpdateHealthSprite()
 {
-	float currentHealth = m_healthSprites.size() * 10.0f - 10.0f;
-	while (currentHealth >= m_pPlayer->GetHealth() && m_healthSprites.size() != 0)
+	float currentHealth = m_pPlayer->GetHealth();
+	for (int i = 0; i < 10; i++)
 	{
-		cpu_sprite* temp = m_healthSprites.back();
-
-		cpuEngine.Release(temp);
-
-		m_healthSprites.pop_back();
-
-		currentHealth -= 10.0f;
+		if (currentHealth > i * 10.0f)
+			m_healthSprites[i]->visible = true;
+		else
+			m_healthSprites[i]->visible = false;
 	}
 }
 
 void App::CreateHealthSprite()
 {
-	for(int i = 0; i < m_pPlayer->GetHealth() / 10; ++i)
+	for(int i = 0; i < 10; ++i)
 	{
 		cpu_sprite* m_pSprite = cpuEngine.CreateSprite();
 		m_pSprite->pTexture = &m_texture;
@@ -490,16 +483,8 @@ void App::CreateHealthSprite()
 		m_pSprite->x = 30 ;
 		m_pSprite->y = 50 + (i * 20);
 		m_healthSprites.push_back(m_pSprite);
+		m_pSprite->visible = false;
 	}
-}
-
-void App::ResetHealthSprites()
-{
-	for (cpu_sprite* sprite : m_healthSprites)
-	{
-		cpuEngine.Release(sprite);
-	}
-	m_healthSprites.clear();
 }
 
 void App::MyPixelShader(cpu_ps_io& io)
