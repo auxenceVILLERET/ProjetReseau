@@ -61,6 +61,15 @@ void App::OnStart()
 	m_usernameText.Create(12, { 1.0f, 1.0f, 1.0f });
 	m_usernameText.SetAnchor(CPU_TEXT_CENTER);
 	m_usernameText.SetPos({ 256, 220 });
+
+	m_chatText.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_chatText.SetAnchor(CPU_TEXT_LEFT);
+	m_chatText.SetPos({ 340, 220 });
+	m_chatText.SetText("Chat:");
+	
+	m_chatInput.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_chatInput.SetAnchor(CPU_TEXT_LEFT);
+	m_chatInput.SetPos({ 400, 220 });
 }	
 
 void App::OnUpdate()
@@ -79,10 +88,12 @@ void App::OnUpdate()
 	{
 		if (m_pPlayer != nullptr)
 		{
-			HandleInput();
+			if(m_chatOpen == false)
+				HandleInput();
 			OutOfArenaUpdate(dt);
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
+			ChatUpdate();
 			if (m_pPlayer->IsAlive() == false)
 			{
 				if (m_pPlayer->GetActiveState() == true)
@@ -142,13 +153,20 @@ void App::OnExit()
 
 void App::Respawn()
 {
-	ClientMethods::SetActiveState(m_pPlayer->GetID(), true);
+	uint32_t id = m_pPlayer->GetID();
+
+	ClientMethods::SetActiveState(id, true);
+
+	ClientMethods::SetHealth(id, 100.0f);
+
 	XMFLOAT3 spawnPos = GetSpawnPoint();
-	ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
-	XMFLOAT3 dir;
-	dir.x = ARENEA_CENTER.x - spawnPos.x;
-	dir.y = ARENEA_CENTER.y - spawnPos.y;
-	dir.z = ARENEA_CENTER.z - spawnPos.z;
+	ClientMethods::SetPosition(id, spawnPos);
+
+	XMFLOAT3 dir = {
+		ARENEA_CENTER.x - spawnPos.x,
+		ARENEA_CENTER.y - spawnPos.y,
+		ARENEA_CENTER.z - spawnPos.z
+	};
 	float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
 	if (length > 0.0001f)
 	{
@@ -156,12 +174,29 @@ void App::Respawn()
 		dir.y /= length;
 		dir.z /= length;
 	}
-	ClientMethods::SetDirection(m_pPlayer->GetID(), dir);
+	ClientMethods::SetDirection(id, dir);
 
 	m_pPlayer->SetAlive(true);
-	m_pPlayer->Heal(0.0f);
+	m_pPlayer->FullHeal();
+
 	ResetHealthSprites();
 	CreateHealthSprite();
+}
+
+void App::ChatUpdate()
+{
+	if(m_chatOpen)
+	{
+		m_chatInput.HandleInput();
+
+		if (m_chatInput.IsFinished())
+		{
+			ClientMethods::SendChatMessage(m_pPlayer->GetID(),m_chatInput.GetText().c_str());
+			ClientMethods::AddChatMessage(m_username, m_chatInput.GetText());
+			m_chatOpen = false;
+		}
+		return;
+	}
 }
 
 void App::OnRender(int pass)
@@ -176,6 +211,22 @@ void App::OnRender(int pass)
 	{
 		m_usernameText.SetText(m_username);
 		m_usernameText.Render();
+	}
+
+	if (m_chatOpen)
+	{
+		m_chatInput.Render();
+		m_chatText.Render();
+		float y = 100.0f;
+
+		for (const ChatLine& line : ClientMethods::s_chatMessages)
+		{
+			std::string msg = "[" + line.user + "] " + line.text;
+
+			cpuDevice.DrawText(&m_font,msg.c_str(),380,y,CPU_TEXT_LEFT);
+
+			y += 16.0f;
+		}
 	}
 
 	if(m_pPlayer != nullptr && m_pPlayer->IsAlive() == false && m_respawnTimer < m_timeRespawn)
@@ -283,6 +334,11 @@ void App::HandleInput()
  		if (m_pPlayer->Shoot())
 			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
  	}
+	if(cpuInput.IsKeyDown('T'))
+	{
+		m_chatOpen = true;
+		m_chatInput.Reset();
+	}
 	if (cpuInput.IsKeyDown('H'))
 	{
 		m_pPlayer->TakeDamage(10.0f);

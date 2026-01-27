@@ -41,7 +41,7 @@ void ServerMethods::HandleDirtyEntities()
 
         if (dirty & DIRTY_TYPES::POS)
         {
-            SetEntityPos* packet = new SetEntityPos(id, t.pos.x, t.pos.y, t.pos.z);
+           SetEntityPos* packet = new SetEntityPos(id, t.pos.x, t.pos.y, t.pos.z);
            Server::GetInstance()->SendPacket(packet);
         }
 

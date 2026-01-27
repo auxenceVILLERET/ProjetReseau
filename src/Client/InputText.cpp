@@ -16,41 +16,57 @@ void InputText::Create(int _size, XMFLOAT3 _color)
 
 void InputText::HandleInput()
 {
-    if (m_finished)
-        return;
-    
-    // Lettres A-Z
-    for (char c = 'A'; c <= 'Z'; c++)
-        if (cpuInput.IsKeyDown(c))
-            m_text += c;
+	if (m_finished)
+		return;
 
-    // Chiffres
-    for (char c = '0'; c <= '9'; c++)
-        if (cpuInput.IsKeyDown(c))
-            m_text += c;
+	// Lettres A-Z + minuscules avec Shift
+	for (char c = 'A'; c <= 'Z'; c++)
+	{
+		if (cpuInput.IsKeyDown(c))
+		{
+			if (cpuInput.IsKey(VK_SHIFT))
+				m_text += c;
+			else
+				m_text += (c + 32); // minuscule
+		}
+	}
 
-    int temp = 0;
-    for (int i = VK_NUMPAD0; i <= VK_NUMPAD9; i++)
-    {
-        if (cpuInput.IsKeyDown(i))
-        {
-            m_text += std::to_string(temp);
-        }
-        temp++;
-    }
-    
-    if (cpuInput.IsKeyDown(VK_OEM_PERIOD) || cpuInput.IsKeyDown(VK_DECIMAL))
-        m_text += '.';
+	// Chiffres
+	for (char c = '0'; c <= '9'; c++)
+	{
+		if (cpuInput.IsKeyDown(c))
+			m_text += c;
+	}
 
-    // Backspace
-    if (cpuInput.IsKeyDown(VK_BACK))
-        if (!m_text.empty())
-            m_text.pop_back();
-    
-    // Validation
-    if (cpuInput.IsKeyDown(VK_RETURN))
-        m_finished = true;
+	// Pavé numérique
+	int temp = 0;
+	for (int i = VK_NUMPAD0; i <= VK_NUMPAD9; i++)
+	{
+		if (cpuInput.IsKeyDown(i))
+			m_text += std::to_string(temp);
+		temp++;
+	}
+
+	// Espace 
+	if (cpuInput.IsKeyDown(VK_SPACE))
+		m_text += ' ';
+
+	// Point
+	if (cpuInput.IsKeyDown(VK_OEM_PERIOD) || cpuInput.IsKeyDown(VK_DECIMAL))
+		m_text += '.';
+
+	// Backspace
+	if (cpuInput.IsKeyDown(VK_BACK))
+	{
+		if (!m_text.empty())
+			m_text.pop_back();
+	}
+
+	// Validation
+	if (cpuInput.IsKeyDown(VK_RETURN))
+		m_finished = true;
 }
+
 
 void InputText::Render()
 {
