@@ -4,17 +4,11 @@
 #include "Entity.h"
 #include "LibNetwork/Packets/Packets.h"
 
-struct ChatLine
-{
-	std::string user;
-	std::string text;
-};
 
 class ClientMethods 
 {
 public:
     static Entity* CopyEntity(CreateEntity* entityPacket);
-	static std::vector<ChatLine> s_chatMessages;
 
 	static bool MoveEntity(uint32_t id, XMFLOAT3 position);
 	static bool RotateEntity(uint32_t id, XMFLOAT3 rotation);

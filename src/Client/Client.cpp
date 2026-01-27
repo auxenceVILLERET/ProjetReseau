@@ -12,6 +12,7 @@
 #include "Packets/Packets.h"
 #include "Entity.h"
 #include "Player.h"
+#include "App.h"
 
 Client* Client::m_pInstance = nullptr;
 
@@ -297,7 +298,7 @@ void Client::HandlePackets()
             if (casted == nullptr)
                 continue;
 
-            ClientMethods::AddChatMessage(casted->username, casted->text);
+			cpuApp.AddChatMessage(casted->username, casted->text);
         }
 
     }

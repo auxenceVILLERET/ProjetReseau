@@ -10,6 +10,8 @@
 
 using namespace DirectX;
 
+inline const XMFLOAT3 ARENA_CENTER = { 0.0f, 0.0f, 0.0f };
+
 enum EntityType
 {
     PLAYER,

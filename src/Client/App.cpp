@@ -9,7 +9,7 @@
 
 #include "ClientMethods.h"
 
-const XMFLOAT3 ARENEA_CENTER = { 0.0f, 0.0f, 0.0f };
+
 
 
 App::App()
@@ -38,7 +38,7 @@ void App::OnStart()
 
 	m_texture.Load("../../res/Client/vie.png");
 	GameManager::GetInstance();
-	m_font.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_font.Create(10, { 1.0f, 1.0f, 1.0f });
 
 	Client* client = Client::GetInstance();
 
@@ -62,12 +62,12 @@ void App::OnStart()
 	m_usernameText.SetAnchor(CPU_TEXT_CENTER);
 	m_usernameText.SetPos({ 256, 220 });
 
-	m_chatText.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_chatText.Create(10, { 1.0f, 1.0f, 1.0f });
 	m_chatText.SetAnchor(CPU_TEXT_LEFT);
 	m_chatText.SetPos({ 340, 220 });
 	m_chatText.SetText("Chat:");
 	
-	m_chatInput.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_chatInput.Create(10, { 1.0f, 1.0f, 1.0f });
 	m_chatInput.SetAnchor(CPU_TEXT_LEFT);
 	m_chatInput.SetPos({ 400, 220 });
 }	
@@ -124,7 +124,15 @@ void App::OnUpdate()
 					Respawn();
 				}
 			}
-
+			if(m_newChatMessage)
+			{
+				m_chatUpdateTimer += dt;
+				if(m_chatUpdateTimer >= m_chatUpdateCooldown)
+				{
+					m_newChatMessage = false;
+					m_chatUpdateTimer = 0.0f;
+				}
+			}
 		}
 		else
 		{
@@ -145,6 +153,7 @@ void App::OnUpdate()
 void App::OnExit()
 {
 	// YOUR CODE HERE
+	ClearChatMessages();
 	GameManager::GetInstance()->Exit();
 	delete GameManager::GetInstance();
 	Client::GetInstance()->Exit();
@@ -163,9 +172,9 @@ void App::Respawn()
 	ClientMethods::SetPosition(id, spawnPos);
 
 	XMFLOAT3 dir = {
-		ARENEA_CENTER.x - spawnPos.x,
-		ARENEA_CENTER.y - spawnPos.y,
-		ARENEA_CENTER.z - spawnPos.z
+		ARENA_CENTER.x - spawnPos.x,
+		ARENA_CENTER.y - spawnPos.y,
+		ARENA_CENTER.z - spawnPos.z
 	};
 	float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
 	if (length > 0.0001f)
@@ -212,19 +221,19 @@ void App::OnRender(int pass)
 		m_usernameText.Render();
 	}
 
-	if (m_chatOpen)
+	if (m_chatOpen || m_newChatMessage)
 	{
 		m_chatInput.Render();
 		m_chatText.Render();
 		float y = 100.0f;
 
-		for (const ChatLine& line : ClientMethods::s_chatMessages)
+		for (const ChatLine& line : s_chatMessages)
 		{
 			std::string msg = "[" + line.user + "] " + line.text;
 
-			cpuDevice.DrawText(&m_font,msg.c_str(),380,y,CPU_TEXT_LEFT);
+			cpuDevice.DrawText(&m_font,msg.c_str(),360,y,CPU_TEXT_LEFT);
 
-			y += 16.0f;
+			y += 10.0f;
 		}
 	}
 
@@ -496,6 +505,26 @@ void App::ResetHealthSprites()
 void App::MyPixelShader(cpu_ps_io& io)
 {
 	io.color = io.p.color;
+}
+
+bool App::AddChatMessage(const std::string& user, const std::string& msg)
+{
+	ChatLine line;
+	line.user = user;
+	line.text = msg;
+	s_chatMessages.push_back(line);
+
+	if (s_chatMessages.size() > 10)
+	{
+		s_chatMessages.erase(s_chatMessages.begin());
+	}
+	m_newChatMessage = true;
+	return m_newChatMessage;
+}
+
+void App::ClearChatMessages()
+{
+	s_chatMessages.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
