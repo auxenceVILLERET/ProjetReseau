@@ -260,6 +260,33 @@ void Server::HandlePackets()
 			ChatMessagePacket* nPacket = new ChatMessagePacket(casted->username, casted->text);
 			SendPacket(nPacket);
 		}
+        if (type == CHANGE_COLOR_SHIP)
+        {
+            ChangeColorShipPacket* casted = dynamic_cast<ChangeColorShipPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            Player* p = dynamic_cast<Player*>(e);
+
+            if (p == nullptr) continue;
+
+            p->ChangeColorShip(casted->index);
+
+			ChangeColorShipPacket* nPacket = new ChangeColorShipPacket(casted->id, casted->index);
+			SendPacket(nPacket);
+        }
+        if (type == CHANGE_COLOR_PARTICLE)
+        {
+            ChangeColorParticlePacket* casted = dynamic_cast<ChangeColorParticlePacket*>(packet);
+            if (casted == nullptr) continue;
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            Player* p = dynamic_cast<Player*>(e);
+            if (p == nullptr) continue;
+            p->ChangeColorParticle(casted->index);
+            ChangeColorParticlePacket* nPacket = new ChangeColorParticlePacket(casted->id, casted->index);
+            SendPacket(nPacket);
+        }
+    
     }
 
     for (int i = 0; i < m_packets.size(); i++)

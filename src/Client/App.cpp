@@ -72,6 +72,8 @@ void App::OnStart()
 	m_chatInput.SetPos({ 400, 220 });
 
 	CreateHealthSprite();
+
+	
 }	
 
 void App::OnUpdate()
@@ -347,15 +349,28 @@ void App::HandleInput()
  		if (m_pPlayer->Shoot())
 			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
  	}
+	if(cpuInput.IsKeyDown(VK_LEFT))
+	{
+		ClientMethods::ChangeColorShip(id, -1);
+	}
+	if(cpuInput.IsKeyDown(VK_RIGHT))
+	{
+		ClientMethods::ChangeColorShip(id, 1);
+	}
+	if(cpuInput.IsKeyDown(VK_UP))
+	{
+		ClientMethods::ChangeColorParticle(id, 1);
+	}
+	if(cpuInput.IsKeyDown(VK_DOWN))
+	{
+		ClientMethods::ChangeColorParticle(id, -1);
+	}
 	if(cpuInput.IsKeyDown(VK_LMENU))
 	{
 		m_chatOpen = true;
 		m_chatInput.Reset();
 	}
-	if (cpuInput.IsKeyDown('H'))
-	{
-		m_pPlayer->TakeDamage(10.0f);
-	}
+
 }
 
 void App::LoginUpdate(float dt)

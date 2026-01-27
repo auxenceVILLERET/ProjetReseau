@@ -43,9 +43,8 @@ inline float RandomRange(float min, float max)
     return min + static_cast<float>(rand()) / RAND_MAX * (max - min);
 }
 
-inline bool WorldToScreen(XMFLOAT3 const& world, XMFLOAT2& screen, int screenWidth, int screenHeight)
+inline bool WorldToScreen(XMFLOAT3 const& world, XMFLOAT2& screen, XMFLOAT4X4 viewProj,int screenWidth, int screenHeight)
 {
-    XMFLOAT4X4 viewProj = cpuEngine.GetCamera()->matViewProj;
 
     float clip[4];
 

@@ -13,10 +13,12 @@ struct SphereCollider
 
 enum DIRTY_TYPES
 {
-	POS			= 0b1000,
-	ROTATION	= 0b0100,
-	SCALE		= 0b0010,
-	HEALTH		= 0b0001
+	POS				= 0b100000,
+	ROTATION		= 0b010000,
+	SCALE			= 0b001000,
+	HEALTH			= 0b000100,
+	SHIP_COLOR		= 0b000100,
+	PARTICLE_COLOR	= 0b000010,
 };
 
 class Entity

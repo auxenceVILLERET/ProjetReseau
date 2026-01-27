@@ -147,6 +147,12 @@ std::vector<Packet*> Message::Deserialize(char* message)
 			case PacketType::CHAT_MESSAGE:
 				packet = new ChatMessagePacket();
 				break;
+			case PacketType::CHANGE_COLOR_SHIP:
+				packet = new ChangeColorShipPacket();
+				break;
+            case PacketType::CHANGE_COLOR_PARTICLE:
+                packet = new ChangeColorParticlePacket();
+				break;
         }
 
         if (packet == nullptr) continue;

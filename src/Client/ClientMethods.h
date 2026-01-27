@@ -21,6 +21,8 @@ public:
 	static bool SendChatMessage(std::string user, const char* message);
 	static bool AddChatMessage(const std::string& user,const std::string& msg);
 	static bool SetHealth(uint32_t id, float health);
+	static bool ChangeColorShip(uint32_t id, int index);
+	static bool ChangeColorParticle(uint32_t id, int index);
 };
 
 #endif

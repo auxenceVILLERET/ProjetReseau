@@ -300,6 +300,26 @@ void Client::HandlePackets()
 
 			cpuApp.AddChatMessage(casted->username, casted->text);
         }
+        if(type == CHANGE_COLOR_SHIP)
+        {
+            ChangeColorShipPacket* casted = dynamic_cast<ChangeColorShipPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            Player* p = dynamic_cast<Player*>(e);
+            if (p == nullptr) continue;
+
+            p->ChangeColorShip(casted->index);
+		}
+        if (type == CHANGE_COLOR_PARTICLE)
+        {
+            ChangeColorParticlePacket* casted = dynamic_cast<ChangeColorParticlePacket*>(packet);
+            if (casted == nullptr) continue;
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            Player* p = dynamic_cast<Player*>(e);
+            if (p == nullptr) continue;
+            p->ChangeColorParticle(casted->index);
+        }
 
     }
 

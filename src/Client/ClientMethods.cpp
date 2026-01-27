@@ -110,6 +110,20 @@ bool ClientMethods::SetHealth(uint32_t id, float health)
 	return true;
 }
 
+bool ClientMethods::ChangeColorShip(uint32_t id, int index)
+{
+    ChangeColorShipPacket* packet = new ChangeColorShipPacket(id, index);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
+bool ClientMethods::ChangeColorParticle(uint32_t id, int index)
+{
+    ChangeColorParticlePacket* packet = new ChangeColorParticlePacket(id, index);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
 
 
 #endif

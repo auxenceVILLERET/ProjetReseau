@@ -28,6 +28,12 @@ public:
 	void SetActive()					override;
 	void SetInactive()					override;
 	
+	void ChangeColorShip(int index);
+	void ChangeColorParticle(int index);
+
+	static std::vector<XMFLOAT3> m_shipColor;
+	static std::vector<XMFLOAT3> m_particleColor;
+
 private:
 
 	float m_speedRotation;
@@ -42,6 +48,8 @@ private:
 	cpu_material m_material;
 	cpu_particle_emitter* m_pEmitter;
 
+	uint32_t m_shipColorIndex;
+	uint32_t m_particleColorIndex;
 };
 
 #endif
