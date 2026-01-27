@@ -290,6 +290,17 @@ void Client::HandlePackets()
             if (e == nullptr) continue;
             e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
 		}
+        if (type == CHAT_MESSAGE)
+        {
+            ChatMessagePacket* casted =
+                dynamic_cast<ChatMessagePacket*>(packet);
+
+            if (casted == nullptr)
+                continue;
+
+            ClientMethods::AddChatMessage("Player", casted->message);
+        }
+
     }
 
     for (int i = 0; i < m_packets.size(); i++)

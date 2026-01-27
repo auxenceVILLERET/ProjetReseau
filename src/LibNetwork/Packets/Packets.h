@@ -18,5 +18,6 @@
 #include "SetPlayerSpeedPacket.hpp"
 #include "ShootProjectilePacket.hpp"
 #include "SetEntityDirPacket.hpp"
+#include "ChatMessagePacket.hpp"
 
 #endif

@@ -61,6 +61,17 @@ void App::OnStart()
 	m_usernameText.Create(12, { 1.0f, 1.0f, 1.0f });
 	m_usernameText.SetAnchor(CPU_TEXT_CENTER);
 	m_usernameText.SetPos({ 256, 220 });
+
+	m_chatText.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_chatText.SetAnchor(CPU_TEXT_LEFT);
+	m_chatText.SetPos({ 340, 220 });
+	m_chatText.SetText("Chat:");
+	
+	m_chatInput.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_chatInput.SetAnchor(CPU_TEXT_LEFT);
+	m_chatInput.SetPos({ 400, 220 });
+
+	CreateHealthSprite();
 }	
 
 void App::OnUpdate()
@@ -79,10 +90,12 @@ void App::OnUpdate()
 	{
 		if (m_pPlayer != nullptr)
 		{
-			HandleInput();
+			if(m_chatOpen == false)
+				HandleInput();
 			OutOfArenaUpdate(dt);
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
+			ChatUpdate();
 			if (m_pPlayer->IsAlive() == false)
 			{
 				if (m_pPlayer->GetActiveState() == true)
@@ -142,13 +155,20 @@ void App::OnExit()
 
 void App::Respawn()
 {
-	ClientMethods::SetActiveState(m_pPlayer->GetID(), true);
+	uint32_t id = m_pPlayer->GetID();
+
+	ClientMethods::SetActiveState(id, true);
+
+	ClientMethods::SetHealth(id, 100.0f);
+
 	XMFLOAT3 spawnPos = GetSpawnPoint();
-	ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
-	XMFLOAT3 dir;
-	dir.x = ARENEA_CENTER.x - spawnPos.x;
-	dir.y = ARENEA_CENTER.y - spawnPos.y;
-	dir.z = ARENEA_CENTER.z - spawnPos.z;
+	ClientMethods::SetPosition(id, spawnPos);
+
+	XMFLOAT3 dir = {
+		ARENEA_CENTER.x - spawnPos.x,
+		ARENEA_CENTER.y - spawnPos.y,
+		ARENEA_CENTER.z - spawnPos.z
+	};
 	float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
 	if (length > 0.0001f)
 	{
@@ -156,12 +176,23 @@ void App::Respawn()
 		dir.y /= length;
 		dir.z /= length;
 	}
-	ClientMethods::SetDirection(m_pPlayer->GetID(), dir);
+	ClientMethods::SetDirection(id, dir);
+}
 
-	m_pPlayer->SetAlive(true);
-	m_pPlayer->Heal(0.0f);
-	ResetHealthSprites();
-	CreateHealthSprite();
+void App::ChatUpdate()
+{
+	if(m_chatOpen)
+	{
+		m_chatInput.HandleInput();
+
+		if (m_chatInput.IsFinished())
+		{
+			ClientMethods::SendChatMessage(m_pPlayer->GetID(),m_chatInput.GetText().c_str());
+			ClientMethods::AddChatMessage(m_username, m_chatInput.GetText());
+			m_chatOpen = false;
+		}
+		return;
+	}
 }
 
 void App::OnRender(int pass)
@@ -176,6 +207,22 @@ void App::OnRender(int pass)
 	{
 		m_usernameText.SetText(m_username);
 		m_usernameText.Render();
+	}
+
+	if (m_chatOpen)
+	{
+		m_chatInput.Render();
+		m_chatText.Render();
+		float y = 100.0f;
+
+		for (const ChatLine& line : ClientMethods::s_chatMessages)
+		{
+			std::string msg = "[" + line.user + "] " + line.text;
+
+			cpuDevice.DrawText(&m_font,msg.c_str(),380, (int)y,CPU_TEXT_LEFT);
+
+			y += 16.0f;
+		}
 	}
 
 	if(m_pPlayer != nullptr && m_pPlayer->IsAlive() == false && m_respawnTimer < m_timeRespawn)
@@ -283,6 +330,11 @@ void App::HandleInput()
  		if (m_pPlayer->Shoot())
 			ClientMethods::ShootProjectile(m_pPlayer->GetID(), m_pPlayer->GetTransform().pos, dir);
  	}
+	if(cpuInput.IsKeyDown('T'))
+	{
+		m_chatOpen = true;
+		m_chatInput.Reset();
+	}
 	if (cpuInput.IsKeyDown('H'))
 	{
 		m_pPlayer->TakeDamage(10.0f);
@@ -403,22 +455,19 @@ void App::OutOfArenaUpdate(float dt)
 
 void App::UpdateHealthSprite()
 {
-	float currentHealth = m_healthSprites.size() * 10.0f - 10.0f;
-	while (currentHealth >= m_pPlayer->GetHealth() && m_healthSprites.size() != 0)
+	float currentHealth = m_pPlayer->GetHealth();
+	for (int i = 0; i < 10; i++)
 	{
-		cpu_sprite* temp = m_healthSprites.back();
-
-		cpuEngine.Release(temp);
-
-		m_healthSprites.pop_back();
-
-		currentHealth -= 10.0f;
+		if (currentHealth > i * 10.0f)
+			m_healthSprites[i]->visible = true;
+		else
+			m_healthSprites[i]->visible = false;
 	}
 }
 
 void App::CreateHealthSprite()
 {
-	for(int i = 0; i < m_pPlayer->GetHealth() / 10; ++i)
+	for(int i = 0; i < 10; ++i)
 	{
 		cpu_sprite* m_pSprite = cpuEngine.CreateSprite();
 		m_pSprite->pTexture = &m_texture;
@@ -426,16 +475,8 @@ void App::CreateHealthSprite()
 		m_pSprite->x = 30 ;
 		m_pSprite->y = 50 + (i * 20);
 		m_healthSprites.push_back(m_pSprite);
+		m_pSprite->visible = false;
 	}
-}
-
-void App::ResetHealthSprites()
-{
-	for (cpu_sprite* sprite : m_healthSprites)
-	{
-		cpuEngine.Release(sprite);
-	}
-	m_healthSprites.clear();
 }
 
 void App::MyPixelShader(cpu_ps_io& io)

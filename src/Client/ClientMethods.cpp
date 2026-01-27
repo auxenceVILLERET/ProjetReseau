@@ -9,6 +9,8 @@
 #include "Projectile.h"
 #include "Asteroid.h"
 
+std::vector<ChatLine> ClientMethods::s_chatMessages;
+
 Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
 {
     EntityType type = entityPacket->type;
@@ -91,6 +93,34 @@ bool ClientMethods::SetPosition(uint32_t id, XMFLOAT3 position)
 bool ClientMethods::SetDirection(uint32_t id, XMFLOAT3 rotation)
 {
     SetEntityDirPacket* packet = new SetEntityDirPacket(id, rotation.x, rotation.y, rotation.z);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
+bool ClientMethods::SendChatMessage(uint32_t id, const char* message)
+{
+    ChatMessagePacket* packet = new ChatMessagePacket(id, message);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
+bool ClientMethods::AddChatMessage(const std::string& user, const std::string& msg)
+{
+    ChatLine line;
+    line.user = user;
+    line.text = msg;
+    s_chatMessages.push_back(line);
+
+    if(s_chatMessages.size() > 10)
+    {
+        s_chatMessages.erase(s_chatMessages.begin());
+	}
+	return true;
+}
+
+bool ClientMethods::SetHealth(uint32_t id, float health)
+{
+    SetEntityHealthPacket* packet = new SetEntityHealthPacket(id, health);
     Client::GetInstance()->SendPacket(packet);
 	return true;
 }
