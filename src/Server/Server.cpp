@@ -186,32 +186,42 @@ void Server::HandlePackets()
             }
 
             pClient->connected = !pClient->connected;
-            
+
             PingPongPacket* responsePkt = new PingPongPacket(casted->username, false);
             SendTargetedPacket(responsePkt, pClient);
             
-            ServerMethods::SendCreationPackets(pClient);
-            Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
-            p->GetTransform().pos = GetSpawnPoint();
-            
-            XMFLOAT3 dir;
-			dir.x = 0.0f - p->GetTransform().pos.x;
-			dir.y = 0.0f - p->GetTransform().pos.y;
-			dir.z = 0.0f - p->GetTransform().pos.z;
-			float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
-            if (length > 0.0001f)
+            if (pClient->connected == true)
             {
-                dir.x /= length;
-                dir.y /= length;
-                dir.z /= length;
+                ServerMethods::SendCreationPackets(pClient);
+                Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
+                p->GetTransform().pos = GetSpawnPoint();
+                pClient->playerId = p->GetID();
+            
+                XMFLOAT3 dir;
+                dir.x = 0.0f - p->GetTransform().pos.x;
+                dir.y = 0.0f - p->GetTransform().pos.y;
+                dir.z = 0.0f - p->GetTransform().pos.z;
+                float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+                if (length > 0.0001f)
+                {
+                    dir.x /= length;
+                    dir.y /= length;
+                    dir.z /= length;
+                }
+            
+                p->GetTransform().LookTo(dir.x, dir.y, dir.z);
+                p->SetDirtyFlag(DIRTY_TYPES::ROTATION);
+                CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
+                SendPacket(createPacket);
+
+                SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);   
+            }
+            else if (pClient->connected == false)
+            {
+                DestroyEntityPacket* destroyPacket = new DestroyEntityPacket(pClient->playerId);
+                SendPacket(destroyPacket);
             }
             
-			p->GetTransform().LookTo(dir.x, dir.y, dir.z);
-            p->SetDirtyFlag(DIRTY_TYPES::ROTATION);
-            CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
-            SendPacket(createPacket);
-
-            SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
         }
         if (type == ROTATE_ENTITY)
         {

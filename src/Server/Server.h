@@ -12,10 +12,14 @@
 struct ClientInfo
 {
     sockaddr_in sockAddr;
+    std::string username;
     std::string ip;
     int port = 0;
-    std::string username;
     bool connected = false;
+    
+    int playerId = 0;
+    int deathCount = 0;
+    int killCount = 0;
 };
 
 struct ReceivedPacket

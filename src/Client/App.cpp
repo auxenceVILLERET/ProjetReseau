@@ -147,6 +147,8 @@ void App::OnUpdate()
 void App::OnExit()
 {
 	// YOUR CODE HERE
+	if (m_pPlayer != nullptr)
+		ClientMethods::Disconnect(m_username, m_pPlayer->GetID());
 	GameManager::GetInstance()->Exit();
 	delete GameManager::GetInstance();
 	Client::GetInstance()->Exit();

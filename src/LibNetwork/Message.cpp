@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include "Packets/Packets.h"
+#include "Packets/SetPlayerStatsPacket.hpp"
 
 uint32_t Message::ID_COUNT = 0;
 
@@ -147,6 +148,9 @@ std::vector<Packet*> Message::Deserialize(char* message)
 			case PacketType::CHAT_MESSAGE:
 				packet = new ChatMessagePacket();
 				break;
+            case PacketType::SET_PLAYER_STATS:
+                packet = new SetPlayerStatsPacket();
+                break;
         }
 
         if (packet == nullptr) continue;
