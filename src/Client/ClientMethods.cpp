@@ -118,6 +118,13 @@ bool ClientMethods::AddChatMessage(const std::string& user, const std::string& m
 	return true;
 }
 
+bool ClientMethods::SetHealth(uint32_t id, float health)
+{
+    SetEntityHealthPacket* packet = new SetEntityHealthPacket(id, health);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
 
 
 #endif

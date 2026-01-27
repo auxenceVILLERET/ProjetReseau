@@ -171,6 +171,7 @@ void App::Respawn()
 
 	m_pPlayer->SetAlive(true);
 	m_pPlayer->Heal(0.0f);
+	ClientMethods::SetHealth(m_pPlayer->GetID(), m_pPlayer->GetHealth());
 	ResetHealthSprites();
 	CreateHealthSprite();
 }

@@ -26,6 +26,7 @@ public:
 	static bool SetDirection(uint32_t id, XMFLOAT3 rotation);
 	static bool SendChatMessage(uint32_t id, const char* message);
 	static bool AddChatMessage(const std::string& user,const std::string& msg);
+	static bool SetHealth(uint32_t id, float health);
 };
 
 #endif
