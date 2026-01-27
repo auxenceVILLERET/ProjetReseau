@@ -167,6 +167,7 @@ void Server::HandlePackets()
             CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
             SendPacket(createPacket);
 
+			MessageConnected(pClient);
             SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
         }
         if (type == ROTATE_ENTITY)
@@ -401,6 +402,13 @@ void Server::Update()
     }
 
     ClearMessages();
+}
+
+void Server::MessageConnected(ClientInfo* pClient)
+{
+    std::string msg = pClient->username + " has connected.";
+    ChatMessagePacket* chatPacket = new ChatMessagePacket("Server", msg);
+	SendPacket(chatPacket);
 }
 
 #endif
