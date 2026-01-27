@@ -14,9 +14,10 @@ public:
     static void SendCreationPackets(ClientInfo* pTarget);
 
     static void HandleDirtyEntities();
-    static void HandleDestroyedEntities();
-    
+    static void HandleDestroyedEntities(int& destroyed);
+
     static void InitMap();
+	static void RespawnAsteroid(int& asteroidDestroy);
 };
 
 #endif

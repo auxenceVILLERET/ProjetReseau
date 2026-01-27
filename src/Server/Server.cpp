@@ -376,9 +376,10 @@ void Server::Update()
     HandlePackets();
     GameManager::GetInstance()->Update(m_chrono.Reset());
     ServerMethods::HandleDirtyEntities();
-    ServerMethods::HandleDestroyedEntities();
+    ServerMethods::HandleDestroyedEntities(m_asteroidDestroyedCount);
     GameManager::GetInstance()->ClearDestroyedEntities();
-    
+	ServerMethods::RespawnAsteroid(m_asteroidDestroyedCount);
+
     for (Message* msg : m_pendingMessages)
     {
         msg->Serialize(m_buffer);
