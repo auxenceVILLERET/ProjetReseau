@@ -88,7 +88,8 @@ void App::OnUpdate()
 	{
 		if (m_pPlayer != nullptr)
 		{
-			HandleInput();
+			if(m_chatOpen == false)
+				HandleInput();
 			OutOfArenaUpdate(dt);
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
@@ -176,19 +177,18 @@ void App::Respawn()
 
 void App::ChatUpdate()
 {
-	if (m_chatOpen)
+	if(m_chatOpen)
 	{
 		m_chatInput.HandleInput();
 
 		if (m_chatInput.IsFinished())
 		{
 			ClientMethods::SendChatMessage(m_pPlayer->GetID(),m_chatInput.GetText().c_str());
+			ClientMethods::AddChatMessage(m_username, m_chatInput.GetText());
 			m_chatOpen = false;
 		}
-
-		return; 
+		return;
 	}
-
 }
 
 void App::OnRender(int pass)
@@ -209,7 +209,7 @@ void App::OnRender(int pass)
 	{
 		m_chatInput.Render();
 		m_chatText.Render();
-		float y = 240.0f;
+		float y = 100.0f;
 
 		for (const ChatLine& line : ClientMethods::s_chatMessages)
 		{
@@ -326,9 +326,9 @@ void App::HandleInput()
  		if (m_pPlayer->Shoot())
 			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
  	}
-	if(cpuInput.IsKey('T'))
+	if(cpuInput.IsKeyDown('T'))
 	{
-		m_chatOpen = !m_chatOpen;
+		m_chatOpen = true;
 		m_chatInput.Reset();
 	}
 }
