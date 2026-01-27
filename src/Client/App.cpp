@@ -176,9 +176,6 @@ void App::Respawn()
 	}
 	ClientMethods::SetDirection(id, dir);
 
-	m_pPlayer->SetAlive(true);
-	m_pPlayer->FullHeal();
-
 	ResetHealthSprites();
 	CreateHealthSprite();
 }
