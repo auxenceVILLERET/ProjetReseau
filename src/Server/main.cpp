@@ -6,7 +6,7 @@
 
 #define IS_SERVER
 
-#include "Packets.hpp"
+#include "Packets/Packet.h"
 #include "../LibNetwork/Socket.h"
 #include "../LibNetwork//UDPSocket.h"
 #include "Server.h"

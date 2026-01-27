@@ -51,7 +51,8 @@ void GameManager::Update(float dt)
 	for (auto it = m_entities.begin(); it != m_entities.end(); )
 	{
 		Entity* entity = *it;
-		entity->Update(m_deltaTime);
+		if(entity->m_isActive == true)
+			entity->Update(m_deltaTime);
 		++it;
 	}
 }
@@ -88,7 +89,8 @@ void GameManager::UpdateRenderElements(float dt)
 	for (auto it = m_entities.begin(); it != m_entities.end(); )
 	{
 		Entity* entity = *it;
-		entity->UpdateRenderElements(dt);
+		if (entity->m_isActive == true)
+			entity->UpdateRenderElements(dt);
 		++it;
 	}
 }
@@ -109,13 +111,13 @@ void GameManager::CheckCollisions()
 	for (int i = 0; i < m_entities.size(); ++i)
 	{
 		Entity* a = m_entities[i];
-		if (a == nullptr) continue;
+		if (a == nullptr || a->m_isActive == false) continue;
 		a->UpdateCollider();
 
 		for (int j = i + 1; j < m_entities.size(); ++j)
 		{
 			Entity* b = m_entities[j];
-			if (b == nullptr) continue;
+			if (b == nullptr || b->m_isActive == false) continue;
 			b->UpdateCollider();
 			if (SphereCollision(a->m_collider, b->m_collider))
 			{

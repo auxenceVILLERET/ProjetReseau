@@ -74,4 +74,27 @@ bool ClientMethods::ShootProjectile(uint32_t id, XMFLOAT3 pos, XMFLOAT3 dir)
     return true;
 }
 
+bool ClientMethods::SetActiveState(uint32_t id, bool isActive)
+{
+    SetActiveStatePacket* packet = new SetActiveStatePacket(id, isActive);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
+bool ClientMethods::SetPosition(uint32_t id, XMFLOAT3 position)
+{
+    SetEntityPos* packet = new SetEntityPos(id, position.x, position.y, position.z);
+    Client::GetInstance()->SendPacket(packet);
+    return true;
+}
+
+bool ClientMethods::SetDirection(uint32_t id, XMFLOAT3 rotation)
+{
+    SetEntityDirPacket* packet = new SetEntityDirPacket(id, rotation.x, rotation.y, rotation.z);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
+
+
 #endif

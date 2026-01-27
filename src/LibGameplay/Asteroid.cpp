@@ -12,7 +12,11 @@ Asteroid::Asteroid(bool isServerSide) : Entity(isServerSide)
 	}
 	m_YPR = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_rotationSpeed = 1.0f;
+	m_timerParticul = 0.0f;
+	m_durationParticul = 0.2f;
 	m_type = EntityType::ASTEROID;
+	m_Explo = false;
+	m_pEmitter = nullptr;
 }
 
 Asteroid::~Asteroid()
@@ -71,8 +75,6 @@ void Asteroid::InitRenderElements()
 	m_pEmitter->density = 0.0f;
 	m_pEmitter->colorMin = cpu::ToColor(100, 0, 0);
 	m_pEmitter->colorMax = cpu::ToColor(255, 125, 0);
-	m_timerParticul = 0.0f;
-	m_durationParticul = 0.2f;
 	
 	int r = static_cast<int>(RandomRange(80, 130));
 	int g = static_cast<int>(r * RandomRange(0.40f, 0.60f));

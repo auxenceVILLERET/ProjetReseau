@@ -5,19 +5,20 @@
 #include "GameManager.h"
 #include "Asteroid.h"
 #include <iostream>
+#include "Gameplay.h"
 
 #include "ClientMethods.h"
 
+const XMFLOAT3 ARENEA_CENTER = { 0.0f, 0.0f, 0.0f };
 
 
-App::App() : m_loginInput(m_loginFont), m_loginHeader(m_loginFont)
+App::App()
 {
 	s_pApp = this;
 	CPU_CALLBACK_START(OnStart);
 	CPU_CALLBACK_UPDATE(OnUpdate);
 	CPU_CALLBACK_EXIT(OnExit);
 	CPU_CALLBACK_RENDER(OnRender);
-
 }
 
 App::~App()
@@ -33,23 +34,34 @@ void App::OnStart()
 {;
 	cpuEngine.GetCamera()->far = 500.0f;
 	cpuEngine.GetCamera()->UpdateProjection();
-	cpuEngine.GetParticleData()->Create(1000000);
+	cpuEngine.GetParticleData()->Create(20000);
 
-	m_texture.Load("../../res/Client/CarreRougeVie.png");
+	m_texture.Load("../../res/Client/vie.png");
 	GameManager::GetInstance();
-	m_font.Create(12);
-
+	m_font.Create(12, { 1.0f, 1.0f, 1.0f });
 
 	Client* client = Client::GetInstance();
-	
-	m_font.Create(12);
-	m_loginFont.Create(15);
+
+	m_loginHeader.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_loginInput.Create(12, { 1.0f, 1.0f, 1.0f });
 	m_loginHeader.SetText("Please enter your username:");
 	m_loginHeader.SetAnchor(CPU_TEXT_CENTER);
 	m_loginHeader.SetPos({ 256, 128 - 10 });
 	m_loginInput.SetAnchor(CPU_TEXT_CENTER);
 	m_loginInput.SetPos({ 256, 128 + 10 });
-}
+
+	m_respawnText.Create(12, { 0.0f, 1.0f, 0.0f });
+	m_respawnText.SetAnchor(CPU_TEXT_CENTER);
+	m_respawnText.SetPos({ 256, 128 });
+
+	m_outOfArenaText.Create(12, { 1.0f, 0.0f, 0.0f });
+	m_outOfArenaText.SetAnchor(CPU_TEXT_CENTER);
+	m_outOfArenaText.SetPos({ 256, 128 - 10 });
+
+	m_usernameText.Create(12, { 1.0f, 1.0f, 1.0f });
+	m_usernameText.SetAnchor(CPU_TEXT_CENTER);
+	m_usernameText.SetPos({ 256, 220 });
+}	
 
 void App::OnUpdate()
 {
@@ -68,8 +80,40 @@ void App::OnUpdate()
 		if (m_pPlayer != nullptr)
 		{
 			HandleInput();
+			OutOfArenaUpdate(dt);
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
+			if (m_pPlayer->IsAlive() == false)
+			{
+				if (m_pPlayer->GetActiveState() == true)
+				{
+					ClientMethods::SetActiveState(m_pPlayer->GetID(), false);
+				}
+			}
+
+			if (m_respawnTimer < m_timeRespawn && m_pPlayer->IsAlive() == false)
+			{
+				m_respawnTimer += dt;
+				if (m_respawnTimer >= 2.0f)
+				{
+					m_respawnText.SetText("Respawning in 1...");
+				}
+				else if (m_respawnTimer >= 1.0f)
+				{
+					m_respawnText.SetText("Respawning in 2...");
+				}
+				else if (m_respawnTimer >= 0.0f)
+				{
+					m_respawnText.SetText("Respawning in 3...");
+				}
+
+				if (m_respawnTimer >= m_timeRespawn)
+				{
+					m_respawnTimer = 0.0f;
+					Respawn();
+				}
+			}
+
 		}
 		else
 		{
@@ -96,13 +140,53 @@ void App::OnExit()
 	delete Client::GetInstance();
 }
 
+void App::Respawn()
+{
+	ClientMethods::SetActiveState(m_pPlayer->GetID(), true);
+	XMFLOAT3 spawnPos = GetSpawnPoint();
+	ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
+	XMFLOAT3 dir;
+	dir.x = ARENEA_CENTER.x - spawnPos.x;
+	dir.y = ARENEA_CENTER.y - spawnPos.y;
+	dir.z = ARENEA_CENTER.z - spawnPos.z;
+	float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+	if (length > 0.0001f)
+	{
+		dir.x /= length;
+		dir.y /= length;
+		dir.z /= length;
+	}
+	ClientMethods::SetDirection(m_pPlayer->GetID(), dir);
+
+	m_pPlayer->SetAlive(true);
+	m_pPlayer->Heal(0.0f);
+	ResetHealthSprites();
+	CreateHealthSprite();
+}
+
 void App::OnRender(int pass)
 {
 	if (!m_isConnected)
 	{
 		m_loginHeader.Render();
 		m_loginInput.Render();
-	}		
+	}
+
+	if(m_isConnected)
+	{
+		m_usernameText.SetText(m_username);
+		m_usernameText.Render();
+	}
+
+	if(m_pPlayer != nullptr && m_pPlayer->IsAlive() == false && m_respawnTimer < m_timeRespawn)
+	{
+		m_respawnText.Render();
+	}
+
+	if (m_pPlayer != nullptr && InArena() == true && m_pPlayer->IsAlive() == true)
+	{
+		m_outOfArenaText.Render();
+	}
 	
 	switch (pass)
 	{
@@ -199,10 +283,10 @@ void App::HandleInput()
  		if (m_pPlayer->Shoot())
 			ClientMethods::ShootProjectile(m_pPlayer->GetID(), m_pPlayer->GetTransform().pos, dir);
  	}
-// if(cpuInput.IsKeyDown('H'))
-// {
-// 	m_pPlayer->TakeDamage(5.0f);
-// }
+	if (cpuInput.IsKeyDown('H'))
+	{
+		m_pPlayer->TakeDamage(10.0f);
+	}
 }
 
 void App::LoginUpdate(float dt)
@@ -252,6 +336,71 @@ void App::LoginUpdate(float dt)
 	m_isConnected = Client::GetInstance()->GetIsConnected();
 }
 
+bool App::InArena()
+{
+	if (m_pPlayer->GetPos().x > BORDER_MAX)
+		return true;
+	if(m_pPlayer->GetPos().x < BORDER_MIN)
+		return true;
+	if (m_pPlayer->GetPos().y > BORDER_MAX)
+		return true;
+	if (m_pPlayer->GetPos().y < BORDER_MIN)
+		return true;
+	if (m_pPlayer->GetPos().z > BORDER_MAX)
+		return true;
+	if (m_pPlayer->GetPos().z < BORDER_MIN)
+		return true;
+	return false;
+}
+
+void App::OutOfArenaUpdate(float dt)
+{
+	if (InArena() && m_pPlayer->IsAlive() == true)
+	{
+		m_outTimer += dt;
+		
+		if (m_outTimer >= 7.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 1...");
+		}
+		else if (m_outTimer >= 6.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 2...");
+		}
+		else if (m_outTimer >= 5.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 3...");
+		}
+		else if (m_outTimer >= 4.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 4...");
+		}
+		else if (m_outTimer >= 3.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 5...");
+		}
+		else if (m_outTimer >= 2.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 6...");
+		}
+		else if (m_outTimer >= 1.0f)
+		{
+			m_outOfArenaText.SetText("Return to the arena in 7...");
+		}
+		if (m_outTimer >= m_timeBeforeOut)
+		{
+			m_outTimer = 0.0f;
+			m_outOfArenaText.SetText("Return to the arena in 8...");
+			m_pPlayer->TakeDamage(100.0f);
+		}
+	}
+	else
+	{
+		m_outTimer = 0.0f;
+		m_outOfArenaText.SetText("Return to the arena in 8...");
+	}
+}
+
 void App::UpdateHealthSprite()
 {
 	float currentHealth = m_healthSprites.size() * 10.0f - 10.0f;
@@ -278,6 +427,15 @@ void App::CreateHealthSprite()
 		m_pSprite->y = 50 + (i * 20);
 		m_healthSprites.push_back(m_pSprite);
 	}
+}
+
+void App::ResetHealthSprites()
+{
+	for (cpu_sprite* sprite : m_healthSprites)
+	{
+		cpuEngine.Release(sprite);
+	}
+	m_healthSprites.clear();
 }
 
 void App::MyPixelShader(cpu_ps_io& io)

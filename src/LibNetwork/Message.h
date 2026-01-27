@@ -27,7 +27,7 @@ private:
     
     uint32_t m_id;
     uint32_t m_size;
-    int m_packetCount;
+    size_t m_packetCount;
     bool m_isSystemMsg = false;
 
     std::vector<Packet*> m_vPackets;

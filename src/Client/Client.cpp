@@ -9,7 +9,7 @@
 #include "ClientMethods.h"
 #include "GameManager.h"
 #include "Message.h"
-#include "Packets.hpp"
+#include "Packets/Packets.h"
 #include "Entity.h"
 #include "Player.h"
 
@@ -257,6 +257,39 @@ void Client::HandlePackets()
             if (e == nullptr) continue;
             e->Destroy();
         }
+        if(type == SET_ACTIVE_STATE)
+        {
+            SetActiveStatePacket* casted = dynamic_cast<SetActiveStatePacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            if (casted->isActive)
+                e->SetActive();
+            else
+                e->SetInactive();
+		}
+        if (type == SET_HEALTH)
+        {
+            SetEntityHealthPacket* casted = dynamic_cast<SetEntityHealthPacket*>(packet);
+
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+
+            if (e == nullptr) continue;
+
+            e->SetHealth(casted->health);
+        }
+        if(type == SET_ENTITY_DIR)
+        {
+            SetEntityDirPacket* casted = dynamic_cast<SetEntityDirPacket*>(packet);
+            if (casted == nullptr) continue;
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+            e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
+		}
     }
 
     for (int i = 0; i < m_packets.size(); i++)

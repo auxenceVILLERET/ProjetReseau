@@ -30,7 +30,7 @@ private:
 
 	float m_timerParticul;
 	float m_durationParticul;
-	bool m_Explo = false;
+	bool m_Explo;
 
 	cpu_particle_emitter* m_pEmitter;
 

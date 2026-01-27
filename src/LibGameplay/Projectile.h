@@ -14,9 +14,7 @@ private:
 	cpu_mesh m_mesh;
 	cpu_material m_material;
 
-	float m_distMax = 100.0f;
-	float m_distTraveled = 0.0f;
-
-
+	float m_distMax;
+	float m_distTraveled;
 };
 

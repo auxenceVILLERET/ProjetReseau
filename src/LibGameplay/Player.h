@@ -8,7 +8,7 @@ public:
 	Player(bool isServerSide);
 	~Player();
 	
-	void Update(float dt) override;
+	void Update(float dt)				override;
 	
 	void UpdateCamera();
 
@@ -19,16 +19,16 @@ public:
 	void Render()						override;
 	void OnCollision(Entity* other)		override;
 
-	float GetHealth() const			{ return m_health; }
-	void TakeDamage(float damage)	{ m_health -= damage; }
+	void SetSpeed(float speed)			{ m_speedMovement = std::clamp(speed, 1.0f, m_maxSpeed); }
+	void AddSpeed(float delta)			{ SetSpeed(m_speedMovement + delta); }
+	float GetSpeed()					{ return m_speedMovement; }
+	float GetRotationSpeed()			{ return m_speedRotation; }
 
-	void SetSpeed(float speed)	{ m_speedMovement = std::clamp(speed, 1.0f, m_maxSpeed); }
-	void AddSpeed(float delta)  { SetSpeed(m_speedMovement + delta); }
-	float GetSpeed()			{ return m_speedMovement; }
-	float GetRotationSpeed()	{ return m_speedRotation; }
 
+	void SetActive()					override;
+	void SetInactive()					override;
+	
 private:
-	float m_health;
 
 	float m_speedRotation;
 	float m_speedMovement;
@@ -36,6 +36,7 @@ private:
 
 	float m_shootCooldown;
 	float m_shootTimer;
+
 
 	cpu_mesh m_mesh;
 	cpu_material m_material;

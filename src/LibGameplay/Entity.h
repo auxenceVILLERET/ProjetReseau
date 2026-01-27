@@ -7,15 +7,16 @@
 
 struct SphereCollider
 {
-	XMFLOAT3 center;
-	float radius;
+	XMFLOAT3 center = { 0, 0, 0 };
+	float radius = 1.0f;
 };
 
 enum DIRTY_TYPES
 {
-	POS			= 0b100,
-	ROTATION	= 0b010,
-	SCALE		= 0b001
+	POS			= 0b1000,
+	ROTATION	= 0b0100,
+	SCALE		= 0b0010,
+	HEALTH		= 0b0001
 };
 
 class Entity
@@ -31,6 +32,9 @@ public:
 	virtual void InitRenderElements() {}
 	virtual void UpdateRenderElements(float dt) {}
 	virtual void Render();
+
+	virtual void SetActive() {}
+	virtual void SetInactive() {}
 
 	virtual void Destroy();
 	bool GetToDestroy() { return m_toDestroy; };
@@ -50,20 +54,38 @@ public:
 	void Scale(float scale);
 
 	void SetPos(float x, float y, float z);
+	XMFLOAT3 GetPos() { return GetTransform().pos; }
+
 	void SetRotation(XMFLOAT4X4& rot);
 	void SetScale(float scale);
 
 	float GetScale();
 
+	bool IsAlive() { return m_isAlive; }
+	void SetAlive(bool newState) { m_isAlive = newState; }
+
+	void SetHealth(float health);
+	void SetMaxHealth(float maxHealth) { m_maxHealth = maxHealth; }
+	float GetHealth() { return m_health; }
+	void TakeDamage(float damage);
+	void Heal(float amount);
+
+	bool GetActiveState() { return m_isActive; }
 protected:
 	cpu_entity* m_pCpuEntity;
 	SphereCollider m_collider;
 
 	EntityType m_type;
-	bool m_toDestroy = false;
-	bool m_isServerSide = false;
+	bool m_toDestroy;
+	bool m_isServerSide;
 	
-	int m_dirtyFlags = 0;
+	int m_dirtyFlags;
+
+	bool m_isAlive;
+	float m_health;
+	float m_maxHealth;
+	bool m_isActive;
+
 private:
 	static uint32_t ID_COUNT;
 	uint32_t m_id;

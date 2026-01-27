@@ -15,6 +15,9 @@ Projectile::Projectile(bool isServerSide) : Entity(isServerSide)
 	m_speed = 40.0f;
 	m_collider.radius = 0.2f;
 	m_type = EntityType::PROJECTILE;
+
+	m_distMax = 100.0f;
+	m_distTraveled = 0.0f;
 }
 
 Projectile::~Projectile()

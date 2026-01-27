@@ -6,8 +6,9 @@
 class InputText
 {
 public:
-    InputText(cpu_font& _font) : m_font(&_font) {}
-    InputText(cpu_font& _font, XMINT2 _pos, int _anchor) : m_font(&_font), m_pos(_pos), m_anchor(_anchor) {}
+    InputText();
+
+	void Create(int _size, XMFLOAT3 _color);
 
     void HandleInput();
     void Render();
@@ -25,11 +26,12 @@ public:
 
     void SetAnchor(int _anchor) { m_anchor = _anchor; }
 
+
 private:
     int m_anchor = 0;
     bool m_isActive = false;
     XMINT2 m_pos = {0, 0};
-    cpu_font* m_font;
+    cpu_font m_font;
     std::string m_text;
     bool m_finished = false;
 };

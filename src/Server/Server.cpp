@@ -9,7 +9,7 @@
 #include "GameManager.h"
 #include "ServerMethods.h"
 #include "Message.h"
-#include "Packets.hpp"
+#include "Packets/Packets.h"
 #include "Player.h"
 #include "Projectile.h"
 #include "../LibNetwork/Socket.h"
@@ -18,7 +18,7 @@ Server* Server::m_pInstance = nullptr;
 
 Server::Server() : m_udpSocket()
 {
-    
+    memset(m_buffer, 0, sizeof(m_buffer));
 }
 
 Server::~Server()
@@ -38,7 +38,7 @@ Server* Server::GetInstance()
 
 void Server::Init()
 {
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     if (!m_udpSocket.Bind("127.0.0.1", 1888))
     {
         std::cout << "Connexion attempt failed.\n" << Sockets::GetError() << "\n";
@@ -151,6 +151,18 @@ void Server::HandlePackets()
             ServerMethods::SendCreationPackets(pClient);
             Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
             p->GetTransform().pos = GetSpawnPoint();
+            XMFLOAT3 dir;
+			dir.x = 0.0f - p->GetTransform().pos.x;
+			dir.y = 0.0f - p->GetTransform().pos.y;
+			dir.z = 0.0f - p->GetTransform().pos.z;
+			float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+            if (length > 0.0001f)
+            {
+                dir.x /= length;
+                dir.y /= length;
+                dir.z /= length;
+            }
+			p->GetTransform().LookTo(dir.x, dir.y, dir.z);
             CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
             SendPacket(createPacket);
 
@@ -176,6 +188,7 @@ void Server::HandlePackets()
             if (p == nullptr) continue;
 
             p->AddSpeed(casted->delta);
+
             SetPlayerSpeedPacket* nPacket = new SetPlayerSpeedPacket(p->GetID(), p->GetSpeed());
             SendPacket(nPacket);
         }
@@ -190,6 +203,41 @@ void Server::HandlePackets()
 
             CreateEntity* nPacket = new CreateEntity(e->GetID(), e->GetType(), e->GetTransform().pos, e->GetTransform().dir, e->GetScale());
             SendPacket(nPacket);
+        }
+        if(type == SET_ACTIVE_STATE)
+        {
+            SetActiveStatePacket* casted = dynamic_cast<SetActiveStatePacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+
+            if (e == nullptr) continue;
+
+            if (casted->isActive)
+                e->SetActive();
+            else
+                e->SetInactive();
+
+			SetActiveStatePacket* nPacket = new SetActiveStatePacket(casted->id, casted->isActive);
+			SendPacket(nPacket);
+		}
+        if (type == SET_ENTITY_POS)
+        {
+            SetEntityPos* casted = dynamic_cast<SetEntityPos*>(packet);
+            if (casted == nullptr) continue;
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+            e->SetPos(casted->x, casted->y, casted->z);
+        }
+        if (type == SET_ENTITY_DIR)
+        {
+            SetEntityDirPacket* casted = dynamic_cast<SetEntityDirPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
         }
     }
 

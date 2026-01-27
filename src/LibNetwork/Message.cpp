@@ -4,9 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "Packet.h"
-#include "Packets.hpp"
-
+#include "Packets/Packets.h"
 
 uint32_t Message::ID_COUNT = 0;
 
@@ -95,9 +93,6 @@ std::vector<Packet*> Message::Deserialize(char* message)
         {
             default:
                 break;
-            case PacketType::BALL_UPDATE:
-                packet = new BallUpdatePacket();
-                break;
             case PacketType::MESSAGE:
                 packet = new MessagePacket();
                 break;
@@ -140,6 +135,15 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::DESTROY_ENTITY:
                 packet = new DestroyEntityPacket();
                 break;
+			case PacketType::SET_ACTIVE_STATE:
+				packet = new SetActiveStatePacket();
+				break;
+            case PacketType::SET_HEALTH:
+                packet = new SetEntityHealthPacket();
+				break;
+			case PacketType::SET_ENTITY_DIR:
+				packet = new SetEntityDirPacket();
+				break;
         }
 
         if (packet == nullptr) continue;

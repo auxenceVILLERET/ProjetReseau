@@ -15,6 +15,13 @@ Entity::Entity(bool isServerSize)
 	{
 		m_pCpuEntity = cpuEngine.CreateEntity();
 	}
+	m_type = EntityType::PLAYER;
+	m_toDestroy = false;
+	m_isActive = true;
+	m_isAlive = true;
+	m_maxHealth = 100.0f;
+	m_health = m_maxHealth;
+	m_dirtyFlags = 0;
 }
 
 Entity::~Entity()
@@ -99,6 +106,35 @@ void Entity::SetScale(float scale)
 float Entity::GetScale()
 {
 	return (GetTransform().sca.x + GetTransform().sca.y + GetTransform().sca.z) / 3.0f;
+}
+
+void Entity::SetHealth(float health)
+{
+	m_health = health;
+	if (m_health <= 0.0f)
+		m_isAlive = false;
+	SetDirtyFlag(DIRTY_TYPES::HEALTH);
+}
+
+void Entity::TakeDamage(float damage)
+{
+	m_health -= damage;
+	if(m_health <= 0.0f)
+		m_health = 0.0f;
+	if(m_health <= 0.0f)
+		m_isAlive = false;
+	SetDirtyFlag(DIRTY_TYPES::HEALTH);
+}
+
+void Entity::Heal(float amount)
+{
+	if (amount == 0)
+		m_health = m_maxHealth;
+	m_health += amount;
+	if (m_health > 100.0f)
+		m_health = 100.0f;
+	m_isAlive = true;
+	SetDirtyFlag(DIRTY_TYPES::HEALTH);
 }
 
 #endif
