@@ -66,11 +66,13 @@ void ServerMethods::HandleDirtyEntities()
     }
 }
 
-void ServerMethods::HandleDestroyedEntities()
+void ServerMethods::HandleDestroyedEntities(int& destroyed)
 {
     for (Entity* entity : GameManager::GetInstance()->GetEntities())
     {
         if (entity->GetToDestroy() == false) continue;
+        if(entity->GetType() == EntityType::ASTEROID)
+			destroyed++;
 
         DestroyEntityPacket* packet = new DestroyEntityPacket(entity->GetID());
         Server::GetInstance()->SendPacket(packet);
@@ -92,6 +94,26 @@ void ServerMethods::InitMap()
         float size = RandomRange(0.5f, 5.0f);
         asteroid->Init(size);
 
+    }
+}
+
+void ServerMethods::RespawnAsteroid(int& asteroidDestroy)
+{
+    if (asteroidDestroy >= 10)
+    {
+        int toRespawn = RandomRange(1, 10);
+        for (int i = 0; i < toRespawn; i++)
+        {
+            Asteroid* asteroid = GameManager::GetInstance()->CreateEntity<Asteroid>(true);
+            XMFLOAT3 pos;
+            pos.x = RandomRange(BORDER_MIN, BORDER_MAX);
+            pos.y = RandomRange(BORDER_MIN, BORDER_MAX);
+            pos.z = RandomRange(BORDER_MIN, BORDER_MAX);
+            asteroid->SetPos(pos.x, pos.y, pos.z);
+            float size = RandomRange(0.5f, 5.0f);
+			asteroid->Init(size);
+        }
+		asteroidDestroy = 0;
     }
 }
 

@@ -19,5 +19,8 @@
 #include "ShootProjectilePacket.hpp"
 #include "SetEntityDirPacket.hpp"
 #include "ChatMessagePacket.hpp"
+#include "ChangeColorShipPacket.hpp"
+#include "ChangeColorParticlePacket.hpp"
+
 
 #endif

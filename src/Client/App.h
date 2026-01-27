@@ -5,6 +5,12 @@
 class Player;
 class Asteroid;
 
+struct ChatLine
+{
+	std::string user;
+	std::string text;
+};
+
 class App
 {
 public:
@@ -33,8 +39,11 @@ public:
 	void Respawn();
 	void ChatUpdate();
 
+	bool AddChatMessage(const std::string& user, const std::string& msg);
+	void ClearChatMessages();
+
 private:
-	
+	std::vector<ChatLine> s_chatMessages;
 	inline static App* s_pApp = nullptr;
 	cpu_font m_font;
 
@@ -74,8 +83,11 @@ private:
 
 	///////// CHAT ////////////////
 	bool m_chatOpen = false;
+	bool m_newChatMessage = false;
 	InputText m_chatInput;
 	InputText m_chatText;
+	float m_chatUpdateTimer = 0.0f;
+	float m_chatUpdateCooldown = 5.0f;
 	////////////////////////////////
 };
 

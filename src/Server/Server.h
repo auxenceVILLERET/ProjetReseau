@@ -65,6 +65,7 @@ private:
     
     void Init();
     Chrono m_chrono;
+	int m_asteroidDestroyedCount = 0;
 };
 
 #endif

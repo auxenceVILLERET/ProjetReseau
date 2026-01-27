@@ -9,8 +9,6 @@
 #include "Projectile.h"
 #include "Asteroid.h"
 
-std::vector<ChatLine> ClientMethods::s_chatMessages;
-
 Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
 {
     EntityType type = entityPacket->type;
@@ -103,30 +101,31 @@ bool ClientMethods::SetDirection(uint32_t id, XMFLOAT3 rotation)
 	return true;
 }
 
-bool ClientMethods::SendChatMessage(uint32_t id, const char* message)
+bool ClientMethods::SendChatMessage(std::string user, const char* message)
 {
-    ChatMessagePacket* packet = new ChatMessagePacket(id, message);
+    ChatMessagePacket* packet = new ChatMessagePacket(user, message);
     Client::GetInstance()->SendPacket(packet);
 	return true;
 }
 
-bool ClientMethods::AddChatMessage(const std::string& user, const std::string& msg)
-{
-    ChatLine line;
-    line.user = user;
-    line.text = msg;
-    s_chatMessages.push_back(line);
-
-    if(s_chatMessages.size() > 10)
-    {
-        s_chatMessages.erase(s_chatMessages.begin());
-	}
-	return true;
-}
 
 bool ClientMethods::SetHealth(uint32_t id, float health)
 {
     SetEntityHealthPacket* packet = new SetEntityHealthPacket(id, health);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
+bool ClientMethods::ChangeColorShip(uint32_t id, int index)
+{
+    ChangeColorShipPacket* packet = new ChangeColorShipPacket(id, index);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
+bool ClientMethods::ChangeColorParticle(uint32_t id, int index)
+{
+    ChangeColorParticlePacket* packet = new ChangeColorParticlePacket(id, index);
     Client::GetInstance()->SendPacket(packet);
 	return true;
 }

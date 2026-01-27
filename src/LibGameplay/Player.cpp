@@ -5,6 +5,27 @@
 #include "Projectile.h"
 #include "GameManager.h"
 
+std::vector<XMFLOAT3> Player::m_shipColor =
+{
+	{1, 1, 1},    // blanc
+	{1, 0, 0},    // rouge
+	{0, 1, 0},    // vert
+	{0, 0, 1},    // bleu
+	{1, 1, 0},    // jaune
+	{1, 0, 1},    // magenta
+
+};
+
+std::vector<XMFLOAT3> Player::m_particleColor =
+{
+	{1, 1, 1},			// blanc
+	{1, 0.5f, 0.5f},    // rouge
+	{0.5f, 1, 0.5f},    // vert
+	{0.5f, 0.5f, 1},    // bleu
+	{1, 1, 0.5f},		// jaune
+	{1, 0.5f, 1},		// magenta
+};
+
 Player::Player(bool isServerSide) : Entity(isServerSide)
 {
 	m_health = 100.0f;
@@ -29,6 +50,11 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 
 	m_collider.radius = 1.0f;
 	m_type = EntityType::PLAYER;
+
+	
+
+	m_shipColorIndex = 0;
+	m_particleColorIndex = 0;
 }
 
 Player::~Player()
@@ -126,6 +152,33 @@ void Player::SetInactive()
 	{
 		m_pCpuEntity->visible = false;
 		m_pEmitter->density = 0.0f;
+	}
+}
+
+void Player::ChangeColorShip(int index)
+{
+	int size = static_cast<int>(m_shipColor.size());
+	m_shipColorIndex = (m_shipColorIndex + index + size) % size;
+
+	if (m_isServerSide == false)
+	{
+		XMFLOAT3 shipCol = m_shipColor[m_shipColorIndex];
+		m_material.color = cpu::ToColor((shipCol.x * 255), (shipCol.y * 255), (shipCol.z * 255));
+		SetDirtyFlag(DIRTY_TYPES::SHIP_COLOR);
+	}
+}
+
+void Player::ChangeColorParticle(int index)
+{
+	int size = static_cast<int>(m_particleColor.size());
+	m_particleColorIndex = (m_particleColorIndex + index + size) % size;
+
+	if (m_isServerSide == false)
+	{
+		XMFLOAT3 partCol = m_particleColor[m_particleColorIndex];
+		m_pEmitter->colorMin = cpu::ToColor((partCol.x * 255) / 2, (partCol.y * 255) / 2, (partCol.z * 255) / 2);
+		m_pEmitter->colorMax = cpu::ToColor((partCol.x * 255), (partCol.y * 255), (partCol.z * 255));
+		SetDirtyFlag(DIRTY_TYPES::PARTICLE_COLOR);
 	}
 }
 

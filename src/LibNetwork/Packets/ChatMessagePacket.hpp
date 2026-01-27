@@ -6,51 +6,59 @@
 class ChatMessagePacket : public Packet
 {
 public:
-	uint32_t id;
-	char message[128];
+    size_t len;
+    std::string text;
+	size_t len_username;
+	std::string username;
+
 	ChatMessagePacket()
 	{
-		id = 0;
-		std::memset(message, 0, sizeof(message));
+		len = 0;
+		len_username = 0;
 		m_type = CHAT_MESSAGE;
-		m_size = 2 * sizeof(int) + sizeof(id) + sizeof(message);
+		m_size = 2 * sizeof(int) + sizeof(size_t) + (int)len + sizeof(size_t) + (int)len_username;
 	}
 
-	ChatMessagePacket(uint32_t _id, const char* _message)
+	ChatMessagePacket(std::string _username, std::string _text) : username(_username), text(_text)
 	{
-		id = _id;
-		std::memset(message, 0, sizeof(message));
-		strncpy_s(message, sizeof(message), _message, sizeof(message) - 1);
 		m_type = CHAT_MESSAGE;
-		m_size = 2 * sizeof(int) + sizeof(id) + sizeof(message);
+		len = text.length() + 1;
+		len_username = username.length() + 1;
+		m_size = 2 * sizeof(int) + sizeof(size_t) + (int)len + sizeof(size_t) + (int)len_username;
 	}
 
-	char* Serialize() override
+	char* Serialize()
 	{
-		char* data = new char[m_size];
-		int offset = 0;
-		std::memcpy(data + offset, &m_size, sizeof(m_size));
-		offset += sizeof(m_size);
-		std::memcpy(data + offset, &m_type, sizeof(m_type));
-		offset += sizeof(m_type);
-		std::memcpy(data + offset, &id, sizeof(id));
-		offset += sizeof(id);
-		std::memcpy(data + offset, &message, sizeof(message));
-		offset += sizeof(message);
-		return data;
+		char* buffer = new char[m_size];
+		char* bufferCursor = buffer;
+		std::memset(bufferCursor, 0, m_size);
+		std::memcpy(bufferCursor, &m_type, sizeof(m_type));
+		bufferCursor += sizeof(m_type);
+		std::memcpy(bufferCursor, &m_size, sizeof(m_size));
+		bufferCursor += sizeof(m_size);
+		std::memcpy(bufferCursor, &len_username, sizeof(len_username));
+		bufferCursor += sizeof(len_username);
+		std::memcpy(bufferCursor, username.c_str(), len_username);
+		bufferCursor += len_username;
+		std::memcpy(bufferCursor, &len, sizeof(len));
+		bufferCursor += sizeof(len);
+		std::memcpy(bufferCursor, text.c_str(), len);
+		bufferCursor += len;
+		return buffer;
 	}
 
-	void Deserialize(char* data) override
+	void Deserialize(char* _message)
 	{
-		int offset = 0;
-		std::memcpy(&m_size, data + offset, sizeof(m_size));
-		offset += sizeof(m_size);
-		std::memcpy(&m_type, data + offset, sizeof(m_type));
-		offset += sizeof(m_type);
-		std::memcpy(&id, data + offset, sizeof(id));
-		offset += sizeof(id);
-		std::memcpy(&message, data + offset, sizeof(message));
-		offset += sizeof(message);
+		Packet::Deserialize(_message);
+		_message += sizeof(m_type) + sizeof(m_size);
+		std::memcpy(&len_username, _message, sizeof(len_username));
+		_message += sizeof(len_username);
+		username.assign(_message, len_username - 1);
+		_message += len_username;
+		std::memcpy(&len, _message, sizeof(len));
+		_message += sizeof(len);
+		text.assign(_message, len - 1);
+		_message += len;
 	}
 
 	void PrintInfo(bool isSent)
