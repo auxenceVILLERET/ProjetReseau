@@ -153,13 +153,20 @@ void App::OnExit()
 
 void App::Respawn()
 {
-	ClientMethods::SetActiveState(m_pPlayer->GetID(), true);
+	uint32_t id = m_pPlayer->GetID();
+
+	ClientMethods::SetActiveState(id, true);
+
+	ClientMethods::SetHealth(id, 100.0f);
+
 	XMFLOAT3 spawnPos = GetSpawnPoint();
-	ClientMethods::SetPosition(m_pPlayer->GetID(), spawnPos);
-	XMFLOAT3 dir;
-	dir.x = ARENEA_CENTER.x - spawnPos.x;
-	dir.y = ARENEA_CENTER.y - spawnPos.y;
-	dir.z = ARENEA_CENTER.z - spawnPos.z;
+	ClientMethods::SetPosition(id, spawnPos);
+
+	XMFLOAT3 dir = {
+		ARENEA_CENTER.x - spawnPos.x,
+		ARENEA_CENTER.y - spawnPos.y,
+		ARENEA_CENTER.z - spawnPos.z
+	};
 	float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
 	if (length > 0.0001f)
 	{
@@ -167,11 +174,11 @@ void App::Respawn()
 		dir.y /= length;
 		dir.z /= length;
 	}
-	ClientMethods::SetDirection(m_pPlayer->GetID(), dir);
+	ClientMethods::SetDirection(id, dir);
 
 	m_pPlayer->SetAlive(true);
-	m_pPlayer->Heal(0.0f);
-	ClientMethods::SetHealth(m_pPlayer->GetID(), m_pPlayer->GetHealth());
+	m_pPlayer->FullHeal();
+
 	ResetHealthSprites();
 	CreateHealthSprite();
 }

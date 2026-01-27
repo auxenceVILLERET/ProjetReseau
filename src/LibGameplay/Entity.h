@@ -69,6 +69,7 @@ public:
 	float GetHealth() { return m_health; }
 	void TakeDamage(float damage);
 	void Heal(float amount);
+	void FullHeal();
 
 	bool GetActiveState() { return m_isActive; }
 protected:

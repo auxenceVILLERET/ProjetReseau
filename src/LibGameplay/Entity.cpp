@@ -122,13 +122,19 @@ void Entity::TakeDamage(float damage)
 
 void Entity::Heal(float amount)
 {
-	if (amount == 0)
-		m_health = m_maxHealth;
 	m_health += amount;
-	if (m_health > 100.0f)
-		m_health = 100.0f;
+	if (m_health > m_maxHealth)
+		m_health = m_maxHealth;
+
+	SetDirtyFlag(DIRTY_TYPES::HEALTH);
+}
+
+void Entity::FullHeal()
+{
+	m_health = m_maxHealth;
 	m_isAlive = true;
 	SetDirtyFlag(DIRTY_TYPES::HEALTH);
 }
+
 
 #endif
