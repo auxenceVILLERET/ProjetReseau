@@ -239,6 +239,25 @@ void Server::HandlePackets()
 
             e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
         }
+        if (type == SET_HEALTH)
+        {
+            SetEntityHealthPacket* casted = dynamic_cast<SetEntityHealthPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
+
+            e->SetHealth(casted->health);
+        }
+        if(type == CHAT_MESSAGE)
+        {
+            ChatMessagePacket* casted = dynamic_cast<ChatMessagePacket*>(packet);
+
+            if (casted == nullptr) continue;
+
+			ChatMessagePacket* nPacket = new ChatMessagePacket(casted->id, casted->message);
+			SendPacket(nPacket);
+		}
     }
 
     for (int i = 0; i < m_packets.size(); i++)

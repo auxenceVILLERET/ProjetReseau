@@ -113,6 +113,8 @@ void Entity::SetHealth(float health)
 	m_health = health;
 	if (m_health <= 0.0f)
 		m_isAlive = false;
+	else
+		m_isAlive = true;
 	SetDirtyFlag(DIRTY_TYPES::HEALTH);
 }
 
