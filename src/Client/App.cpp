@@ -196,8 +196,17 @@ void App::ChatUpdate()
 
 		if (m_chatInput.IsFinished())
 		{
-			ClientMethods::SendChatMessage(m_username,m_chatInput.GetText().c_str());
-			m_chatOpen = false;
+			if (m_chatInput.GetText().size() > 0)
+			{
+				ClientMethods::SendChatMessage(m_username, m_chatInput.GetText().c_str());
+				m_chatOpen = false;
+				m_chatInput.Reset();
+			}
+			else
+			{
+				m_chatOpen = false;
+				m_chatInput.Reset();
+			}
 		}
 		return;
 	}
@@ -221,13 +230,13 @@ void App::OnRender(int pass)
 	{
 		m_chatInput.Render();
 		m_chatText.Render();
-		float y = 100.0f;
+		float y = 110.0f;
 
 		for (const ChatLine& line : s_chatMessages)
 		{
 			std::string msg = "[" + line.user + "] " + line.text;
 
-			cpuDevice.DrawText(&m_font,msg.c_str(),380, (int)y,CPU_TEXT_LEFT);
+			cpuDevice.DrawText(&m_font,msg.c_str(),340, (int)y,CPU_TEXT_LEFT);
 
 			y += 10.0f;
 		}
@@ -338,7 +347,7 @@ void App::HandleInput()
  		if (m_pPlayer->Shoot())
 			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
  	}
-	if(cpuInput.IsKeyDown('T'))
+	if(cpuInput.IsKeyDown(VK_LMENU))
 	{
 		m_chatOpen = true;
 		m_chatInput.Reset();
