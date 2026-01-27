@@ -16,6 +16,12 @@ Entity::Entity(bool isServerSize)
 		m_pCpuEntity = cpuEngine.CreateEntity();
 	}
 	m_type = EntityType::PLAYER;
+	m_toDestroy = false;
+	m_isActive = true;
+	m_isAlive = true;
+	m_maxHealth = 100.0f;
+	m_health = m_maxHealth;
+	m_dirtyFlags = 0;
 }
 
 Entity::~Entity()
