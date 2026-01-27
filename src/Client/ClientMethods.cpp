@@ -41,6 +41,12 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
     return pEntity;
 }
 
+void ClientMethods::Disconnect(const std::string& username, uint32_t id)
+{
+    PingPongPacket* packet = new PingPongPacket(username, id);
+    Client::GetInstance()->SendPacket(packet);
+}
+
 bool ClientMethods::MoveEntity(uint32_t id, XMFLOAT3 position)
 {
     MoveEntityPacket* packet = new MoveEntityPacket(id, position.x, position.y, position.z);

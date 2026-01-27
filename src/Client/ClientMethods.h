@@ -16,6 +16,7 @@ public:
     static Entity* CopyEntity(CreateEntity* entityPacket);
 	static std::vector<ChatLine> s_chatMessages;
 
+	static void Disconnect(const std::string& username, uint32_t id);
 	static bool MoveEntity(uint32_t id, XMFLOAT3 position);
 	static bool RotateEntity(uint32_t id, XMFLOAT3 rotation);
 	static bool ScaleEntity(uint32_t id, float n);

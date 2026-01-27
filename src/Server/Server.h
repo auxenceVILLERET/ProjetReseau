@@ -13,8 +13,9 @@ struct ClientInfo
 {
     sockaddr_in sockAddr;
     std::string ip;
-    int port;
+    int port = 0;
     std::string username;
+    bool connected = false;
 };
 
 struct ReceivedPacket

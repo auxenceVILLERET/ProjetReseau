@@ -60,19 +60,37 @@ bool Server::LogUser(sockaddr_in newAddr, std::string username)
 {
     bool exists = false;
 
+    ClientInfo* pExisting = nullptr;
+    
     for (ClientInfo client : m_vClients)
     {
         if (username == client.username)
+        {
             exists = true;
+            pExisting = &client;
+        }
     }
-
-    if (exists) return false;
 
     char ip[23];
     inet_ntop(AF_INET, &newAddr.sin_addr, ip, INET_ADDRSTRLEN);
     int port = ntohs(newAddr.sin_port);
     std::string ipStr = ip;
+    
+    if (exists)
+    {
+        if (pExisting->connected == true) return false;
 
+        if (pExisting->connected == false)
+        {
+            pExisting->username = username;
+            pExisting->port = port;
+            pExisting->ip = ipStr;
+            pExisting->sockAddr = newAddr;
+            
+            return true;
+        }
+    }
+    
     ClientInfo client;
     client.username = username;
     client.port = port;
@@ -108,8 +126,24 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
     while (true)
     {
         char responseBuffer[1024 + 1];
-        sockaddr_in target;
+        sockaddr_in target{};
         int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1024, target);
+
+        for (int i = 0; i < pInstance->m_vClients.size(); i++)
+        {
+            ClientInfo* client = &pInstance->m_vClients[i];
+            char ip[23];
+            if (!inet_ntop(AF_INET, &target.sin_addr, ip, INET_ADDRSTRLEN))
+                continue;
+            
+            int port = ntohs(target.sin_port);
+            std::string ipStr = ip;
+        
+            if (ipStr != client->ip || port != client->port)
+                continue;
+            if (client->connected == false)
+                continue;
+        }
         
         Message* msg = new Message();
         std::vector<Packet*> packets = msg->Deserialize(responseBuffer);
@@ -142,8 +176,16 @@ void Server::HandlePackets()
             PingPongPacket* casted = dynamic_cast<PingPongPacket*>(packet);
             if (casted == nullptr) continue;
 
-            LogUser(rPacket.sockAddr, casted->username);
             ClientInfo* pClient = FindClient(casted->username);
+            if (pClient == nullptr)
+            {
+                if (LogUser(rPacket.sockAddr, casted->username) == false)
+                    continue;
+
+                pClient = FindClient(casted->username);
+            }
+
+            pClient->connected = !pClient->connected;
             
             PingPongPacket* responsePkt = new PingPongPacket(casted->username, false);
             SendTargetedPacket(responsePkt, pClient);
@@ -151,6 +193,7 @@ void Server::HandlePackets()
             ServerMethods::SendCreationPackets(pClient);
             Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
             p->GetTransform().pos = GetSpawnPoint();
+            
             XMFLOAT3 dir;
 			dir.x = 0.0f - p->GetTransform().pos.x;
 			dir.y = 0.0f - p->GetTransform().pos.y;
@@ -162,6 +205,7 @@ void Server::HandlePackets()
                 dir.y /= length;
                 dir.z /= length;
             }
+            
 			p->GetTransform().LookTo(dir.x, dir.y, dir.z);
             p->SetDirtyFlag(DIRTY_TYPES::ROTATION);
             CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
