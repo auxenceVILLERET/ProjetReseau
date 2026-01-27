@@ -331,6 +331,10 @@ void App::HandleInput()
 		m_chatOpen = true;
 		m_chatInput.Reset();
 	}
+	if (cpuInput.IsKeyDown('H'))
+	{
+		m_pPlayer->TakeDamage(10.0f);
+	}
 }
 
 void App::LoginUpdate(float dt)
