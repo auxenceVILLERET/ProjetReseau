@@ -63,7 +63,7 @@ void Client::Update()
     for (Message* msg : m_pendingMessages)
     {
         msg->Serialize(m_buffer);
-        m_udpSocket.SendTo(m_buffer, 1025, m_serverAddr);
+        m_udpSocket.SendTo(m_buffer, 1024, m_serverAddr);
         msg->ClearPackets();
     }
     
@@ -114,7 +114,7 @@ bool Client::Connect(std::string ip, int port, std::string username)
     target.sin_port = htons(m_serverPort);
     m_serverAddr = target;
         
-    if (m_udpSocket.SendTo(m_buffer, 1025, m_serverAddr) != SOCKET_ERROR)
+    if (m_udpSocket.SendTo(m_buffer, 1024, m_serverAddr) != SOCKET_ERROR)
     {
         m_hasPinged = true;
         Sleep(1000);

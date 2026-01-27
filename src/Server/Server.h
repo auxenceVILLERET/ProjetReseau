@@ -59,7 +59,7 @@ private:
     std::vector<ReceivedPacket> m_packets;
     std::vector<Message*> m_pendingMessages;
     std::map<ClientInfo*, std::vector<Message*>> m_pendingTargetedMessage;
-    std::vector<ClientInfo> m_vClients;
+    std::vector<ClientInfo*> m_vClients;
 
     char m_buffer[1024];
     

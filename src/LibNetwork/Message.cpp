@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
+#include <ostream>
 
 #include "Packets/Packets.h"
 #include "Packets/SetPlayerStatsPacket.hpp"
@@ -31,21 +33,26 @@ Message::~Message()
 void Message::Serialize(char* buffer)
 {
     char* bufferCursor = buffer;
+    int count = 0;
     
     std::memset(buffer, 0, BUFFER_SIZE);
 
     std::memcpy(bufferCursor, &MAGIC_WORD, sizeof(MAGIC_WORD));
     bufferCursor += sizeof(MAGIC_WORD);
+    count += sizeof(MAGIC_WORD);
     
     std::memcpy(bufferCursor, &m_id, sizeof(m_id));
     bufferCursor += sizeof(m_id);
+    count += sizeof(m_id);
 
     std::memcpy(bufferCursor, &m_isSystemMsg, sizeof(m_isSystemMsg));
     bufferCursor += sizeof(m_isSystemMsg);
+    count += sizeof(m_isSystemMsg);
     
     m_packetCount = m_vPackets.size();
     std::memcpy(bufferCursor, &m_packetCount, sizeof(m_packetCount));
     bufferCursor += sizeof(m_packetCount);
+    count += sizeof(m_packetCount);
     
     for (int i = 0; i < m_vPackets.size(); i++)
     {
@@ -53,10 +60,11 @@ void Message::Serialize(char* buffer)
         
         std::memcpy(bufferCursor, packetBuffer, m_vPackets[i]->m_size);
         bufferCursor += m_vPackets[i]->m_size;
+        count += m_vPackets[i]->m_size;
         
         delete[] packetBuffer;
     }
-
+    
     ClearPackets();
 }
 

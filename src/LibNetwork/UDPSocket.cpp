@@ -44,6 +44,6 @@ int UDPSocket::SendTo(const char* data, unsigned int len, sockaddr_in& target)
 
 int UDPSocket::ReceiveFrom(char* buffer, unsigned int len, sockaddr_in& target)
 {
-    int addrSize = sizeof(target);
+    int addrSize = sizeof(sockaddr_in);
     return recvfrom(mSocket, buffer, len, 0, reinterpret_cast<sockaddr*>(&target), &addrSize);
 }

@@ -23,7 +23,11 @@ Server::Server() : m_udpSocket()
 
 Server::~Server()
 {
-    
+    for (ClientInfo* client : m_vClients)
+    {
+        delete client;
+    }
+    m_vClients.clear();
 }
 
 Server* Server::GetInstance()
@@ -62,12 +66,12 @@ bool Server::LogUser(sockaddr_in newAddr, std::string username)
 
     ClientInfo* pExisting = nullptr;
     
-    for (ClientInfo client : m_vClients)
+    for (ClientInfo* client : m_vClients)
     {
-        if (username == client.username)
+        if (username == client->username)
         {
             exists = true;
-            pExisting = &client;
+            pExisting = client;
         }
     }
 
@@ -91,23 +95,23 @@ bool Server::LogUser(sockaddr_in newAddr, std::string username)
         }
     }
     
-    ClientInfo client;
-    client.username = username;
-    client.port = port;
-    client.ip = ipStr;
-    client.sockAddr = newAddr;
+    ClientInfo* newClient = new ClientInfo();
+    newClient->username = username;
+    newClient->port = port;
+    newClient->ip = ipStr;
+    newClient->sockAddr = newAddr;
     
-    m_vClients.push_back(client);
+    m_vClients.push_back(newClient);
 
     return true;
 }
 
 void Server::GlobalMsg(const char* msg)
 {
-    for (ClientInfo client : m_vClients)
+    for (ClientInfo* client : m_vClients)
     {
         // std::cout << "Sent global message to " << client.username << "\n";
-        m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client.sockAddr);
+        m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client->sockAddr);
     }
 }
 
@@ -125,13 +129,15 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
     Server* pInstance = static_cast<Server*>(lpParam);
     while (true)
     {
-        char responseBuffer[1024 + 1];
+        char responseBuffer[1024];
         sockaddr_in target{};
         int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1024, target);
-
+        
+        if (response == -1) continue;
+        
         for (int i = 0; i < pInstance->m_vClients.size(); i++)
         {
-            ClientInfo* client = &pInstance->m_vClients[i];
+            ClientInfo* client = pInstance->m_vClients[i];
             char ip[23];
             if (!inet_ntop(AF_INET, &target.sin_addr, ip, INET_ADDRSTRLEN))
                 continue;
@@ -175,15 +181,10 @@ void Server::HandlePackets()
         {
             PingPongPacket* casted = dynamic_cast<PingPongPacket*>(packet);
             if (casted == nullptr) continue;
-
+            
+            LogUser(rPacket.sockAddr, casted->username);
+            
             ClientInfo* pClient = FindClient(casted->username);
-            if (pClient == nullptr)
-            {
-                if (LogUser(rPacket.sockAddr, casted->username) == false)
-                    continue;
-
-                pClient = FindClient(casted->username);
-            }
 
             pClient->connected = !pClient->connected;
 
@@ -218,8 +219,9 @@ void Server::HandlePackets()
             }
             else if (pClient->connected == false)
             {
-                DestroyEntityPacket* destroyPacket = new DestroyEntityPacket(pClient->playerId);
-                SendPacket(destroyPacket);
+                Entity* e = GameManager::GetInstance()->GetEntity(pClient->playerId);
+                if (e != nullptr)
+                    e->Destroy();
             }
             
         }
@@ -399,10 +401,10 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
 
 ClientInfo* Server::FindClient(std::string username)
 {
-    for (ClientInfo& client : m_vClients)
+    for (ClientInfo* client : m_vClients)
     {
-        if (client.username == username)
-            return &client;
+        if (client->username == username)
+            return client;
     }
     return nullptr;
 }
