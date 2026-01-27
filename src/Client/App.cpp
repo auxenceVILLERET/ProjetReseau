@@ -219,7 +219,7 @@ void App::OnRender(int pass)
 		{
 			std::string msg = "[" + line.user + "] " + line.text;
 
-			cpuDevice.DrawText(&m_font,msg.c_str(),380,y,CPU_TEXT_LEFT);
+			cpuDevice.DrawText(&m_font,msg.c_str(),380, (int)y,CPU_TEXT_LEFT);
 
 			y += 16.0f;
 		}
