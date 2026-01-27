@@ -191,8 +191,7 @@ void App::ChatUpdate()
 
 		if (m_chatInput.IsFinished())
 		{
-			ClientMethods::SendChatMessage(m_pPlayer->GetID(),m_chatInput.GetText().c_str());
-			ClientMethods::AddChatMessage(m_username, m_chatInput.GetText());
+			ClientMethods::SendChatMessage(m_username,m_chatInput.GetText().c_str());
 			m_chatOpen = false;
 		}
 		return;

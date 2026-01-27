@@ -245,7 +245,7 @@ void Server::HandlePackets()
 
             if (casted == nullptr) continue;
 
-			ChatMessagePacket* nPacket = new ChatMessagePacket(casted->id, casted->message);
+			ChatMessagePacket* nPacket = new ChatMessagePacket(casted->username, casted->text);
 			SendPacket(nPacket);
 		}
     }

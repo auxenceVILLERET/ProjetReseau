@@ -24,7 +24,7 @@ public:
 	static bool SetActiveState(uint32_t id, bool isActive);
 	static bool SetPosition(uint32_t id, XMFLOAT3 position);
 	static bool SetDirection(uint32_t id, XMFLOAT3 rotation);
-	static bool SendChatMessage(uint32_t id, const char* message);
+	static bool SendChatMessage(std::string user, const char* message);
 	static bool AddChatMessage(const std::string& user,const std::string& msg);
 	static bool SetHealth(uint32_t id, float health);
 };

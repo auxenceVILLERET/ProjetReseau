@@ -292,13 +292,12 @@ void Client::HandlePackets()
 		}
         if (type == CHAT_MESSAGE)
         {
-            ChatMessagePacket* casted =
-                dynamic_cast<ChatMessagePacket*>(packet);
+            ChatMessagePacket* casted = dynamic_cast<ChatMessagePacket*>(packet);
 
             if (casted == nullptr)
                 continue;
 
-            ClientMethods::AddChatMessage("Player", casted->message);
+            ClientMethods::AddChatMessage(casted->username, casted->text);
         }
 
     }

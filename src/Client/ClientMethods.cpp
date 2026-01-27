@@ -97,12 +97,13 @@ bool ClientMethods::SetDirection(uint32_t id, XMFLOAT3 rotation)
 	return true;
 }
 
-bool ClientMethods::SendChatMessage(uint32_t id, const char* message)
+bool ClientMethods::SendChatMessage(std::string user, const char* message)
 {
-    ChatMessagePacket* packet = new ChatMessagePacket(id, message);
+    ChatMessagePacket* packet = new ChatMessagePacket(user, message);
     Client::GetInstance()->SendPacket(packet);
 	return true;
 }
+
 
 bool ClientMethods::AddChatMessage(const std::string& user, const std::string& msg)
 {
