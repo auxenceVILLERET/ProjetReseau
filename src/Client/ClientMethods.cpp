@@ -67,9 +67,9 @@ bool ClientMethods::ChangePlayerSpeed(uint32_t id, float delta)
     return true;
 }
 
-bool ClientMethods::ShootProjectile(uint32_t id, XMFLOAT3 pos, XMFLOAT3 dir)
+bool ClientMethods::ShootProjectile(uint32_t shooterId, XMFLOAT3 pos, XMFLOAT3 dir)
 {
-    ShootProjectilePacket* packet = new ShootProjectilePacket(id, pos.x, pos.y, pos.z, dir.x, dir.y, dir.z);
+    ShootProjectilePacket* packet = new ShootProjectilePacket(shooterId, pos.x, pos.y, pos.z, dir.x, dir.y, dir.z);
     Client::GetInstance()->SendPacket(packet);
     return true;
 }

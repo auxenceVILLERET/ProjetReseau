@@ -18,6 +18,8 @@ Projectile::Projectile(bool isServerSide) : Entity(isServerSide)
 
 	m_distMax = 100.0f;
 	m_distTraveled = 0.0f;
+
+	m_pShooter = nullptr;
 }
 
 Projectile::~Projectile()
