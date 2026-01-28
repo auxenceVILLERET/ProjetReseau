@@ -226,6 +226,7 @@ void App::OnRender(int pass)
 	{
 		m_usernameText.SetText(m_username);
 		m_usernameText.Render();
+		RenderOtherPlayersHealth();
 	}
 
 	if (m_chatOpen || m_newChatMessage)
@@ -534,6 +535,47 @@ bool App::AddChatMessage(const std::string& user, const std::string& msg)
 void App::ClearChatMessages()
 {
 	s_chatMessages.clear();
+}
+
+void App::RenderOtherPlayersHealth()
+{
+	if(m_pPlayer == nullptr)
+		return;
+
+	cpu_camera* camera = cpuEngine.GetCamera();
+
+	for(Entity* entity : GameManager::GetInstance()->GetEntities())
+	{
+		if(entity->GetType() != PLAYER)
+			continue;
+		if(entity->GetID() == m_pPlayer->GetID())
+			continue;
+		Player* otherPlayer = dynamic_cast<Player*>(entity);
+
+		if(otherPlayer == nullptr || otherPlayer->IsAlive() == false)
+			continue;
+
+		XMFLOAT3 pos = otherPlayer->GetTransform().pos;
+		pos.y += 2.5f;
+
+		XMFLOAT2 screenPos;
+		if(WorldToScreen(pos, screenPos, camera->matViewProj, cpuDevice.GetWidth(), cpuDevice.GetHeight()) == false)
+			continue;
+
+		float dx = pos.x - m_pPlayer->GetPos().x;
+		float dy = pos.y - m_pPlayer->GetPos().y;
+		float dz = pos.z - m_pPlayer->GetPos().z;
+		float distance = sqrtf(dx * dx + dy * dy + dz * dz);
+
+		if(distance > 30.0f)
+			continue;
+
+		int hp = (int)otherPlayer->GetHealth();
+		std::string hpText = "HP: " + std::to_string(hp);
+
+		cpuDevice.DrawText(&m_font, hpText.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER);
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
