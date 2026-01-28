@@ -50,6 +50,7 @@ private:
 
 	int m_killCount;
 	int m_deathCount;
+	int m_score;
 	std::string m_name;
 	
 	cpu_mesh m_mesh;

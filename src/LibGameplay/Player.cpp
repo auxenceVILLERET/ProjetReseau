@@ -53,6 +53,7 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 
 	m_killCount = 0;
 	m_deathCount = 0;
+	m_score = 0;
 
 	m_shipColorIndex = 0;
 	m_particleColorIndex = 0;
