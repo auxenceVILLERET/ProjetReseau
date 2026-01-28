@@ -570,26 +570,27 @@ void App::RenderOtherPlayersHealth()
 		if(distance > 30.0f)
 			continue;
 
-		float HP = otherPlayer->GetHealth();
-		float maxHP = otherPlayer->GetMaxHealth();
+		int HP = otherPlayer->GetHealth();
+		int maxHP = otherPlayer->GetMaxHealth();
 
 		std::string hpBar = MakeHpBar(HP, maxHP);
 
 		cpuDevice.DrawText(&m_font, hpBar.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER);
 	}
-
 }
 
-std::string App::MakeHpBar(float currentHealth, float maxHealth)
+std::string App::MakeHpBar(int currentHealth, int maxHealth)
 {
 	const int barSize = 10;
 	int filled = (currentHealth * barSize) / maxHealth;
 
-	std::string bar = "HP ";
+	std::string bar = "HP [";
 	for (int i = 0; i < barSize; i++)
 	{
-		bar += (i < filled) ? "█" : "░";
+		if (i < filled) bar += "#";
+		else bar += "-";
 	}
+	bar += "]";
 
 	bar += " ";
 	bar += std::to_string(currentHealth);
