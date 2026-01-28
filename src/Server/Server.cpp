@@ -395,7 +395,7 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
         hasCreated = true;
     }
 
-    if (m_pendingMessages.size() == 0)
+    if (m_pendingTargetedMessage[pTarget].size() == 0)
     {
         Message* msg = new Message(true);
         m_pendingTargetedMessage[pTarget].push_back(msg);

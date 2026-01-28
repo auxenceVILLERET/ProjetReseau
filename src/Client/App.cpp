@@ -165,7 +165,7 @@ void App::OnUpdate()
 	}
 	
 	GameManager::GetInstance()->ClearDestroyedEntities();
-
+	ClearDestroyedPlayers();
 	
 	// Quit
 	if ( cpuInput.IsKeyDown(VK_ESCAPE) )
