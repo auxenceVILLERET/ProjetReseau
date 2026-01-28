@@ -35,6 +35,7 @@ void App::OnStart()
 	cpuEngine.GetCamera()->far = 500.0f;
 	cpuEngine.GetCamera()->UpdateProjection();
 	cpuEngine.GetParticleData()->Create(20000);
+	cpuEngine.m_groundColor = cpuEngine.m_skyColor;
 
 	m_texture.Load("../../res/Client/vie.png");
 	GameManager::GetInstance();
