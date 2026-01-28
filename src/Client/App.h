@@ -45,6 +45,8 @@ public:
 	void RenderOtherPlayersHealth();
 	std::string MakeHpBar(int currentHealth, int maxHealth);
 
+
+
 private:
 	std::vector<ChatLine> s_chatMessages;
 	inline static App* s_pApp = nullptr;

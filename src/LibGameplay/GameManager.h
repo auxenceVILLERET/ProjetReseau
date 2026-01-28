@@ -23,6 +23,9 @@ public:
 	template<typename T>
 	T* CreateEntity(bool isServerSide = false);
 
+	template<typename T>
+	T* GetEntity();
+
 	std::vector<Entity*>& GetEntities();
 	Entity* GetEntity(uint32_t id);
 

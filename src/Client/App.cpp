@@ -261,9 +261,18 @@ void App::OnRender(int pass)
 	{
 		m_outOfArenaText.Render();
 	}
-	
+
+	Asteroid* p = GameManager::GetInstance()->GetEntity<Asteroid>();
+
 	switch (pass)
 	{
+	case CPU_PASS_CLEAR_BEGIN:
+		if (p == nullptr)
+			break;
+
+		std::cout << "Asteroid position: " << p->GetTransform().pos.x << ", " << p->GetTransform().pos.y << ", " << p->GetTransform().pos.z << std::endl;
+
+		break;
 	case CPU_PASS_PARTICLE_BEGIN:
 	{
 		// Blur particles

@@ -69,6 +69,7 @@ void Asteroid::ExplosionParticul()
 	m_Explo = true;
 }
 
+
 void Asteroid::InitRenderElements()
 {
 	m_pEmitter = cpuEngine.CreateParticleEmitter();
