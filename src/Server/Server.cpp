@@ -220,6 +220,7 @@ void Server::HandlePackets()
                 SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
 
                 SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(p->GetID(), pClient->username);
+                MessageConnected(pClient);
                 SendPacket(uPacket);
             }
             else if (pClient->connected == false)
@@ -228,7 +229,6 @@ void Server::HandlePackets()
                 if (e != nullptr)
                     e->Destroy();
             }
-            
         }
         else if (type == ROTATE_ENTITY)
         {
@@ -465,6 +465,13 @@ void Server::Update()
     }
 
     ClearMessages();
+}
+
+void Server::MessageConnected(ClientInfo* pClient)
+{
+    std::string msg = pClient->username + " has connected.";
+    ChatMessagePacket* chatPacket = new ChatMessagePacket("Server", msg);
+	SendPacket(chatPacket);
 }
 
 #endif

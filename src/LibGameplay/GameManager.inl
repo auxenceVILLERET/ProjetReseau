@@ -23,4 +23,16 @@ T* GameManager::CreateEntity(bool isServerSide)
 	return newEntity;
 }
 
+template<typename T>
+inline T* GameManager::GetEntity()
+{
+	for (Entity* entity : m_entities)
+	{
+		T* castedEntity = dynamic_cast<T*>(entity);
+		if (castedEntity != nullptr)
+			return castedEntity;
+	}
+	return nullptr;
+}
+
 #endif

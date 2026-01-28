@@ -47,6 +47,9 @@ public:
 	void UpdateScoreboard();
 	void ClearDestroyedPlayers();
 
+	void RenderOtherPlayersHealth();
+	std::string MakeHpBar(int currentHealth, int maxHealth);
+
 private:
 	std::vector<ChatLine> s_chatMessages;
 	inline static App* s_pApp = nullptr;
@@ -96,7 +99,10 @@ private:
 	InputText m_chatText;
 	float m_chatUpdateTimer = 0.0f;
 	float m_chatUpdateCooldown = 5.0f;
+
+	cpu_font serverFont;
 	////////////////////////////////
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

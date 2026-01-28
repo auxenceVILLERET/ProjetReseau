@@ -49,6 +49,9 @@ void ServerMethods::HandleDirtyEntities()
         cpu_transform t = entity->GetTransform();
         uint32_t id = entity->GetID();
 
+        if(dirty == 0)
+			continue;
+
         if (dirty & DIRTY_TYPES::POS)
         {
            SetEntityPos* packet = new SetEntityPos(id, t.pos.x, t.pos.y, t.pos.z);
@@ -120,17 +123,23 @@ void ServerMethods::RespawnAsteroid(int& asteroidDestroy)
 {
     if (asteroidDestroy >= 10)
     {
-        int toRespawn = RandomRange(1, 10);
+        int toRespawn = RandomRange(5,15);
         for (int i = 0; i < toRespawn; i++)
         {
             Asteroid* asteroid = GameManager::GetInstance()->CreateEntity<Asteroid>(true);
+
             XMFLOAT3 pos;
             pos.x = RandomRange(BORDER_MIN, BORDER_MAX);
             pos.y = RandomRange(BORDER_MIN, BORDER_MAX);
             pos.z = RandomRange(BORDER_MIN, BORDER_MAX);
+
             asteroid->SetPos(pos.x, pos.y, pos.z);
             float size = RandomRange(0.5f, 5.0f);
 			asteroid->Init(size);
+
+            asteroid->ClearDirtyFlags();
+			CreateEntity* packet = new CreateEntity(asteroid->GetID(), asteroid->GetType(), asteroid->GetTransform().pos, asteroid->GetTransform().dir, asteroid->GetScale());
+			Server::GetInstance()->SendPacket(packet);
         }
 		asteroidDestroy = 0;
     }

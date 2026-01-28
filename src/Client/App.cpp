@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 
 #include "Client.h"
 #include "Player.h"
@@ -35,10 +35,12 @@ void App::OnStart()
 	cpuEngine.GetCamera()->far = 500.0f;
 	cpuEngine.GetCamera()->UpdateProjection();
 	cpuEngine.GetParticleData()->Create(20000);
+	cpuEngine.m_groundColor = cpuEngine.m_skyColor;
 
 	m_texture.Load("../../res/Client/vie.png");
 	GameManager::GetInstance();
 	m_font.Create(10, { 1.0f, 1.0f, 1.0f });
+	serverFont.Create(10, { 0.0f, 1.0f, 0.0f });
 
 	Client* client = Client::GetInstance();
 
@@ -247,6 +249,7 @@ void App::OnRender(int pass)
 	{
 		m_usernameText.SetText(m_username);
 		m_usernameText.Render();
+		RenderOtherPlayersHealth();
 	}
 
 	if (m_chatOpen || m_newChatMessage)
@@ -259,8 +262,14 @@ void App::OnRender(int pass)
 		{
 			std::string msg = "[" + line.user + "] " + line.text;
 
-			cpuDevice.DrawText(&m_font,msg.c_str(),340, (int)y,CPU_TEXT_LEFT);
-
+			if(line.user == "Server")
+			{
+				cpuDevice.DrawText(&serverFont, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
+			}
+			else
+			{
+				cpuDevice.DrawText(&m_font, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
+			}
 			y += 10.0f;
 		}
 	}
@@ -280,8 +289,11 @@ void App::OnRender(int pass)
 		m_vScoreboard[i].Render();
 	}
 	
+
 	switch (pass)
 	{
+	case CPU_PASS_CLEAR_BEGIN:
+		break;
 	case CPU_PASS_PARTICLE_BEGIN:
 	{
 		// Blur particles
@@ -614,6 +626,65 @@ void App::ClearDestroyedPlayers()
 			++it;
 		}
 	}
+void App::RenderOtherPlayersHealth()
+{
+	if(m_pPlayer == nullptr)
+		return;
+
+	cpu_camera* camera = cpuEngine.GetCamera();
+
+	for(Entity* entity : GameManager::GetInstance()->GetEntities())
+	{
+		if(entity->GetType() != PLAYER)
+			continue;
+		if(entity->GetID() == m_pPlayer->GetID())
+			continue;
+		Player* otherPlayer = dynamic_cast<Player*>(entity);
+
+		if(otherPlayer == nullptr || otherPlayer->IsAlive() == false)
+			continue;
+
+		XMFLOAT3 pos = otherPlayer->GetTransform().pos;
+		pos.y += 2.5f;
+
+		XMFLOAT2 screenPos;
+		if(WorldToScreen(pos, screenPos, camera->matViewProj, cpuDevice.GetWidth(), cpuDevice.GetHeight()) == false)
+			continue;
+
+		float dx = pos.x - m_pPlayer->GetPos().x;
+		float dy = pos.y - m_pPlayer->GetPos().y;
+		float dz = pos.z - m_pPlayer->GetPos().z;
+		float distance = sqrtf(dx * dx + dy * dy + dz * dz);
+
+		if(distance > 30.0f)
+			continue;
+
+		int HP = otherPlayer->GetHealth();
+		int maxHP = otherPlayer->GetMaxHealth();
+
+		std::string hpBar = MakeHpBar(HP, maxHP);
+
+		cpuDevice.DrawText(&m_font, hpBar.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER);
+	}
+}
+
+std::string App::MakeHpBar(int currentHealth, int maxHealth)
+{
+	const int barSize = 10;
+	int filled = (currentHealth * barSize) / maxHealth;
+
+	std::string bar = "HP [";
+	for (int i = 0; i < barSize; i++)
+	{
+		if (i < filled) bar += "#";
+		else bar += "-";
+	}
+	bar += "]";
+
+	bar += " ";
+	bar += std::to_string(currentHealth);
+
+	return bar;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

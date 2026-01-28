@@ -50,6 +50,7 @@ public:
     void ClearMessages();
     
     void Update();
+	void MessageConnected(ClientInfo* pClient);
         
 private:
     static Server* m_pInstance;

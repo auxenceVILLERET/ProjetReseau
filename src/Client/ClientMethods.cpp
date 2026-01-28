@@ -31,7 +31,7 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
 
     if (pEntity == nullptr) return pEntity;
 
-    pEntity->GetTransform().pos = XMFLOAT3(entityPacket->x, entityPacket->y, entityPacket->z);
+    pEntity->SetPos(entityPacket->x, entityPacket->y , entityPacket->z);
     pEntity->SetScale(entityPacket->scale);
     pEntity->SetID(entityPacket->id);
     if (entityPacket->dx != 0 || entityPacket->dy != 0 || entityPacket->dz != 0)
