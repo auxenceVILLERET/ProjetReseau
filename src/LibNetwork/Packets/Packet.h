@@ -26,7 +26,8 @@ inline std::vector<std::string> PacketTypeNames
 	"CHAT MESSAGE",
     "SET PLAYER STATS",
 	"CHANGE COLOR SHIP",
-	"CHANGE COLOR PARTICLE"
+	"CHANGE COLOR PARTICLE",
+	"SET PLAYER USERNAME"
 };
 
 enum PacketType
@@ -52,7 +53,8 @@ enum PacketType
 	CHAT_MESSAGE,
     SET_PLAYER_STATS,
     CHANGE_COLOR_SHIP,
-	CHANGE_COLOR_PARTICLE
+	CHANGE_COLOR_PARTICLE,
+	SET_PLAYER_USERNAME
 };
 
 class Packet

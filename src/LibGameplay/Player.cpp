@@ -124,6 +124,8 @@ void Player::Render()
 
 void Player::OnCollision(Entity* other)
 {
+	if (m_isAlive == false) return;
+	
 	if(other->GetType() == EntityType::ASTEROID)
 	{
 		TakeDamage(100.0f);

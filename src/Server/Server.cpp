@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "../LibNetwork/Socket.h"
+#include "Packets/SetPlayerUsernamePacket.hpp"
 
 Server* Server::m_pInstance = nullptr;
 
@@ -216,7 +217,10 @@ void Server::HandlePackets()
                 CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
                 SendPacket(createPacket);
 
-                SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);   
+                SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
+
+                SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(p->GetID(), pClient->username);
+                SendPacket(uPacket);
             }
             else if (pClient->connected == false)
             {
@@ -226,7 +230,7 @@ void Server::HandlePackets()
             }
             
         }
-        if (type == ROTATE_ENTITY)
+        else if (type == ROTATE_ENTITY)
         {
             RotateEntityPacket* casted = dynamic_cast<RotateEntityPacket*>(packet);
             if (casted == nullptr) continue;
@@ -236,7 +240,7 @@ void Server::HandlePackets()
 
             e->Rotate(casted->x, casted->y, casted->z);
         }
-        if (type == CHANGE_PLAYER_SPEED)
+        else if (type == CHANGE_PLAYER_SPEED)
         {
             ChangePlayerSpeedPacket* casted = dynamic_cast<ChangePlayerSpeedPacket*>(packet);
             if (casted == nullptr) continue;
@@ -250,7 +254,7 @@ void Server::HandlePackets()
             SetPlayerSpeedPacket* nPacket = new SetPlayerSpeedPacket(p->GetID(), p->GetSpeed());
             SendPacket(nPacket);
         }
-        if (type == SHOOT_PROJECTILE)
+        else if (type == SHOOT_PROJECTILE)
         {
             ShootProjectilePacket* casted = dynamic_cast<ShootProjectilePacket*>(packet);
             if (casted == nullptr) continue;
@@ -265,7 +269,7 @@ void Server::HandlePackets()
             CreateEntity* nPacket = new CreateEntity(e->GetID(), e->GetType(), e->GetTransform().pos, e->GetTransform().dir, e->GetScale());
             SendPacket(nPacket);
         }
-        if(type == SET_ACTIVE_STATE)
+        else if(type == SET_ACTIVE_STATE)
         {
             SetActiveStatePacket* casted = dynamic_cast<SetActiveStatePacket*>(packet);
             if (casted == nullptr) continue;
@@ -282,7 +286,7 @@ void Server::HandlePackets()
 			SetActiveStatePacket* nPacket = new SetActiveStatePacket(casted->id, casted->isActive);
 			SendPacket(nPacket);
 		}
-        if (type == SET_ENTITY_POS)
+        else if (type == SET_ENTITY_POS)
         {
             SetEntityPos* casted = dynamic_cast<SetEntityPos*>(packet);
             if (casted == nullptr) continue;
@@ -290,7 +294,7 @@ void Server::HandlePackets()
             if (e == nullptr) continue;
             e->SetPos(casted->x, casted->y, casted->z);
         }
-        if (type == SET_ENTITY_DIR)
+        else if (type == SET_ENTITY_DIR)
         {
             SetEntityDirPacket* casted = dynamic_cast<SetEntityDirPacket*>(packet);
             if (casted == nullptr) continue;
@@ -301,7 +305,7 @@ void Server::HandlePackets()
             e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
             e->SetDirtyFlag(DIRTY_TYPES::ROTATION);
         }
-        if (type == SET_HEALTH)
+        else if (type == SET_HEALTH)
         {
             SetEntityHealthPacket* casted = dynamic_cast<SetEntityHealthPacket*>(packet);
             if (casted == nullptr) continue;
@@ -311,7 +315,7 @@ void Server::HandlePackets()
 
             e->SetHealth(casted->health);
         }
-        if(type == CHAT_MESSAGE)
+        else if(type == CHAT_MESSAGE)
         {
             ChatMessagePacket* casted = dynamic_cast<ChatMessagePacket*>(packet);
 
@@ -320,7 +324,7 @@ void Server::HandlePackets()
 			ChatMessagePacket* nPacket = new ChatMessagePacket(casted->username, casted->text);
 			SendPacket(nPacket);
 		}
-        if (type == CHANGE_COLOR_SHIP)
+        else if (type == CHANGE_COLOR_SHIP)
         {
             ChangeColorShipPacket* casted = dynamic_cast<ChangeColorShipPacket*>(packet);
             if (casted == nullptr) continue;
@@ -335,7 +339,7 @@ void Server::HandlePackets()
 			ChangeColorShipPacket* nPacket = new ChangeColorShipPacket(casted->id, casted->index);
 			SendPacket(nPacket);
         }
-        if (type == CHANGE_COLOR_PARTICLE)
+        else if (type == CHANGE_COLOR_PARTICLE)
         {
             ChangeColorParticlePacket* casted = dynamic_cast<ChangeColorParticlePacket*>(packet);
             if (casted == nullptr) continue;
@@ -346,7 +350,6 @@ void Server::HandlePackets()
             ChangeColorParticlePacket* nPacket = new ChangeColorParticlePacket(casted->id, casted->index);
             SendPacket(nPacket);
         }
-    
     }
 
     for (int i = 0; i < m_packets.size(); i++)

@@ -34,6 +34,7 @@ public:
 	void SetStats(int killCount, int deathCount)	{ m_killCount = killCount; m_deathCount = deathCount; }
 	int GetKillCount()								{ return m_killCount; }
 	int GetDeathCount()								{ return m_deathCount; }
+	std::string& GetName()							{ return m_name; }
 	
 	static std::vector<XMFLOAT3> m_shipColor;
 	static std::vector<XMFLOAT3> m_particleColor;

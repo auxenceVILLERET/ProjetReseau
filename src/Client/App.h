@@ -43,7 +43,9 @@ public:
 	void ClearChatMessages();
 
 	void LogPlayer(Player* pPlayer);
-	void DisconnectPlayer(Player* pPlayer);
+	std::string GetScoreboardLine(Player* pPlayer);
+	void UpdateScoreboard();
+	void ClearDestroyedPlayers();
 
 private:
 	std::vector<ChatLine> s_chatMessages;
@@ -54,6 +56,7 @@ private:
 	cpu_texture m_texture;
 	std::vector<cpu_sprite*> m_healthSprites;
 
+	std::vector<InputText> m_vScoreboard;
 	std::vector<Player*> m_vPlayers;
 
 	////////// OUT OF ARENA //////////////

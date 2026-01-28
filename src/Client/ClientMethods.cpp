@@ -36,6 +36,10 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
     pEntity->SetID(entityPacket->id);
     if (entityPacket->dx != 0 || entityPacket->dy != 0 || entityPacket->dz != 0)
         pEntity->GetTransform().LookTo(entityPacket->dx, entityPacket->dy, entityPacket->dz);
+
+    if (pEntity->GetType() == EntityType::PLAYER)
+        cpuApp.LogPlayer(dynamic_cast<Player*>(pEntity));
+    
     return pEntity;
 }
 
