@@ -3,7 +3,7 @@
 
 #define BORDER_MAX 80.0f
 #define BORDER_MIN (-80.0f)
-#define ASTEROID_COUNT 360
+#define ASTEROID_COUNT 1
 
 #include <DirectXMath.h>
 #include <vector>

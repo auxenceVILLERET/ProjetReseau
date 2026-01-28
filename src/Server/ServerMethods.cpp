@@ -99,19 +99,24 @@ void ServerMethods::InitMap()
 
 void ServerMethods::RespawnAsteroid(int& asteroidDestroy)
 {
-    if (asteroidDestroy >= 10)
+    if (asteroidDestroy >= 1)
     {
-        int toRespawn = RandomRange(1, 10);
+        int toRespawn = RandomRange(5, 15);
         for (int i = 0; i < toRespawn; i++)
         {
             Asteroid* asteroid = GameManager::GetInstance()->CreateEntity<Asteroid>(true);
+
             XMFLOAT3 pos;
             pos.x = RandomRange(BORDER_MIN, BORDER_MAX);
             pos.y = RandomRange(BORDER_MIN, BORDER_MAX);
             pos.z = RandomRange(BORDER_MIN, BORDER_MAX);
+
             asteroid->SetPos(pos.x, pos.y, pos.z);
             float size = RandomRange(0.5f, 5.0f);
 			asteroid->Init(size);
+
+			CreateEntity* packet = new CreateEntity(asteroid->GetID(), asteroid->GetType(), asteroid->GetTransform().pos, asteroid->GetTransform().dir, asteroid->GetScale());
+			Server::GetInstance()->SendPacket(packet);
         }
 		asteroidDestroy = 0;
     }

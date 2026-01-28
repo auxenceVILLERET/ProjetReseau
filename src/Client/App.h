@@ -88,6 +88,8 @@ private:
 	InputText m_chatText;
 	float m_chatUpdateTimer = 0.0f;
 	float m_chatUpdateCooldown = 5.0f;
+
+	cpu_font serverFont;
 	////////////////////////////////
 };
 

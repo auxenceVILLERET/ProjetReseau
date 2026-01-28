@@ -39,6 +39,7 @@ void App::OnStart()
 	m_texture.Load("../../res/Client/vie.png");
 	GameManager::GetInstance();
 	m_font.Create(10, { 1.0f, 1.0f, 1.0f });
+	serverFont.Create(10, { 0.0f, 1.0f, 0.0f });
 
 	Client* client = Client::GetInstance();
 
@@ -238,8 +239,14 @@ void App::OnRender(int pass)
 		{
 			std::string msg = "[" + line.user + "] " + line.text;
 
-			cpuDevice.DrawText(&m_font,msg.c_str(),340, (int)y,CPU_TEXT_LEFT);
-
+			if(line.user == "Server")
+			{
+				cpuDevice.DrawText(&serverFont, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
+			}
+			else
+			{
+				cpuDevice.DrawText(&m_font, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
+			}
 			y += 10.0f;
 		}
 	}
