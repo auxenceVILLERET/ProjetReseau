@@ -135,6 +135,7 @@ void Player::OnCollision(Entity* other)
 {
 	if (m_isAlive == false) return;
 	
+	
 	if(other->GetType() == EntityType::ASTEROID)
 	{
 		TakeDamage(100.0f);
@@ -170,10 +171,8 @@ void Player::TakeDamage(float damage)
 		m_shieldAmount -= damage;
 		if (m_shieldAmount < 0.0f)
 		{
-			float remainingDamage = -m_shieldAmount;
 			m_shieldAmount = 0.0f;
 			m_shieldActive = false;
-			m_health -= remainingDamage;
 		}
 	}
 	else
@@ -218,15 +217,13 @@ bool Player::ActivateShield()
 	if (m_shieldActive == false)
 	{
 		m_shieldActive = true;
+		m_shieldAmount = 50.0f;
 		return true;
 	}
 	return false;
 }
 
-void Player::Shield(float dt)
-{
-	
-}
+
 
 void Player::SetActive()
 {

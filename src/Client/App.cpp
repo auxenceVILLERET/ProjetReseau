@@ -406,6 +406,10 @@ void App::HandleInput()
 		m_chatOpen = true;
 		m_chatInput.Reset();
 	}
+	if (cpuInput.IsKeyDown('H'))
+	{
+		
+	}
 }
 
 void App::LoginUpdate(float dt)
@@ -690,7 +694,7 @@ void App::RenderOtherPlayersHealth()
 
 		std::string hpBar = MakeHpBar(HP, maxHP);
 		
-		if(otherPlayer->ActivateShield())
+		if(otherPlayer->ActivateShield() == true)
 		{
 			hpBar += " [SHIELD]";
 		}

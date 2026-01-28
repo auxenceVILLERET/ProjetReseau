@@ -28,7 +28,6 @@ public:
 	bool ActivateSpeedBoost();
 	void SpeedBoost(float dt, float speedBoost);
 	bool ActivateShield();
-	void Shield(float dt);
 
 	void SetActive()					override;
 	void SetInactive()					override;
