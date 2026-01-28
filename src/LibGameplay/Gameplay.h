@@ -20,6 +20,15 @@ enum EntityType
 	POWERUP
 };
 
+
+enum class PowerUpType
+{
+    HEALTH,
+    SPEED,
+    SHIELD
+
+};
+
 inline std::vector<XMFLOAT3> SPAWN_POINTS =
     {
         {BORDER_MAX - 5.0f, BORDER_MAX - 5.0f, BORDER_MAX - 5.0f},

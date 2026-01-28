@@ -13,6 +13,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "App.h"
+#include "PowerUp.h"
 
 Client* Client::m_pInstance = nullptr;
 
@@ -320,7 +321,17 @@ void Client::HandlePackets()
             if (p == nullptr) continue;
             p->ChangeColorParticle(casted->index);
         }
+        if (type == SET_POWER_UP_TYPE)
+        {
+            SetPowerUpTypePacket* casted = dynamic_cast<SetPowerUpTypePacket*>(packet);
+            if (casted == nullptr) continue;
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
+            if (e == nullptr) continue;
 
+            PowerUp* powerUp = dynamic_cast<PowerUp*>(e);
+            if (powerUp == nullptr) continue;
+			powerUp->Init(casted->powerUpType);
+        }
     }
 
     for (int i = 0; i < m_packets.size(); i++)

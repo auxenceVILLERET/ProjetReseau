@@ -1,13 +1,6 @@
 #pragma once
 #include "Entity.h"
 
-enum class PowerUpType
-{
-	HEALTH,
-	SPEED,
-	SHIELD
-
-};
 
 class PowerUp : public Entity
 {

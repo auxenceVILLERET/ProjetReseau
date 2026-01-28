@@ -21,6 +21,7 @@
 #include "ChatMessagePacket.hpp"
 #include "ChangeColorShipPacket.hpp"
 #include "ChangeColorParticlePacket.hpp"
+#include "SetPowerUpTypePacket.hpp"
 
 
 #endif

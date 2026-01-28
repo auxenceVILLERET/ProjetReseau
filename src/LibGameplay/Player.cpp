@@ -52,6 +52,8 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 	m_type = EntityType::PLAYER;
 
 	m_speedBoostActive = false;
+	m_speedBoostDuration = 5.0f;
+	m_speedBoostTimer = 0.0f;
 
 	m_shipColorIndex = 0;
 	m_particleColorIndex = 0;
@@ -67,6 +69,7 @@ void Player::Update(float dt)
 	XMFLOAT3 dir = GetTransform().dir;
 	Move(dt * m_speedMovement * dir.x, dt * m_speedMovement * dir.y, dt * m_speedMovement * dir.z);
 	m_shootTimer += dt;
+	SpeedBoost(dt, 10.0f);
 }
 
 void Player::UpdateCamera()
@@ -145,18 +148,17 @@ bool Player::ActivateSpeedBoost()
 
 void Player::SpeedBoost(float dt, float speedBoost)
 {
-	if(m_speedBoostActive)
+	if(m_speedBoostActive == true)
 	{
 		m_speedBoostTimer += dt;
+		m_speedMovement = m_maxSpeed + speedBoost;
 		if(m_speedBoostTimer >= m_speedBoostDuration)
 		{
 			m_speedBoostActive = false;
 			m_speedBoostTimer = 0.0f;
+			m_speedMovement = m_maxSpeed;
 		}
-
-		m_speedMovement += speedBoost * dt;
 	}
-
 }
 
 void Player::SetActive()

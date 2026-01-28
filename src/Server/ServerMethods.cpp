@@ -9,7 +9,7 @@
 #include "Server.h"
 #include "Gameplay.h"
 #include "Asteroid.h"
-
+#include "PowerUp.h"
 
 void ServerMethods::Init()
 {
@@ -77,7 +77,22 @@ void ServerMethods::HandleDestroyedEntities(int& destroyed)
         if (entity->GetType() == EntityType::ASTEROID)
         {
             destroyed++;
+			int radomSpawnPowerup = RandomRange(0, 100);
+            if (radomSpawnPowerup < 20) // 20% chance to spawn powerup
+            {
+				PowerUp* powerup = GameManager::GetInstance()->CreateEntity<PowerUp>(true);
+				XMFLOAT3 pos = entity->GetPos();
+				powerup->SetPos(pos.x, pos.y, pos.z);
+				PowerUpType type = static_cast<PowerUpType>(RandomRange(0, 2));
 
+				CreateEntity* packet = new CreateEntity(powerup->GetID(), powerup->GetType(), powerup->GetTransform().pos, powerup->GetTransform().dir, powerup->GetScale());
+				Server::GetInstance()->SendPacket(packet);
+
+				SetPowerUpTypePacket* powerupPacket = new SetPowerUpTypePacket(powerup->GetID(), type);
+				powerup->Init(type);
+				Server::GetInstance()->SendPacket(powerupPacket);
+
+            }
         }
 
         DestroyEntityPacket* packet = new DestroyEntityPacket(entity->GetID());

@@ -13,6 +13,7 @@ PowerUp::PowerUp(bool isServerSide) : Entity(isServerSide)
 		m_pCpuEntity->pMaterial = &m_material;
 	}
 
+	m_powerUpType = PowerUpType::HEALTH;
 	m_collider.radius = 0.7f;
 	m_type = EntityType::POWERUP;
 
@@ -43,6 +44,8 @@ PowerUp::~PowerUp()
 
 void PowerUp::OnCollision(Entity* other)
 {
+	if (m_toDestroy == true) return;
+
 	Player* player = dynamic_cast<Player*>(other);
 
 	if (player)

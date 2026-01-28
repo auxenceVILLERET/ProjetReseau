@@ -153,6 +153,9 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::CHANGE_COLOR_PARTICLE:
                 packet = new ChangeColorParticlePacket();
 				break;
+			case PacketType::SET_POWER_UP_TYPE:
+				packet = new SetPowerUpTypePacket();
+				break;
         }
 
         if (packet == nullptr) continue;
