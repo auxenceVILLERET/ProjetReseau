@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 
 #include "Client.h"
 #include "Player.h"
@@ -570,12 +570,31 @@ void App::RenderOtherPlayersHealth()
 		if(distance > 30.0f)
 			continue;
 
-		int hp = (int)otherPlayer->GetHealth();
-		std::string hpText = "HP: " + std::to_string(hp);
+		float HP = otherPlayer->GetHealth();
+		float maxHP = otherPlayer->GetMaxHealth();
 
-		cpuDevice.DrawText(&m_font, hpText.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER);
+		std::string hpBar = MakeHpBar(HP, maxHP);
+
+		cpuDevice.DrawText(&m_font, hpBar.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER);
 	}
 
+}
+
+std::string App::MakeHpBar(float currentHealth, float maxHealth)
+{
+	const int barSize = 10;
+	int filled = (currentHealth * barSize) / maxHealth;
+
+	std::string bar = "HP ";
+	for (int i = 0; i < barSize; i++)
+	{
+		bar += (i < filled) ? "█" : "░";
+	}
+
+	bar += " ";
+	bar += std::to_string(currentHealth);
+
+	return bar;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

@@ -43,6 +43,7 @@ public:
 	void ClearChatMessages();
 
 	void RenderOtherPlayersHealth();
+	std::string MakeHpBar(float currentHealth, float maxHealth);
 
 private:
 	std::vector<ChatLine> s_chatMessages;
