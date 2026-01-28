@@ -622,7 +622,7 @@ void App::SortPlayers()
 	for (int i = 0; i < m_vPlayers.size() - 1; i++)
 	{
 		int score = m_vPlayers[i]->GetScore();
-		for (int j = i; j < m_vScoreboard.size(); j++)
+		for (int j = i + 1; j < m_vScoreboard.size(); j++)
 		{
 			int score2 = m_vPlayers[j]->GetScore();
 			if (score < score2)
