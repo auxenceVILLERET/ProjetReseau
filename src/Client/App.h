@@ -42,6 +42,9 @@ public:
 	bool AddChatMessage(const std::string& user, const std::string& msg);
 	void ClearChatMessages();
 
+	void LogPlayer(Player* pPlayer);
+	void DisconnectPlayer(Player* pPlayer);
+
 private:
 	std::vector<ChatLine> s_chatMessages;
 	inline static App* s_pApp = nullptr;
@@ -50,6 +53,8 @@ private:
 	Player* m_pPlayer = nullptr;
 	cpu_texture m_texture;
 	std::vector<cpu_sprite*> m_healthSprites;
+
+	std::vector<Player*> m_vPlayers;
 
 	////////// OUT OF ARENA //////////////
 	float m_timeBeforeOut = 8.0f;

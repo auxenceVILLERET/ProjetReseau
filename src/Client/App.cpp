@@ -539,6 +539,28 @@ void App::ClearChatMessages()
 	s_chatMessages.clear();
 }
 
+void App::LogPlayer(Player* pPlayer)
+{
+	m_vPlayers.push_back(pPlayer);
+}
+
+void App::DisconnectPlayer(Player* pPlayer)
+{
+	for (auto it = m_vPlayers.begin(); it != m_vPlayers.end(); )
+	{
+		Player* p = *it;
+		if (p == pPlayer)
+		{
+			delete p;
+			it = m_vPlayers.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////

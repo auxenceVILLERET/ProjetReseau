@@ -322,6 +322,16 @@ void Client::HandlePackets()
             if (p == nullptr) continue;
             p->ChangeColorParticle(casted->index);
         }
+        if (type == SET_PLAYER_STATS)
+        {
+            SetPlayerStatsPacket* casted = dynamic_cast<SetPlayerStatsPacket*>(packet);
+            if (casted == nullptr) return;
+
+            Player* p = dynamic_cast<Player*>(GameManager::GetInstance()->GetEntity(casted->id));
+            if (p == nullptr) return;
+
+            p->SetStats(casted->kills, casted->deaths);
+        }
 
     }
 
