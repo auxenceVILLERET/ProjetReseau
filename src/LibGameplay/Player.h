@@ -18,6 +18,7 @@ public:
 	void UpdateRenderElements(float dt) override;
 	void Render()						override;
 	void OnCollision(Entity* other)		override;
+	void TakeDamage(float damage)		override;
 
 	void SetSpeed(float speed)			{ m_speedMovement = std::clamp(speed, 1.0f, m_maxSpeed); }
 	void AddSpeed(float delta)			{ SetSpeed(m_speedMovement + delta); }
@@ -26,6 +27,8 @@ public:
 
 	bool ActivateSpeedBoost();
 	void SpeedBoost(float dt, float speedBoost);
+	bool ActivateShield();
+	void Shield(float dt);
 
 	void SetActive()					override;
 	void SetInactive()					override;
@@ -67,6 +70,10 @@ private:
 	bool m_speedBoostActive;
 	float m_speedBoostTimer;
 	float m_speedBoostDuration;
+
+	bool m_shieldActive;
+	float m_shieldAmount;
+
 };
 
 #endif

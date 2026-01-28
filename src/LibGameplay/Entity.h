@@ -71,7 +71,7 @@ public:
 	void SetMaxHealth(float maxHealth) { m_maxHealth = maxHealth; }
 	float GetHealth() { return m_health; }
 	float GetMaxHealth() { return m_maxHealth; }
-	void TakeDamage(float damage);
+	virtual void TakeDamage(float damage);
 	void Heal(float amount);
 	void FullHeal();
 

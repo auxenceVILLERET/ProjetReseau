@@ -689,6 +689,11 @@ void App::RenderOtherPlayersHealth()
 		int maxHP = otherPlayer->GetMaxHealth();
 
 		std::string hpBar = MakeHpBar(HP, maxHP);
+		
+		if(otherPlayer->ActivateShield())
+		{
+			hpBar += " [SHIELD]";
+		}
 
 		cpuDevice.DrawText(&m_font, hpBar.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER);
 	}
