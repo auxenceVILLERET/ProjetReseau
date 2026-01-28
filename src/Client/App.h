@@ -42,10 +42,13 @@ public:
 	bool AddChatMessage(const std::string& user, const std::string& msg);
 	void ClearChatMessages();
 
+	void LogPlayer(Player* pPlayer);
+	std::string GetScoreboardLine(Player* pPlayer);
+	void UpdateScoreboard();
+	void ClearDestroyedPlayers();
+
 	void RenderOtherPlayersHealth();
 	std::string MakeHpBar(int currentHealth, int maxHealth);
-
-
 
 private:
 	std::vector<ChatLine> s_chatMessages;
@@ -55,6 +58,9 @@ private:
 	Player* m_pPlayer = nullptr;
 	cpu_texture m_texture;
 	std::vector<cpu_sprite*> m_healthSprites;
+
+	std::vector<InputText> m_vScoreboard;
+	std::vector<Player*> m_vPlayers;
 
 	////////// OUT OF ARENA //////////////
 	float m_timeBeforeOut = 8.0f;

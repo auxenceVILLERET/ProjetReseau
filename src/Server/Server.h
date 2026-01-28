@@ -12,9 +12,14 @@
 struct ClientInfo
 {
     sockaddr_in sockAddr;
-    std::string ip;
-    int port;
     std::string username;
+    std::string ip;
+    int port = 0;
+    bool connected = false;
+    
+    int playerId = 0;
+    int deathCount = 0;
+    int killCount = 0;
 };
 
 struct ReceivedPacket
@@ -55,7 +60,7 @@ private:
     std::vector<ReceivedPacket> m_packets;
     std::vector<Message*> m_pendingMessages;
     std::map<ClientInfo*, std::vector<Message*>> m_pendingTargetedMessage;
-    std::vector<ClientInfo> m_vClients;
+    std::vector<ClientInfo*> m_vClients;
 
     char m_buffer[1024];
     

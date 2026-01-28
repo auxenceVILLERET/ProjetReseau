@@ -22,6 +22,7 @@
 #include "ChangeColorShipPacket.hpp"
 #include "ChangeColorParticlePacket.hpp"
 #include "SetPowerUpTypePacket.hpp"
-
+#include "SetPlayerStatsPacket.hpp"
+#include "SetPlayerUsernamePacket.hpp"
 
 #endif

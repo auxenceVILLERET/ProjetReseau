@@ -54,6 +54,9 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 	m_speedBoostActive = false;
 	m_speedBoostDuration = 5.0f;
 	m_speedBoostTimer = 0.0f;
+	m_killCount = 0;
+	m_deathCount = 0;
+	m_score = 0;
 
 	m_shipColorIndex = 0;
 	m_particleColorIndex = 0;
@@ -126,6 +129,8 @@ void Player::Render()
 
 void Player::OnCollision(Entity* other)
 {
+	if (m_isAlive == false) return;
+	
 	if(other->GetType() == EntityType::ASTEROID)
 	{
 		TakeDamage(100.0f);
@@ -133,7 +138,23 @@ void Player::OnCollision(Entity* other)
 	if(other->GetType() == EntityType::PROJECTILE)
 	{
 		TakeDamage(10.0f);
+		Projectile* projectile = dynamic_cast<Projectile*>(other);
+		if (projectile == nullptr) return;
+
+		if (IsAlive() == false)
+		{
+			Player* shooter = projectile->m_pShooter;
+			if (shooter == nullptr) return;
+
+			shooter->m_killCount++;
+			shooter->SetDirtyFlag(OTHER);
+		}
 	}
+
+	if (m_isAlive == true) return;
+	
+	m_deathCount++;
+	SetDirtyFlag(OTHER);
 }
 
 bool Player::ActivateSpeedBoost()
@@ -167,7 +188,6 @@ void Player::SetActive()
 	if (m_isServerSide == false)
 	{
 		m_pCpuEntity->visible = true;
-
 	}
 }
 
@@ -209,7 +229,6 @@ void Player::ChangeColorParticle(int index)
 		SetDirtyFlag(DIRTY_TYPES::PARTICLE_COLOR);
 	}
 }
-
 
 
 #endif

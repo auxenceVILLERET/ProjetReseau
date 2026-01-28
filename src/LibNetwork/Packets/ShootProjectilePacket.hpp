@@ -6,6 +6,8 @@
 class ShootProjectilePacket : public Packet
 {
 public:
+    uint32_t shooterId;
+    
     float px;
     float py;
     float pz;
@@ -16,15 +18,17 @@ public:
 
     ShootProjectilePacket()
     {
+        shooterId = 0;
         px = py = pz = 0.0f;
         dx = dy = dz = 0.0f;
 
         m_type = SHOOT_PROJECTILE;
-        m_size = 2 * sizeof(int) + 6 * sizeof(float);
+        m_size = 2 * sizeof(int) + 6 * sizeof(float) + sizeof(shooterId);
     }
 
-    ShootProjectilePacket(float _px, float _py, float _pz, float _dx, float _dy, float _dz)
+    ShootProjectilePacket(uint32_t _shooterId, float _px, float _py, float _pz, float _dx, float _dy, float _dz)
     {
+        shooterId = _shooterId;
         px = _px;
         py = _py;
         pz = _pz;
@@ -33,7 +37,7 @@ public:
         dz = _dz;
 
         m_type = SHOOT_PROJECTILE;
-        m_size = 2 * sizeof(int) + 6 * sizeof(float);
+        m_size = 2 * sizeof(int) + 6 * sizeof(float) + sizeof(shooterId);
     }
 
     char* Serialize()
@@ -46,6 +50,9 @@ public:
         std::memcpy(bufferCursor, &m_size, sizeof(m_size));
         bufferCursor += sizeof(m_size);
 
+        std::memcpy(bufferCursor, &shooterId, sizeof(shooterId));
+        bufferCursor += sizeof(shooterId);
+        
         std::memcpy(bufferCursor, &px, sizeof(px));
         bufferCursor += sizeof(px);
         std::memcpy(bufferCursor, &py, sizeof(py));
@@ -65,6 +72,9 @@ public:
     {
         Packet::Deserialize(_message);
         _message += sizeof(m_type) + sizeof(m_size);
+
+        std::memcpy(&shooterId, _message, sizeof(shooterId));
+        _message += sizeof(shooterId);
         
         std::memcpy(&px, _message, sizeof(px));
         _message += sizeof(px);

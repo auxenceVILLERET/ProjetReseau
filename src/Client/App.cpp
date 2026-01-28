@@ -70,8 +70,24 @@ void App::OnStart()
 	m_chatInput.SetAnchor(CPU_TEXT_LEFT);
 	m_chatInput.SetPos({ 400, 220 });
 
+	InputText scoreBoardHeader;
+	scoreBoardHeader.Create(10, { 1.0f, 1.0f, 1.0f });
+	scoreBoardHeader.SetAnchor(CPU_TEXT_LEFT);
+	scoreBoardHeader.SetText("Name        KILL   DEATH");
+	scoreBoardHeader.SetPos({ cpuDevice.GetWidth() - 150, 20 });
+	m_vScoreboard.push_back(scoreBoardHeader);
+	
+	for (int i = 0; i < 5; i++)
+	{
+		int yPos = 40 + i * 20;
+		InputText scoreBoardLine;
+		scoreBoardLine.Create(10, { 1.0f, 1.0f, 1.0f });
+		scoreBoardLine.SetAnchor(CPU_TEXT_LEFT);
+		scoreBoardLine.SetPos({ cpuDevice.GetWidth() - 150, yPos });
+		m_vScoreboard.push_back(scoreBoardLine);
+	}
+	
 	CreateHealthSprite();
-
 	
 }	
 
@@ -97,6 +113,7 @@ void App::OnUpdate()
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
 			ChatUpdate();
+			UpdateScoreboard();
 			if (m_pPlayer->IsAlive() == false)
 			{
 				if (m_pPlayer->GetActiveState() == true)
@@ -145,8 +162,9 @@ void App::OnUpdate()
 				CreateHealthSprite();
 		}
 	}
-
+	
 	GameManager::GetInstance()->ClearDestroyedEntities();
+
 	
 	// Quit
 	if ( cpuInput.IsKeyDown(VK_ESCAPE) )
@@ -156,6 +174,9 @@ void App::OnUpdate()
 void App::OnExit()
 {
 	// YOUR CODE HERE
+	if (m_pPlayer != nullptr)
+		ClientMethods::Disconnect(m_username, m_pPlayer->GetID());
+	
 	ClearChatMessages();
 	GameManager::GetInstance()->Exit();
 	delete GameManager::GetInstance();
@@ -260,16 +281,15 @@ void App::OnRender(int pass)
 		m_outOfArenaText.Render();
 	}
 
-	Asteroid* p = GameManager::GetInstance()->GetEntity<Asteroid>();
+	for (int i = 0; i < m_vScoreboard.size(); i++)
+	{
+		m_vScoreboard[i].Render();
+	}
+	
 
 	switch (pass)
 	{
 	case CPU_PASS_CLEAR_BEGIN:
-		if (p == nullptr)
-			break;
-
-		std::cout << "Asteroid position: " << p->GetTransform().pos.x << ", " << p->GetTransform().pos.y << ", " << p->GetTransform().pos.z << std::endl;
-
 		break;
 	case CPU_PASS_PARTICLE_BEGIN:
 	{
@@ -362,7 +382,7 @@ void App::HandleInput()
  	if(cpuInput.IsKey(VK_LBUTTON))
  	{
  		if (m_pPlayer->Shoot())
-			ClientMethods::ShootProjectile(m_pPlayer->GetTransform().pos, dir);
+			ClientMethods::ShootProjectile(m_pPlayer->GetID(), m_pPlayer->GetTransform().pos, dir);
  	}
 	if(cpuInput.IsKeyDown(VK_LEFT))
 	{
@@ -550,6 +570,60 @@ void App::ClearChatMessages()
 	s_chatMessages.clear();
 }
 
+void App::LogPlayer(Player* pPlayer)
+{
+	if (pPlayer == nullptr) return;
+	
+	m_vPlayers.push_back(pPlayer);
+}
+
+std::string App::GetScoreboardLine(Player* pPlayer)
+{
+	std::string line;
+	line.append("[");
+	line.append(pPlayer->GetName());
+	line.append("]");
+
+	for (int i = line.length() - 1; i < 15; i++)
+		line.append(" ");
+
+	line.append(std::to_string(pPlayer->GetKillCount()));
+	
+	for (int i = line.length() - 1; i < 20; i++)
+		line.append(" ");
+
+	line.append(std::to_string(pPlayer->GetDeathCount()));
+
+	return line;
+}
+
+void App::UpdateScoreboard()
+{
+	for (int i = 0; i < 5; i++)
+	{
+		if (i >= m_vPlayers.size()) return;
+
+		m_vScoreboard[i + 1].SetText(GetScoreboardLine(m_vPlayers[i]));
+	}
+}
+
+void App::ClearDestroyedPlayers()
+{
+	for (auto it = m_vPlayers.begin(); it != m_vPlayers.end(); )
+	{
+		Player* p = *it;
+		if (p == nullptr)
+		{
+			delete p;
+			it = m_vPlayers.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 void App::RenderOtherPlayersHealth()
 {
 	if(m_pPlayer == nullptr)
@@ -610,6 +684,7 @@ std::string App::MakeHpBar(int currentHealth, int maxHealth)
 
 	return bar;
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////

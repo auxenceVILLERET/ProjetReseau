@@ -24,6 +24,8 @@ Client::Client() : m_udpSocket()
 
 Client::~Client()
 {
+    Update();
+    
     for (int i = 0; i < m_packets.size(); i++)
     {
         delete m_packets[i];
@@ -62,7 +64,7 @@ void Client::Update()
     for (Message* msg : m_pendingMessages)
     {
         msg->Serialize(m_buffer);
-        m_udpSocket.SendTo(m_buffer, 1025, m_serverAddr);
+        m_udpSocket.SendTo(m_buffer, 1024, m_serverAddr);
         msg->ClearPackets();
     }
     
@@ -113,7 +115,7 @@ bool Client::Connect(std::string ip, int port, std::string username)
     target.sin_port = htons(m_serverPort);
     m_serverAddr = target;
         
-    if (m_udpSocket.SendTo(m_buffer, 1025, m_serverAddr) != SOCKET_ERROR)
+    if (m_udpSocket.SendTo(m_buffer, 1024, m_serverAddr) != SOCKET_ERROR)
     {
         m_hasPinged = true;
         Sleep(1000);
@@ -187,21 +189,21 @@ void Client::HandlePackets()
                 m_isConnected = true;
             }
         }
-        if (type == CREATE_ENTITY)
+        else if (type == CREATE_ENTITY)
         {
             CreateEntity* casted = dynamic_cast<CreateEntity*>(packet);
             if (casted == nullptr) continue;
 
             ClientMethods::CopyEntity(casted);
         }
-        if (type == SET_PLAYER_ID)
+        else if (type == SET_PLAYER_ID)
         {
             SetPlayerIDPacket* casted = dynamic_cast<SetPlayerIDPacket*>(packet);
             if (casted == nullptr) continue;
 
             m_playerID = casted->id;
         }
-        if (type == SET_ENTITY_ROT)
+        else if (type == SET_ENTITY_ROT)
         {
             SetEntityRot* casted = dynamic_cast<SetEntityRot*>(packet);
             if (casted == nullptr) continue;
@@ -229,7 +231,7 @@ void Client::HandlePackets()
 
             e->SetRotation(rot);
         }
-        if (type == SET_ENTITY_POS)
+        else if (type == SET_ENTITY_POS)
         {
             SetEntityPos* casted = dynamic_cast<SetEntityPos*>(packet);
             if (casted == nullptr) continue;
@@ -239,7 +241,7 @@ void Client::HandlePackets()
 
             e->SetPos(casted->x, casted->y, casted->z);
         }
-        if (type == SET_PLAYER_SPEED)
+        else if (type == SET_PLAYER_SPEED)
         {
             SetPlayerSpeedPacket* casted = dynamic_cast<SetPlayerSpeedPacket*>(packet);
             if (casted == nullptr) continue;
@@ -250,7 +252,7 @@ void Client::HandlePackets()
 
             p->SetSpeed(casted->speed);
         }
-        if (type == DESTROY_ENTITY)
+        else if (type == DESTROY_ENTITY)
         {
             DestroyEntityPacket* casted = dynamic_cast<DestroyEntityPacket*>(packet);
             if (casted == nullptr) continue;
@@ -259,7 +261,7 @@ void Client::HandlePackets()
             if (e == nullptr) continue;
             e->Destroy();
         }
-        if(type == SET_ACTIVE_STATE)
+        else if(type == SET_ACTIVE_STATE)
         {
             SetActiveStatePacket* casted = dynamic_cast<SetActiveStatePacket*>(packet);
             if (casted == nullptr) continue;
@@ -272,7 +274,7 @@ void Client::HandlePackets()
             else
                 e->SetInactive();
 		}
-        if (type == SET_HEALTH)
+        else if (type == SET_HEALTH)
         {
             SetEntityHealthPacket* casted = dynamic_cast<SetEntityHealthPacket*>(packet);
 
@@ -284,7 +286,7 @@ void Client::HandlePackets()
 
             e->SetHealth(casted->health);
         }
-        if(type == SET_ENTITY_DIR)
+        else if(type == SET_ENTITY_DIR)
         {
             SetEntityDirPacket* casted = dynamic_cast<SetEntityDirPacket*>(packet);
             if (casted == nullptr) continue;
@@ -292,7 +294,7 @@ void Client::HandlePackets()
             if (e == nullptr) continue;
             e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
 		}
-        if (type == CHAT_MESSAGE)
+        else if (type == CHAT_MESSAGE)
         {
             ChatMessagePacket* casted = dynamic_cast<ChatMessagePacket*>(packet);
 
@@ -301,7 +303,7 @@ void Client::HandlePackets()
 
 			cpuApp.AddChatMessage(casted->username, casted->text);
         }
-        if(type == CHANGE_COLOR_SHIP)
+        else if(type == CHANGE_COLOR_SHIP)
         {
             ChangeColorShipPacket* casted = dynamic_cast<ChangeColorShipPacket*>(packet);
             if (casted == nullptr) continue;
@@ -312,7 +314,7 @@ void Client::HandlePackets()
 
             p->ChangeColorShip(casted->index);
 		}
-        if (type == CHANGE_COLOR_PARTICLE)
+        else if (type == CHANGE_COLOR_PARTICLE)
         {
             ChangeColorParticlePacket* casted = dynamic_cast<ChangeColorParticlePacket*>(packet);
             if (casted == nullptr) continue;
@@ -327,11 +329,32 @@ void Client::HandlePackets()
             if (casted == nullptr) continue;
             Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
             if (e == nullptr) continue;
-
-            PowerUp* powerUp = dynamic_cast<PowerUp*>(e);
+               PowerUp* powerUp = dynamic_cast<PowerUp*>(e);
             if (powerUp == nullptr) continue;
 			powerUp->Init(casted->powerUpType);
         }
+        else if (type == SET_PLAYER_STATS)
+        {
+            SetPlayerStatsPacket* casted = dynamic_cast<SetPlayerStatsPacket*>(packet);
+            if (casted == nullptr) return;
+
+            Player* p = dynamic_cast<Player*>(GameManager::GetInstance()->GetEntity(casted->id));
+            if (p == nullptr) return;
+
+            p->SetStats(casted->kills, casted->deaths);
+        }
+        else if (type == SET_PLAYER_USERNAME)
+        {
+            SetPlayerUsernamePacket* casted = dynamic_cast<SetPlayerUsernamePacket*>(packet);
+            if (casted == nullptr) return;
+
+            Player* p = dynamic_cast<Player*>(GameManager::GetInstance()->GetEntity(casted->id));
+            if (p == nullptr) return;
+
+            p->SetUsername(casted->username);
+        }
+
+         
     }
 
     for (int i = 0; i < m_packets.size(); i++)

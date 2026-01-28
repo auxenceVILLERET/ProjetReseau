@@ -40,7 +40,17 @@ Entity* ClientMethods::CopyEntity(CreateEntity* entityPacket)
     pEntity->SetID(entityPacket->id);
     if (entityPacket->dx != 0 || entityPacket->dy != 0 || entityPacket->dz != 0)
         pEntity->GetTransform().LookTo(entityPacket->dx, entityPacket->dy, entityPacket->dz);
+
+    if (pEntity->GetType() == EntityType::PLAYER)
+        cpuApp.LogPlayer(dynamic_cast<Player*>(pEntity));
+    
     return pEntity;
+}
+
+void ClientMethods::Disconnect(const std::string& username, uint32_t id)
+{
+    PingPongPacket* packet = new PingPongPacket(username, id);
+    Client::GetInstance()->SendPacket(packet);
 }
 
 bool ClientMethods::MoveEntity(uint32_t id, XMFLOAT3 position)
@@ -71,9 +81,9 @@ bool ClientMethods::ChangePlayerSpeed(uint32_t id, float delta)
     return true;
 }
 
-bool ClientMethods::ShootProjectile(XMFLOAT3 pos, XMFLOAT3 dir)
+bool ClientMethods::ShootProjectile(uint32_t shooterId, XMFLOAT3 pos, XMFLOAT3 dir)
 {
-    ShootProjectilePacket* packet = new ShootProjectilePacket(pos.x, pos.y, pos.z, dir.x, dir.y, dir.z);
+    ShootProjectilePacket* packet = new ShootProjectilePacket(shooterId, pos.x, pos.y, pos.z, dir.x, dir.y, dir.z);
     Client::GetInstance()->SendPacket(packet);
     return true;
 }

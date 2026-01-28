@@ -10,6 +10,8 @@
 #include "Gameplay.h"
 #include "Asteroid.h"
 #include "PowerUp.h"
+#include "Player.h"
+
 
 void ServerMethods::Init()
 {
@@ -28,6 +30,15 @@ void ServerMethods::SendCreationPackets(ClientInfo* pTarget)
 
         CreateEntity* packet = new CreateEntity(entity->GetID(), type, pos, dir, scale);
         Server::GetInstance()->SendTargetedPacket(packet, pTarget);
+
+        if (entity->GetType() == EntityType::PLAYER)
+        {
+            Player* p = dynamic_cast<Player*>(entity);
+            if (p == nullptr) continue;
+            
+            SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(entity->GetID(), p->GetName());
+            Server::GetInstance()->SendTargetedPacket(uPacket, pTarget);
+        }
     }
 }
 
@@ -64,6 +75,15 @@ void ServerMethods::HandleDirtyEntities()
             SetEntityHealthPacket* packet = new SetEntityHealthPacket(id, entity->GetHealth());
             Server::GetInstance()->SendPacket(packet);
 		}
+        if (dirty & DIRTY_TYPES::OTHER)
+        {
+            if (entity->GetType() != EntityType::PLAYER) continue;
+            Player* player = dynamic_cast<Player*>(entity);
+            if (player == nullptr) continue;
+            
+            SetPlayerStatsPacket* packet = new SetPlayerStatsPacket(player->GetID(), player->GetKillCount(), player->GetDeathCount());
+            Server::GetInstance()->SendPacket(packet);
+        }
 
         entity->ClearDirtyFlags();
     }

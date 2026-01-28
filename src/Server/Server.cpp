@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "../LibNetwork/Socket.h"
+#include "Packets/SetPlayerUsernamePacket.hpp"
 
 Server* Server::m_pInstance = nullptr;
 
@@ -23,7 +24,11 @@ Server::Server() : m_udpSocket()
 
 Server::~Server()
 {
-    
+    for (ClientInfo* client : m_vClients)
+    {
+        delete client;
+    }
+    m_vClients.clear();
 }
 
 Server* Server::GetInstance()
@@ -60,36 +65,55 @@ bool Server::LogUser(sockaddr_in newAddr, std::string username)
 {
     bool exists = false;
 
-    for (ClientInfo client : m_vClients)
+    ClientInfo* pExisting = nullptr;
+    
+    for (ClientInfo* client : m_vClients)
     {
-        if (username == client.username)
+        if (username == client->username)
+        {
             exists = true;
+            pExisting = client;
+        }
     }
-
-    if (exists) return false;
 
     char ip[23];
     inet_ntop(AF_INET, &newAddr.sin_addr, ip, INET_ADDRSTRLEN);
     int port = ntohs(newAddr.sin_port);
     std::string ipStr = ip;
-
-    ClientInfo client;
-    client.username = username;
-    client.port = port;
-    client.ip = ipStr;
-    client.sockAddr = newAddr;
     
-    m_vClients.push_back(client);
+    if (exists)
+    {
+        if (pExisting->connected == true) return false;
+
+        if (pExisting->connected == false)
+        {
+            pExisting->username = username;
+            pExisting->port = port;
+            pExisting->ip = ipStr;
+            pExisting->sockAddr = newAddr;
+            
+            return true;
+        }
+    }
+    
+    ClientInfo* newClient = new ClientInfo();
+    newClient->username = username;
+    newClient->port = port;
+    newClient->ip = ipStr;
+    newClient->sockAddr = newAddr;
+    
+    m_vClients.push_back(newClient);
 
     return true;
 }
 
 void Server::GlobalMsg(const char* msg)
 {
-    for (ClientInfo client : m_vClients)
+    for (ClientInfo* client : m_vClients)
     {
+        if (client->connected == false) return;
         // std::cout << "Sent global message to " << client.username << "\n";
-        m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client.sockAddr);
+        m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client->sockAddr);
     }
 }
 
@@ -107,9 +131,27 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
     Server* pInstance = static_cast<Server*>(lpParam);
     while (true)
     {
-        char responseBuffer[1024 + 1];
-        sockaddr_in target;
+        char responseBuffer[1024];
+        sockaddr_in target{};
         int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1024, target);
+        
+        if (response == -1) continue;
+        
+        for (int i = 0; i < pInstance->m_vClients.size(); i++)
+        {
+            ClientInfo* client = pInstance->m_vClients[i];
+            char ip[23];
+            if (!inet_ntop(AF_INET, &target.sin_addr, ip, INET_ADDRSTRLEN))
+                continue;
+            
+            int port = ntohs(target.sin_port);
+            std::string ipStr = ip;
+        
+            if (ipStr != client->ip || port != client->port)
+                continue;
+            if (client->connected == false)
+                continue;
+        }
         
         Message* msg = new Message();
         std::vector<Packet*> packets = msg->Deserialize(responseBuffer);
@@ -141,36 +183,54 @@ void Server::HandlePackets()
         {
             PingPongPacket* casted = dynamic_cast<PingPongPacket*>(packet);
             if (casted == nullptr) continue;
-
-            LogUser(rPacket.sockAddr, casted->username);
-            ClientInfo* pClient = FindClient(casted->username);
             
+            LogUser(rPacket.sockAddr, casted->username);
+            
+            ClientInfo* pClient = FindClient(casted->username);
+
+            pClient->connected = !pClient->connected;
+
             PingPongPacket* responsePkt = new PingPongPacket(casted->username, false);
             SendTargetedPacket(responsePkt, pClient);
             
-            ServerMethods::SendCreationPackets(pClient);
-            Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
-            p->GetTransform().pos = GetSpawnPoint();
-            XMFLOAT3 dir;
-			dir.x = 0.0f - p->GetTransform().pos.x;
-			dir.y = 0.0f - p->GetTransform().pos.y;
-			dir.z = 0.0f - p->GetTransform().pos.z;
-			float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
-            if (length > 0.0001f)
+            if (pClient->connected == true)
             {
-                dir.x /= length;
-                dir.y /= length;
-                dir.z /= length;
-            }
-			p->GetTransform().LookTo(dir.x, dir.y, dir.z);
-            p->SetDirtyFlag(DIRTY_TYPES::ROTATION);
-            CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
-            SendPacket(createPacket);
+                ServerMethods::SendCreationPackets(pClient);
+                Player* p = GameManager::GetInstance()->CreateEntity<Player>(true);
+                p->GetTransform().pos = GetSpawnPoint();
+                pClient->playerId = p->GetID();
+            
+                XMFLOAT3 dir;
+                dir.x = 0.0f - p->GetTransform().pos.x;
+                dir.y = 0.0f - p->GetTransform().pos.y;
+                dir.z = 0.0f - p->GetTransform().pos.z;
+                float length = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+                if (length > 0.0001f)
+                {
+                    dir.x /= length;
+                    dir.y /= length;
+                    dir.z /= length;
+                }
+            
+                p->GetTransform().LookTo(dir.x, dir.y, dir.z);
+                p->SetDirtyFlag(DIRTY_TYPES::ROTATION);
+                CreateEntity* createPacket = new CreateEntity(p->GetID(), p->GetType());
+                SendPacket(createPacket);
 
-			MessageConnected(pClient);
-            SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
+                SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
+
+                SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(p->GetID(), pClient->username);
+                MessageConnected(pClient);
+                SendPacket(uPacket);
+            }
+            else if (pClient->connected == false)
+            {
+                Entity* e = GameManager::GetInstance()->GetEntity(pClient->playerId);
+                if (e != nullptr)
+                    e->Destroy();
+            }
         }
-        if (type == ROTATE_ENTITY)
+        else if (type == ROTATE_ENTITY)
         {
             RotateEntityPacket* casted = dynamic_cast<RotateEntityPacket*>(packet);
             if (casted == nullptr) continue;
@@ -180,7 +240,7 @@ void Server::HandlePackets()
 
             e->Rotate(casted->x, casted->y, casted->z);
         }
-        if (type == CHANGE_PLAYER_SPEED)
+        else if (type == CHANGE_PLAYER_SPEED)
         {
             ChangePlayerSpeedPacket* casted = dynamic_cast<ChangePlayerSpeedPacket*>(packet);
             if (casted == nullptr) continue;
@@ -194,7 +254,7 @@ void Server::HandlePackets()
             SetPlayerSpeedPacket* nPacket = new SetPlayerSpeedPacket(p->GetID(), p->GetSpeed());
             SendPacket(nPacket);
         }
-        if (type == SHOOT_PROJECTILE)
+        else if (type == SHOOT_PROJECTILE)
         {
             ShootProjectilePacket* casted = dynamic_cast<ShootProjectilePacket*>(packet);
             if (casted == nullptr) continue;
@@ -202,11 +262,14 @@ void Server::HandlePackets()
             Projectile* e = GameManager::GetInstance()->CreateEntity<Projectile>(true);
             if (e == nullptr) continue;
             e->Init({casted->px, casted->py, casted->pz}, {casted->dx, casted->dy, casted->dz});
+            Player* player = dynamic_cast<Player*>(GameManager::GetInstance()->GetEntity(casted->shooterId));
+            if (player != nullptr)
+                e->SetShooter(player);
 
             CreateEntity* nPacket = new CreateEntity(e->GetID(), e->GetType(), e->GetTransform().pos, e->GetTransform().dir, e->GetScale());
             SendPacket(nPacket);
         }
-        if(type == SET_ACTIVE_STATE)
+        else if(type == SET_ACTIVE_STATE)
         {
             SetActiveStatePacket* casted = dynamic_cast<SetActiveStatePacket*>(packet);
             if (casted == nullptr) continue;
@@ -223,7 +286,7 @@ void Server::HandlePackets()
 			SetActiveStatePacket* nPacket = new SetActiveStatePacket(casted->id, casted->isActive);
 			SendPacket(nPacket);
 		}
-        if (type == SET_ENTITY_POS)
+        else if (type == SET_ENTITY_POS)
         {
             SetEntityPos* casted = dynamic_cast<SetEntityPos*>(packet);
             if (casted == nullptr) continue;
@@ -231,7 +294,7 @@ void Server::HandlePackets()
             if (e == nullptr) continue;
             e->SetPos(casted->x, casted->y, casted->z);
         }
-        if (type == SET_ENTITY_DIR)
+        else if (type == SET_ENTITY_DIR)
         {
             SetEntityDirPacket* casted = dynamic_cast<SetEntityDirPacket*>(packet);
             if (casted == nullptr) continue;
@@ -242,7 +305,7 @@ void Server::HandlePackets()
             e->GetTransform().LookTo(casted->dx, casted->dy, casted->dz);
             e->SetDirtyFlag(DIRTY_TYPES::ROTATION);
         }
-        if (type == SET_HEALTH)
+        else if (type == SET_HEALTH)
         {
             SetEntityHealthPacket* casted = dynamic_cast<SetEntityHealthPacket*>(packet);
             if (casted == nullptr) continue;
@@ -252,7 +315,7 @@ void Server::HandlePackets()
 
             e->SetHealth(casted->health);
         }
-        if(type == CHAT_MESSAGE)
+        else if(type == CHAT_MESSAGE)
         {
             ChatMessagePacket* casted = dynamic_cast<ChatMessagePacket*>(packet);
 
@@ -261,7 +324,7 @@ void Server::HandlePackets()
 			ChatMessagePacket* nPacket = new ChatMessagePacket(casted->username, casted->text);
 			SendPacket(nPacket);
 		}
-        if (type == CHANGE_COLOR_SHIP)
+        else if (type == CHANGE_COLOR_SHIP)
         {
             ChangeColorShipPacket* casted = dynamic_cast<ChangeColorShipPacket*>(packet);
             if (casted == nullptr) continue;
@@ -276,7 +339,7 @@ void Server::HandlePackets()
 			ChangeColorShipPacket* nPacket = new ChangeColorShipPacket(casted->id, casted->index);
 			SendPacket(nPacket);
         }
-        if (type == CHANGE_COLOR_PARTICLE)
+        else if (type == CHANGE_COLOR_PARTICLE)
         {
             ChangeColorParticlePacket* casted = dynamic_cast<ChangeColorParticlePacket*>(packet);
             if (casted == nullptr) continue;
@@ -287,7 +350,6 @@ void Server::HandlePackets()
             ChangeColorParticlePacket* nPacket = new ChangeColorParticlePacket(casted->id, casted->index);
             SendPacket(nPacket);
         }
-    
     }
 
     for (int i = 0; i < m_packets.size(); i++)
@@ -323,6 +385,7 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
 {
     // std::cout << "Registered packet of type " << PacketTypeNames[packet->GetType()] << " for " << pTarget->username << std::endl;
     if (pTarget == nullptr) return;
+    if (pTarget->connected == false) return;
     
     if (!m_pendingTargetedMessage.contains(pTarget))
     {
@@ -346,10 +409,10 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
 
 ClientInfo* Server::FindClient(std::string username)
 {
-    for (ClientInfo& client : m_vClients)
+    for (ClientInfo* client : m_vClients)
     {
-        if (client.username == username)
-            return &client;
+        if (client->username == username)
+            return client;
     }
     return nullptr;
 }

@@ -33,6 +33,12 @@ public:
 	void ChangeColorShip(int index);
 	void ChangeColorParticle(int index);
 
+	void SetUsername(std::string const& username)	{ m_name = username; }
+	void SetStats(int killCount, int deathCount)	{ m_killCount = killCount; m_deathCount = deathCount; }
+	int GetKillCount()								{ return m_killCount; }
+	int GetDeathCount()								{ return m_deathCount; }
+	std::string& GetName()							{ return m_name; }
+	
 	static std::vector<XMFLOAT3> m_shipColor;
 	static std::vector<XMFLOAT3> m_particleColor;
 
@@ -45,7 +51,11 @@ private:
 	float m_shootCooldown;
 	float m_shootTimer;
 
-
+	int m_killCount;
+	int m_deathCount;
+	int m_score;
+	std::string m_name;
+	
 	cpu_mesh m_mesh;
 	cpu_material m_material;
 	cpu_particle_emitter* m_pEmitter;
