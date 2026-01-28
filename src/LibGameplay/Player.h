@@ -30,11 +30,12 @@ public:
 	void ChangeColorShip(int index);
 	void ChangeColorParticle(int index);
 
-	void SetUsername(std::string const& username)	{ m_name = username; }
-	void SetStats(int killCount, int deathCount)	{ m_killCount = killCount; m_deathCount = deathCount; }
-	int GetKillCount()								{ return m_killCount; }
-	int GetDeathCount()								{ return m_deathCount; }
-	std::string& GetName()							{ return m_name; }
+	void SetUsername(std::string const& username)				{ m_name = username; }
+	void SetStats(int killCount, int deathCount, int score)		{ m_killCount = killCount; m_deathCount = deathCount; m_score = score; }
+	int GetKillCount()											{ return m_killCount; }
+	int GetDeathCount()											{ return m_deathCount; }
+	int GetScore()												{ return m_score; }
+	std::string& GetName()										{ return m_name; }
 	
 	static std::vector<XMFLOAT3> m_shipColor;
 	static std::vector<XMFLOAT3> m_particleColor;

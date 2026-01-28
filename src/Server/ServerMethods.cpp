@@ -80,7 +80,7 @@ void ServerMethods::HandleDirtyEntities()
             Player* player = dynamic_cast<Player*>(entity);
             if (player == nullptr) continue;
             
-            SetPlayerStatsPacket* packet = new SetPlayerStatsPacket(player->GetID(), player->GetKillCount(), player->GetDeathCount());
+            SetPlayerStatsPacket* packet = new SetPlayerStatsPacket(player->GetID(), player->GetKillCount(), player->GetDeathCount(), player->GetScore());
             Server::GetInstance()->SendPacket(packet);
         }
 

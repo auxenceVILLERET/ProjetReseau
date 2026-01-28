@@ -9,24 +9,27 @@ public:
     uint32_t id;
     int kills;
     int deaths;
+    int score;
 
     SetPlayerStatsPacket()
     {
         id = 0;
         kills = 0;
         deaths = 0;
+        score = 0;
 
         m_type = SET_PLAYER_STATS;
-        m_size = 2 * sizeof(int) + sizeof(uint32_t) + 2 * sizeof(int);
+        m_size = 2 * sizeof(int) + sizeof(uint32_t) + 3 * sizeof(int);
     }
-    SetPlayerStatsPacket(uint32_t _id, int _kills, int _deaths)
+    SetPlayerStatsPacket(uint32_t _id, int _kills, int _deaths, int _score)
     {
         id = _id;
         kills = _kills;
         deaths = _deaths;
+        score = _score;
 
         m_type = SET_PLAYER_STATS;
-        m_size = 2 * sizeof(int) + sizeof(uint32_t) + 2 * sizeof(int);
+        m_size = 2 * sizeof(int) + sizeof(uint32_t) + 3 * sizeof(int);
     }
 
     char* Serialize()
@@ -46,6 +49,8 @@ public:
         bufferCursor += sizeof(kills);
         std::memcpy(bufferCursor, &deaths, sizeof(deaths));
         bufferCursor += sizeof(deaths);
+        std::memcpy(bufferCursor, &score, sizeof(score));
+        bufferCursor += sizeof(score);
 
         return buffer;
     }
@@ -61,6 +66,8 @@ public:
         _message += sizeof(kills);
         std::memcpy(&deaths, _message, sizeof(deaths));
         _message += sizeof(deaths);
+        std::memcpy(&score, _message, sizeof(score));
+        _message += sizeof(score);
     }
 };
 

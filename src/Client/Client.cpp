@@ -330,7 +330,7 @@ void Client::HandlePackets()
             Player* p = dynamic_cast<Player*>(GameManager::GetInstance()->GetEntity(casted->id));
             if (p == nullptr) return;
 
-            p->SetStats(casted->kills, casted->deaths);
+            p->SetStats(casted->kills, casted->deaths, casted->score);
         }
         else if (type == SET_PLAYER_USERNAME)
         {

@@ -143,6 +143,7 @@ void Player::OnCollision(Entity* other)
 			if (shooter == nullptr) return;
 
 			shooter->m_killCount++;
+			shooter->m_score += 50;
 			shooter->SetDirtyFlag(OTHER);
 		}
 	}
@@ -150,6 +151,7 @@ void Player::OnCollision(Entity* other)
 	if (m_isAlive == true) return;
 	
 	m_deathCount++;
+	m_score -= 20;
 	SetDirtyFlag(OTHER);
 }
 

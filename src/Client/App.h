@@ -45,6 +45,7 @@ public:
 	void LogPlayer(Player* pPlayer);
 	std::string GetScoreboardLine(Player* pPlayer);
 	void UpdateScoreboard();
+	void SortPlayers();
 	void ClearDestroyedPlayers();
 
 	void RenderOtherPlayersHealth();

@@ -76,8 +76,8 @@ void App::OnStart()
 	InputText scoreBoardHeader;
 	scoreBoardHeader.Create(10, { 1.0f, 1.0f, 1.0f });
 	scoreBoardHeader.SetAnchor(CPU_TEXT_LEFT);
-	scoreBoardHeader.SetText("Name        KILL   DEATH");
-	scoreBoardHeader.SetPos({ cpuDevice.GetWidth() - 150, 20 });
+	scoreBoardHeader.SetText("Name        KILL   DEATH    SCORE");
+	scoreBoardHeader.SetPos({ cpuDevice.GetWidth() - 200, 20 });
 	m_vScoreboard.push_back(scoreBoardHeader);
 	
 	for (int i = 0; i < 5; i++)
@@ -86,7 +86,7 @@ void App::OnStart()
 		InputText scoreBoardLine;
 		scoreBoardLine.Create(10, { 1.0f, 1.0f, 1.0f });
 		scoreBoardLine.SetAnchor(CPU_TEXT_LEFT);
-		scoreBoardLine.SetPos({ cpuDevice.GetWidth() - 150, yPos });
+		scoreBoardLine.SetPos({ cpuDevice.GetWidth() - 200, yPos });
 		m_vScoreboard.push_back(scoreBoardLine);
 	}
 	
@@ -112,6 +112,7 @@ void App::OnUpdate()
 		{
 			if(m_chatOpen == false)
 				HandleInput();
+			
 			OutOfArenaUpdate(dt);
 			m_pPlayer->UpdateCamera();
 			UpdateHealthSprite();
@@ -588,26 +589,53 @@ std::string App::GetScoreboardLine(Player* pPlayer)
 	line.append(pPlayer->GetName());
 	line.append("]");
 
-	for (int i = line.length() - 1; i < 15; i++)
+	for (int i = line.length() - 1; i < 12; i++)
 		line.append(" ");
 
 	line.append(std::to_string(pPlayer->GetKillCount()));
 	
-	for (int i = line.length() - 1; i < 20; i++)
+	for (int i = line.length() - 1; i < 18; i++)
 		line.append(" ");
 
 	line.append(std::to_string(pPlayer->GetDeathCount()));
+
+	for (int i = line.length() - 1; i < 27; i++)
+		line.append(" ");
+
+	line.append(std::to_string(pPlayer->GetScore()));
 
 	return line;
 }
 
 void App::UpdateScoreboard()
 {
+	SortPlayers();
+	
 	for (int i = 0; i < 5; i++)
 	{
 		if (i >= m_vPlayers.size()) return;
 
 		m_vScoreboard[i + 1].SetText(GetScoreboardLine(m_vPlayers[i]));
+	}
+}
+
+void App::SortPlayers()
+{
+	if (m_vPlayers.size() <= 1) return;
+	
+	for (int i = 0; i < m_vPlayers.size() - 1; i++)
+	{
+		int score = m_vPlayers[i]->GetScore();
+		for (int j = i; j < m_vScoreboard.size(); j++)
+		{
+			int score2 = m_vPlayers[j]->GetScore();
+			if (score < score2)
+			{
+				Player* temp = m_vPlayers[i];
+				m_vPlayers[i] = m_vPlayers[j];
+				m_vPlayers[j] = temp;
+			}
+		}
 	}
 }
 
