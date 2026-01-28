@@ -386,10 +386,13 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
     // std::cout << "Registered packet of type " << PacketTypeNames[packet->GetType()] << " for " << pTarget->username << std::endl;
     if (pTarget == nullptr) return;
     if (pTarget->connected == false) return;
+
+    bool hasCreated = false;
     
     if (!m_pendingTargetedMessage.contains(pTarget))
     {
         m_pendingTargetedMessage[pTarget] = std::vector<Message*>();
+        hasCreated = true;
     }
 
     if (m_pendingMessages.size() == 0)
