@@ -29,6 +29,15 @@ void ServerMethods::SendCreationPackets(ClientInfo* pTarget)
 
         CreateEntity* packet = new CreateEntity(entity->GetID(), type, pos, dir, scale);
         Server::GetInstance()->SendTargetedPacket(packet, pTarget);
+
+        if (entity->GetType() == EntityType::PLAYER)
+        {
+            Player* p = dynamic_cast<Player*>(entity);
+            if (p == nullptr) continue;
+            
+            SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(entity->GetID(), p->GetName());
+            Server::GetInstance()->SendTargetedPacket(uPacket, pTarget);
+        }
     }
 }
 
