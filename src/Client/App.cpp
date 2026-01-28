@@ -9,9 +9,6 @@
 
 #include "ClientMethods.h"
 
-
-
-
 App::App()
 {
 	s_pApp = this;
@@ -409,7 +406,6 @@ void App::HandleInput()
 		m_chatOpen = true;
 		m_chatInput.Reset();
 	}
-
 }
 
 void App::LoginUpdate(float dt)
@@ -514,7 +510,7 @@ void App::OutOfArenaUpdate(float dt)
 		{
 			m_outTimer = 0.0f;
 			m_outOfArenaText.SetText("Return to the arena in 8...");
-			m_pPlayer->TakeDamage(100.0f);
+			ClientMethods::SetHealth(m_pPlayer->GetID(), 0.0f);
 		}
 	}
 	else

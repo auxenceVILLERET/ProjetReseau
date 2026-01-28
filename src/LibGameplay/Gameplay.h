@@ -16,7 +16,17 @@ enum EntityType
 {
     PLAYER,
     PROJECTILE,
-    ASTEROID
+    ASTEROID,
+	POWERUP
+};
+
+
+enum class PowerUpType
+{
+    HEALTH,
+    SPEED,
+    SHIELD
+
 };
 
 inline std::vector<XMFLOAT3> SPAWN_POINTS =
