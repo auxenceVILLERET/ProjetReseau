@@ -110,6 +110,7 @@ void Server::GlobalMsg(const char* msg)
 {
     for (ClientInfo* client : m_vClients)
     {
+        if (client->connected == false) return;
         // std::cout << "Sent global message to " << client.username << "\n";
         m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client->sockAddr);
     }
@@ -378,6 +379,7 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
 {
     // std::cout << "Registered packet of type " << PacketTypeNames[packet->GetType()] << " for " << pTarget->username << std::endl;
     if (pTarget == nullptr) return;
+    if (pTarget->connected == false) return;
     
     if (!m_pendingTargetedMessage.contains(pTarget))
     {
