@@ -9,9 +9,6 @@
 
 #include "ClientMethods.h"
 
-
-
-
 App::App()
 {
 	s_pApp = this;

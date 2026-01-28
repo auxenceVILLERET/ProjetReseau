@@ -24,6 +24,8 @@ public:
 	float GetSpeed()					{ return m_speedMovement; }
 	float GetRotationSpeed()			{ return m_speedRotation; }
 
+	bool ActivateSpeedBoost();
+	void SpeedBoost(float dt, float speedBoost);
 
 	void SetActive()					override;
 	void SetInactive()					override;
@@ -50,6 +52,10 @@ private:
 
 	uint32_t m_shipColorIndex;
 	uint32_t m_particleColorIndex;
+
+	bool m_speedBoostActive;
+	float m_speedBoostTimer;
+	float m_speedBoostDuration;
 };
 
 #endif

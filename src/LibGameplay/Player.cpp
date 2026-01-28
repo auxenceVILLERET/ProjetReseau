@@ -41,8 +41,8 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 
 	m_pEmitter = nullptr;
 	
-	m_speedRotation = 0.8f;
-	m_speedMovement = 1.0f;
+	m_speedRotation = 1.3f;
+	m_speedMovement = 3.0f;
 	m_maxSpeed = 10.0f;
 
 	m_shootCooldown = 0.1f;
@@ -51,7 +51,7 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 	m_collider.radius = 1.0f;
 	m_type = EntityType::PLAYER;
 
-	
+	m_speedBoostActive = false;
 
 	m_shipColorIndex = 0;
 	m_particleColorIndex = 0;
@@ -86,7 +86,6 @@ void Player::UpdateCamera()
 	cpuEngine.GetCamera()->transform.AddYPR(0.0f, 0.1f / speedMult, 0.0f);
 }
 
-
 bool Player::Shoot()
 {
 	if (m_shootTimer >= m_shootCooldown)
@@ -96,6 +95,7 @@ bool Player::Shoot()
 	}
 	return false;
 }
+
 void Player::InitRenderElements()
 {
 	m_pEmitter = cpuEngine.CreateParticleEmitter();
@@ -131,6 +131,32 @@ void Player::OnCollision(Entity* other)
 	{
 		TakeDamage(10.0f);
 	}
+}
+
+bool Player::ActivateSpeedBoost()
+{
+	if(m_speedBoostActive == false)
+	{
+		m_speedBoostActive = true;
+		return true;
+	}
+	return false;
+}
+
+void Player::SpeedBoost(float dt, float speedBoost)
+{
+	if(m_speedBoostActive)
+	{
+		m_speedBoostTimer += dt;
+		if(m_speedBoostTimer >= m_speedBoostDuration)
+		{
+			m_speedBoostActive = false;
+			m_speedBoostTimer = 0.0f;
+		}
+
+		m_speedMovement += speedBoost * dt;
+	}
+
 }
 
 void Player::SetActive()

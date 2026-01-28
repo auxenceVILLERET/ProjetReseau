@@ -74,8 +74,11 @@ void ServerMethods::HandleDestroyedEntities(int& destroyed)
     for (Entity* entity : GameManager::GetInstance()->GetEntities())
     {
         if (entity->GetToDestroy() == false) continue;
-        if(entity->GetType() == EntityType::ASTEROID)
-			destroyed++;
+        if (entity->GetType() == EntityType::ASTEROID)
+        {
+            destroyed++;
+
+        }
 
         DestroyEntityPacket* packet = new DestroyEntityPacket(entity->GetID());
         Server::GetInstance()->SendPacket(packet);
