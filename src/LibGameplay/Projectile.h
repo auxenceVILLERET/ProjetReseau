@@ -12,7 +12,7 @@ public:
 	void Init(XMFLOAT3 pos, XMFLOAT3 dir);
 	void OnCollision(Entity* other) override;
 
-	void SetShooter(Player* pPlayer) { m_pShooter = pPlayer; };
+	void SetShooter(Player* pPlayer) { m_pShooter = pPlayer; }
 	
 private:
 	float m_speed;
@@ -23,5 +23,7 @@ private:
 	
 	float m_distMax;
 	float m_distTraveled;
+
+	friend class Player;
 };
 

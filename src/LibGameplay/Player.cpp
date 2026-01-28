@@ -51,7 +51,8 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 	m_collider.radius = 1.0f;
 	m_type = EntityType::PLAYER;
 
-	
+	m_killCount = 0;
+	m_deathCount = 0;
 
 	m_shipColorIndex = 0;
 	m_particleColorIndex = 0;
@@ -130,7 +131,23 @@ void Player::OnCollision(Entity* other)
 	if(other->GetType() == EntityType::PROJECTILE)
 	{
 		TakeDamage(10.0f);
+		Projectile* projectile = dynamic_cast<Projectile*>(other);
+		if (projectile == nullptr) return;
+
+		if (IsAlive() == false)
+		{
+			Player* shooter = projectile->m_pShooter;
+			if (shooter == nullptr) return;
+
+			shooter->m_killCount++;
+			shooter->SetDirtyFlag(OTHER);
+		}
 	}
+
+	if (m_isAlive == true) return;
+	
+	m_deathCount++;
+	SetDirtyFlag(OTHER);
 }
 
 void Player::SetActive()
@@ -139,7 +156,6 @@ void Player::SetActive()
 	if (m_isServerSide == false)
 	{
 		m_pCpuEntity->visible = true;
-
 	}
 }
 
@@ -181,7 +197,6 @@ void Player::ChangeColorParticle(int index)
 		SetDirtyFlag(DIRTY_TYPES::PARTICLE_COLOR);
 	}
 }
-
 
 
 #endif

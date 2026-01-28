@@ -9,6 +9,7 @@
 #include "Server.h"
 #include "Gameplay.h"
 #include "Asteroid.h"
+#include "Player.h"
 
 
 void ServerMethods::Init()
@@ -61,6 +62,15 @@ void ServerMethods::HandleDirtyEntities()
             SetEntityHealthPacket* packet = new SetEntityHealthPacket(id, entity->GetHealth());
             Server::GetInstance()->SendPacket(packet);
 		}
+        if (dirty & DIRTY_TYPES::OTHER)
+        {
+            if (entity->GetType() != EntityType::PLAYER) continue;
+            Player* player = dynamic_cast<Player*>(entity);
+            if (player == nullptr) continue;
+            
+            SetPlayerStatsPacket* packet = new SetPlayerStatsPacket(player->GetID(), player->GetKillCount(), player->GetDeathCount());
+            Server::GetInstance()->SendPacket(packet);
+        }
 
         entity->ClearDirtyFlags();
     }

@@ -258,6 +258,9 @@ void Server::HandlePackets()
             Projectile* e = GameManager::GetInstance()->CreateEntity<Projectile>(true);
             if (e == nullptr) continue;
             e->Init({casted->px, casted->py, casted->pz}, {casted->dx, casted->dy, casted->dz});
+            Player* player = dynamic_cast<Player*>(GameManager::GetInstance()->GetEntity(casted->shooterId));
+            if (player != nullptr)
+                e->SetShooter(player);
 
             CreateEntity* nPacket = new CreateEntity(e->GetID(), e->GetType(), e->GetTransform().pos, e->GetTransform().dir, e->GetScale());
             SendPacket(nPacket);

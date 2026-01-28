@@ -21,6 +21,6 @@
 #include "ChatMessagePacket.hpp"
 #include "ChangeColorShipPacket.hpp"
 #include "ChangeColorParticlePacket.hpp"
-
+#include "SetPlayerStatsPacket.hpp"
 
 #endif
