@@ -644,9 +644,8 @@ void App::ClearDestroyedPlayers()
 	for (auto it = m_vPlayers.begin(); it != m_vPlayers.end(); )
 	{
 		Player* p = *it;
-		if (p == nullptr)
+		if (p->GetToDestroy() == true)
 		{
-			delete p;
 			it = m_vPlayers.erase(it);
 		}
 		else
