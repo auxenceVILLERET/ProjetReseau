@@ -63,7 +63,7 @@ void App::OnStart()
 
 	m_chatText.Create(10, { 1.0f, 1.0f, 1.0f });
 	m_chatText.SetAnchor(CPU_TEXT_LEFT);
-	m_chatText.SetPos({ 340, 220 });
+	m_chatText.SetPos({ 20, 220 });
 	m_chatText.SetText("Chat:");
 	
 	m_chatInput.Create(10, { 1.0f, 1.0f, 1.0f });
@@ -120,6 +120,7 @@ void App::OnUpdate()
 				if (m_pPlayer->GetActiveState() == true)
 				{
 					ClientMethods::SetActiveState(m_pPlayer->GetID(), false);
+					m_pPlayer->SetInactive();
 				}
 			}
 
@@ -306,11 +307,16 @@ void App::OnRender(int pass)
 
 				if(line.user == "Server")
 				{
-					cpuDevice.DrawText(&serverFont, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
+					cpuDevice.DrawText(&serverFont, msg.c_str(), 20, (int)y, CPU_TEXT_LEFT);
+				}
+				else if (line.user == "ServeR")
+				{
+					XMFLOAT3 color = { 1.0f,0.0f,0.0f };
+					cpuDevice.DrawText(&m_font, msg.c_str(), 20, (int)y, CPU_TEXT_LEFT, &color);
 				}
 				else
 				{
-					cpuDevice.DrawText(&m_font, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
+					cpuDevice.DrawText(&m_font, msg.c_str(), 20, (int)y, CPU_TEXT_LEFT);
 				}
 				y += 10.0f;
 			}
@@ -543,7 +549,7 @@ void App::CreateHealthSprite()
 		cpu_sprite* m_pSprite = cpuEngine.CreateSprite();
 		m_pSprite->pTexture = &m_texture;
 		m_pSprite->CenterAnchor();
-		m_pSprite->x = 30 ;
+		m_pSprite->x = cpuDevice.GetWidth() - 20;
 		m_pSprite->y = 50 + (i * 20);
 		m_healthSprites.push_back(m_pSprite);
 		m_pSprite->visible = false;
