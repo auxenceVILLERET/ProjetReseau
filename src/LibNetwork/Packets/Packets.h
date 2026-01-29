@@ -24,5 +24,6 @@
 #include "SetPowerUpTypePacket.hpp"
 #include "SetPlayerStatsPacket.hpp"
 #include "SetPlayerUsernamePacket.hpp"
+#include "SetActiveShieldPacket.hpp"
 
 #endif

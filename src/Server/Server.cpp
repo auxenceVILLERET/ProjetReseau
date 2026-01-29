@@ -350,6 +350,7 @@ void Server::HandlePackets()
             ChangeColorParticlePacket* nPacket = new ChangeColorParticlePacket(casted->id, casted->index);
             SendPacket(nPacket);
         }
+
     }
 
     for (int i = 0; i < m_packets.size(); i++)

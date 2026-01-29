@@ -65,6 +65,8 @@ private:
 	std::vector<InputText> m_vScoreboard;
 	std::vector<Player*> m_vPlayers;
 
+	bool m_shieldActive = false;
+
 	////////// OUT OF ARENA //////////////
 	float m_timeBeforeOut = 8.0f;
 	float m_outTimer = 0.0f;

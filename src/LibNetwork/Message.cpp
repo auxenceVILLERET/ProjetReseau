@@ -171,6 +171,9 @@ std::vector<Packet*> Message::Deserialize(char* message)
             case PacketType::SET_PLAYER_USERNAME:
                 packet = new SetPlayerUsernamePacket();
                 break;
+			case PacketType::SET_ACTIVE_SHIELD:
+				packet = new SetActiveShieldPacket();
+				break;
         }
 
         if (packet == nullptr) continue;

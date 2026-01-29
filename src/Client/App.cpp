@@ -154,6 +154,8 @@ void App::OnUpdate()
 					m_chatUpdateTimer = 0.0f;
 				}
 			}
+
+
 		}
 		else
 		{
