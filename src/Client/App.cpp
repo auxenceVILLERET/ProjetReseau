@@ -677,11 +677,12 @@ void App::RenderOtherPlayersHealth()
 			continue;
 
 		XMFLOAT3 pos = otherPlayer->GetTransform().pos;
-		pos.y -= 2.5f;
 
 		XMFLOAT2 screenPos;
 		if(WorldToScreen(pos, screenPos, camera->matViewProj, cpuDevice.GetWidth(), cpuDevice.GetHeight()) == false)
 			continue;
+
+		screenPos.y -= 20.0f;
 
 		float dx = pos.x - m_pPlayer->GetPos().x;
 		float dy = pos.y - m_pPlayer->GetPos().y;
@@ -742,11 +743,12 @@ void App::RenderOtherNames()
 			continue;
 
 		XMFLOAT3 pos = otherPlayer->GetTransform().pos;
-		pos.y += 2.5f;
 
 		XMFLOAT2 screenPos;
 		if(WorldToScreen(pos, screenPos, camera->matViewProj, cpuDevice.GetWidth(), cpuDevice.GetHeight()) == false)
 			continue;
+
+		screenPos.y += 20.0f;
 
 		float dx = pos.x - m_pPlayer->GetPos().x;
 		float dy = pos.y - m_pPlayer->GetPos().y;
