@@ -50,6 +50,8 @@ public:
 
 	void RenderOtherPlayersHealth();
 	std::string MakeHpBar(int currentHealth, int maxHealth);
+	void RenderOtherNames();
+
 
 private:
 	std::vector<ChatLine> s_chatMessages;
