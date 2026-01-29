@@ -140,6 +140,7 @@ void Player::OnCollision(Entity* other)
 	if(other->GetType() == EntityType::ASTEROID)
 	{
 		TakeDamage(100.0f);
+		m_killName = "Asteroid " + other->GetID();
 	}
 	if(other->GetType() == EntityType::PROJECTILE)
 	{
@@ -155,6 +156,8 @@ void Player::OnCollision(Entity* other)
 			shooter->m_killCount++;
 			shooter->m_score += 50;
 			shooter->SetDirtyFlag(OTHER);
+
+			m_killName = shooter->GetName();
 		}
 	}
 

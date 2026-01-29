@@ -286,6 +286,16 @@ void Server::HandlePackets()
 
             if (e == nullptr) continue;
 
+            if(e->GetType() == PLAYER)
+            {
+                Player* p = dynamic_cast<Player*>(e);
+
+                std::string killName = p->GetKillName();
+
+				ChatMessagePacket* deathMessage = new ChatMessagePacket("Server", p->GetName() + " was destroyed by " + killName);
+				SendPacket(deathMessage);
+			}
+
             if (casted->isActive)
                 e->SetActive();
             else

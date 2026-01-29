@@ -41,6 +41,7 @@ public:
 	int GetDeathCount()											{ return m_deathCount; }
 	int GetScore()												{ return m_score; }
 	std::string& GetName()										{ return m_name; }
+	std::string& GetKillName()									{ return m_killName; }
 	
 	static std::vector<XMFLOAT3> m_shipColor;
 	static std::vector<XMFLOAT3> m_particleColor;
@@ -58,6 +59,7 @@ private:
 	int m_deathCount;
 	int m_score;
 	std::string m_name;
+	std::string m_killName;
 	
 	cpu_mesh m_mesh;
 	cpu_material m_material;
