@@ -59,7 +59,7 @@ void PowerUp::OnCollision(Entity* other)
 			player->ActivateSpeedBoost(); 
 			break;
 		case PowerUpType::SHIELD:
-			//player->ActivateShield(10.0f); 
+			player->ActivateShield(); 
 			break;
 		default:
 			break;

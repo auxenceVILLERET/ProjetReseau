@@ -54,6 +54,10 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 	m_speedBoostActive = false;
 	m_speedBoostDuration = 5.0f;
 	m_speedBoostTimer = 0.0f;
+
+	m_shieldActive = false;
+	m_shieldAmount = 50.0f;
+
 	m_killCount = 0;
 	m_deathCount = 0;
 	m_score = 0;
@@ -131,6 +135,7 @@ void Player::OnCollision(Entity* other)
 {
 	if (m_isAlive == false) return;
 	
+	
 	if(other->GetType() == EntityType::ASTEROID)
 	{
 		TakeDamage(100.0f);
@@ -159,6 +164,29 @@ void Player::OnCollision(Entity* other)
 	SetDirtyFlag(OTHER);
 }
 
+void Player::TakeDamage(float damage)
+{
+	if (m_shieldActive == true && m_shieldAmount >= 0.0f)
+	{
+		m_shieldAmount -= damage;
+		if (m_shieldAmount <= 0.0f)
+		{
+			m_shieldAmount = 0.0f;
+			m_shieldActive = false;
+		}
+	}
+	else
+	{
+		m_health -= damage;
+	}
+	if (m_health <= 0.0f)
+	{
+		m_health = 0.0f;
+		m_isAlive = false;
+	}
+	SetDirtyFlag(DIRTY_TYPES::HEALTH);
+}
+
 bool Player::ActivateSpeedBoost()
 {
 	if(m_speedBoostActive == false)
@@ -182,6 +210,17 @@ void Player::SpeedBoost(float dt, float speedBoost)
 			m_speedMovement = m_maxSpeed;
 		}
 	}
+}
+
+bool Player::ActivateShield()
+{
+	if (m_shieldActive == false)
+	{
+		m_shieldActive = true;
+		m_shieldAmount = 50.0f;
+		return true;
+	}
+	return false;
 }
 
 void Player::SetActive()
