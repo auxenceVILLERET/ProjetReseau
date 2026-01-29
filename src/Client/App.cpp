@@ -689,8 +689,9 @@ void App::RenderOtherPlayersHealth()
 		int maxHP = otherPlayer->GetMaxHealth();
 
 		std::string hpBar = MakeHpBar(HP, maxHP);
+		XMFLOAT3 color = { 1.0f, 1.0f - (float)HP / (float)maxHP, 0.0f };
 
-		cpuDevice.DrawText(&m_font, hpBar.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER);
+		cpuDevice.DrawText(&m_font, hpBar.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER, &color);
 	}
 }
 
