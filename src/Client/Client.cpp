@@ -353,6 +353,18 @@ void Client::HandlePackets()
 
             p->SetUsername(casted->username);
         }
+        else if(type == SET_ACTIVE_SHIELD)
+        {
+            SetActiveShieldPacket* casted = dynamic_cast<SetActiveShieldPacket*>(packet);
+            if (casted == nullptr) continue;
+
+            Entity* e = GameManager::GetInstance()->GetEntity(casted->m_id);
+
+            Player* p = dynamic_cast<Player*>(e);
+            if (p == nullptr) continue;
+
+            p->SetShieldActive(casted->m_active);
+		}
 
          
     }

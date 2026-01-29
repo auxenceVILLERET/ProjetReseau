@@ -24,6 +24,7 @@ public:
 	static bool SetHealth(uint32_t id, float health);
 	static bool ChangeColorShip(uint32_t id, int index);
 	static bool ChangeColorParticle(uint32_t id, int index);
+	static bool SetActiveShield(uint32_t id, bool isActive);
 };
 
 #endif

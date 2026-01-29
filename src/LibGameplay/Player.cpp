@@ -144,7 +144,7 @@ void Player::OnCollision(Entity* other)
 	}
 	if(other->GetType() == EntityType::PROJECTILE)
 	{
-		TakeDamage(10.0f);
+		TakeDamage(2.0f);
 		Projectile* projectile = dynamic_cast<Projectile*>(other);
 		if (projectile == nullptr) return;
 

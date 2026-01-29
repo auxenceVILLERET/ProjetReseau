@@ -155,6 +155,17 @@ void App::OnUpdate()
 					m_chatUpdateTimer = 0.0f;
 				}
 			}
+
+			if(m_shieldActive == false && m_pPlayer->ActivateShield() == true)
+			{
+				ClientMethods::SetActiveShield(m_pPlayer->GetID(), true);
+				m_shieldActive = true;
+			}
+			else if(m_shieldActive == true && m_pPlayer->ActivateShield() == false)
+			{
+				ClientMethods::SetActiveShield(m_pPlayer->GetID(), false);
+				m_shieldActive = false;
+			}
 		}
 		else
 		{
@@ -341,6 +352,8 @@ void App::OnRender(int pass)
 void App::HandleInput()
 {
 	XMFLOAT3 dir = m_pPlayer->GetTransform().dir;
+	XMFLOAT3 right = m_pPlayer->GetTransform().right;
+	XMFLOAT3 up = m_pPlayer->GetTransform().up;
 	float rotSpeed = m_pPlayer->GetRotationSpeed();
 	float speed = m_pPlayer->GetSpeed();
 	uint32_t id = m_pPlayer->GetID();
@@ -383,7 +396,21 @@ void App::HandleInput()
  	if(cpuInput.IsKey(VK_LBUTTON))
  	{
  		if (m_pPlayer->Shoot())
-			ClientMethods::ShootProjectile(m_pPlayer->GetID(), m_pPlayer->GetTransform().pos, dir);
+ 		{
+ 			XMFLOAT3 pos = m_pPlayer->GetTransform().pos;
+ 			XMFLOAT3 posR = m_pPlayer->GetTransform().pos;
+			posR.x += right.x - up.x * 0.2f;
+ 			posR.y += right.y - up.y * 0.2f;
+ 			posR.z += right.z - up.z * 0.2f;
+ 			XMFLOAT3 posL = m_pPlayer->GetTransform().pos;
+ 			posL.x -= right.x + up.x * 0.2f;
+ 			posL.y -= right.y + up.y * 0.2f;
+ 			posL.z -= right.z + up.z * 0.2f;
+ 			
+			ClientMethods::ShootProjectile(m_pPlayer->GetID(), pos, dir);
+ 			ClientMethods::ShootProjectile(m_pPlayer->GetID(), posR, dir);
+ 			ClientMethods::ShootProjectile(m_pPlayer->GetID(), posL, dir);
+ 		}
  	}
 	if(cpuInput.IsKeyDown(VK_LEFT))
 	{
@@ -706,6 +733,9 @@ void App::RenderOtherPlayersHealth()
 		int maxHP = otherPlayer->GetMaxHealth();
 
 		std::string hpBar = MakeHpBar(HP, maxHP);
+
+		if(otherPlayer->ActivateShield())
+			hpBar += " [SHIELD]";
 		
 		float t = std::clamp((float)HP / (float)maxHP, 0.0f, 1.0f);
 		XMFLOAT3 color = { 1.0f - t, t, 0.0f };
