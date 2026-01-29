@@ -454,7 +454,12 @@ void App::LoginUpdate(float dt)
 	else if (m_serverPort == -1 && m_loginInput.IsFinished())
 	{
 		m_loginHeader.SetText("Connexion Request Sent");
-		m_serverPort = std::stoi( m_loginInput.GetText() );
+		
+		if (m_loginInput.GetText().size() == 0)
+			m_serverPort = 0;
+		else
+			m_serverPort = std::stoi( m_loginInput.GetText() );
+		
 		m_loginInput.Reset();
 		m_isConnecting = true;
 		Client::GetInstance()->Connect(m_serverIp, m_serverPort, m_username);
@@ -617,11 +622,18 @@ void App::UpdateScoreboard()
 {
 	SortPlayers();
 	
+	SortPlayers();
+    
 	for (int i = 0; i < 5; i++)
 	{
-		if (i >= m_vPlayers.size()) return;
-
-		m_vScoreboard[i + 1].SetText(GetScoreboardLine(m_vPlayers[i]));
+		if (i >= m_vPlayers.size())
+		{
+			m_vScoreboard[i + 1].SetText("");
+		}
+		else
+		{
+			m_vScoreboard[i + 1].SetText(GetScoreboardLine(m_vPlayers[i]));
+		}
 	}
 }
 

@@ -226,10 +226,13 @@ void Server::HandlePackets()
                 p->SetStats(pClient->killCount, pClient->deathCount, pClient->score);
                 p->SetUsername(casted->username);
                 pClient->playerId = p->GetID();
-                
+
+                SetPlayerStatsPacket* sPacket = new SetPlayerStatsPacket(p->GetID(), p->GetKillCount(), p->GetDeathCount(), p->GetScore());
+                SendPacket(sPacket);
                 SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(p->GetID(), pClient->username);
-                MessageConnected(pClient);
                 SendPacket(uPacket);
+                
+                MessageConnected(pClient);
             }
             else if (pClient->connected == false)
             {
@@ -285,7 +288,7 @@ void Server::HandlePackets()
             Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
 
             if (e == nullptr) continue;
-
+            
             if (casted->isActive)
                 e->SetActive();
             else
