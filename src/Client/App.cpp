@@ -155,7 +155,16 @@ void App::OnUpdate()
 				}
 			}
 
-
+			if(m_shieldActive == false && m_pPlayer->ActivateShield() == true)
+			{
+				ClientMethods::SetActiveShield(m_pPlayer->GetID(), true);
+				m_shieldActive = true;
+			}
+			else if(m_shieldActive == true && m_pPlayer->ActivateShield() == false)
+			{
+				ClientMethods::SetActiveShield(m_pPlayer->GetID(), false);
+				m_shieldActive = false;
+			}
 		}
 		else
 		{
@@ -698,6 +707,9 @@ void App::RenderOtherPlayersHealth()
 		int maxHP = otherPlayer->GetMaxHealth();
 
 		std::string hpBar = MakeHpBar(HP, maxHP);
+
+		if(otherPlayer->ActivateShield())
+			hpBar += " [SHIELD]";
 		
 		float t = std::clamp((float)HP / (float)maxHP, 0.0f, 1.0f);
 		XMFLOAT3 color = { 1.0f - t, t, 0.0f };

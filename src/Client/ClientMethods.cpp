@@ -138,6 +138,13 @@ bool ClientMethods::ChangeColorParticle(uint32_t id, int index)
 	return true;
 }
 
+bool ClientMethods::SetActiveShield(uint32_t id, bool isActive)
+{
+    SetActiveShieldPacket* packet = new SetActiveShieldPacket(id, isActive);
+    Client::GetInstance()->SendPacket(packet);
+	return true;
+}
+
 
 
 #endif
