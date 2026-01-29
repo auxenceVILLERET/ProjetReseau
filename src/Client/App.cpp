@@ -248,6 +248,7 @@ void App::OnRender(int pass)
 		m_usernameText.SetText(m_username);
 		m_usernameText.Render();
 		RenderOtherPlayersHealth();
+		RenderOtherNames();
 	}
 
 	if (m_chatOpen || m_newChatMessage)
@@ -690,7 +691,9 @@ void App::RenderOtherPlayersHealth()
 		int maxHP = otherPlayer->GetMaxHealth();
 
 		std::string hpBar = MakeHpBar(HP, maxHP);
-		XMFLOAT3 color = { 1.0f, 1.0f - (float)HP / (float)maxHP, 0.0f };
+
+		float t = std::clamp((float)HP / (float)maxHP, 0.0f, 1.0f);
+		XMFLOAT3 color = { 1.0f - t, t, 0.0f };
 
 		cpuDevice.DrawText(&m_font, hpBar.c_str(), (int)screenPos.x, (int)screenPos.y, CPU_TEXT_CENTER, &color);
 	}
@@ -750,6 +753,7 @@ void App::RenderOtherNames()
 			continue;
 
 		std::string name = "[" + otherPlayer->GetName() + "]";
+
 		cpuDevice.DrawText(&m_font, name.c_str(), (int)screenPos.x, (int)(screenPos.y - 10.0f), CPU_TEXT_CENTER);
 	}
 }
