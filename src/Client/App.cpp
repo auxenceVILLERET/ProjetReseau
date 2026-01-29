@@ -444,8 +444,18 @@ void App::HandleInput()
 		if (m_isSpectating)
 		{
 			m_spectatorIndex++;
-			int size = std::max(1, (int)m_vPlayers.size() - 2);
-			m_spectatorIndex %= size;
+    
+			int spectatableCount = 0;
+			for (Player* p : m_vPlayers)
+			{
+				if (p != m_pPlayer && p->IsAlive())
+					spectatableCount++;
+			}
+    
+			if (spectatableCount > 0)
+				m_spectatorIndex %= spectatableCount;
+			else
+				m_spectatorIndex = 0;
 		}
 	}
 	if (cpuInput.IsKeyDown('H'))
@@ -821,17 +831,22 @@ void App::RenderOtherNames()
 
 void App::UpdateSpectating()
 {
-	Player* specP = nullptr;
-	int index = 0;
-	for (int i = 0; i < m_vPlayers.size(); i++)
+	if (m_vPlayers.empty()) return;
+    
+	std::vector<Player*> spectatablePlayers;
+	for (Player* p : m_vPlayers)
 	{
-		if (index == m_spectatorIndex) break;
-		
-		if (m_vPlayers[i] != m_pPlayer)
-			index++;
+		if (p != m_pPlayer && p->IsAlive())
+		{
+			spectatablePlayers.push_back(p);
+		}
 	}
-
-	specP = m_vPlayers[index];
+    
+	if (spectatablePlayers.empty()) return;
+    
+	m_spectatorIndex = m_spectatorIndex % spectatablePlayers.size();
+    
+	Player* specP = spectatablePlayers[m_spectatorIndex];
 	specP->UpdateCamera();
 }
 
