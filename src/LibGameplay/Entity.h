@@ -67,7 +67,7 @@ public:
 	bool IsAlive() { return m_isAlive; }
 	void SetAlive(bool newState) { m_isAlive = newState; }
 
-	void SetHealth(float health);
+	virtual void SetHealth(float health);
 	void SetMaxHealth(float maxHealth) { m_maxHealth = maxHealth; }
 	float GetHealth() { return m_health; }
 	float GetMaxHealth() { return m_maxHealth; }

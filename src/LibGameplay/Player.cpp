@@ -248,6 +248,30 @@ void Player::SetInactive()
 	}
 }
 
+void Player::SetHealth(float health)
+{
+	if(health == 0.0f)
+	{
+		m_killName = "Void";
+		m_health = 0.0f;
+		m_isAlive = false;
+		m_score -= 50;
+		SetDirtyFlag(OTHER);
+		SetDirtyFlag(DIRTY_TYPES::HEALTH);
+	}
+	m_health = health;
+	if (m_health <= 0.0f)
+	{
+		m_health = 0.0f;
+		m_isAlive = false;
+	}
+	else
+	{
+		m_isAlive = true;
+	}
+	SetDirtyFlag(DIRTY_TYPES::HEALTH);
+}
+
 void Player::ChangeColorShip(int index)
 {
 	int size = static_cast<int>(m_shipColor.size());

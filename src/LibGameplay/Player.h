@@ -31,6 +31,7 @@ public:
 
 	void SetActive()					override;
 	void SetInactive()					override;
+	void SetHealth(float health)		override;
 	
 	void ChangeColorShip(int index);
 	void ChangeColorParticle(int index);

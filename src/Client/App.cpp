@@ -36,8 +36,8 @@ void App::OnStart()
 
 	m_texture.Load("../../res/Client/vie.png");
 	GameManager::GetInstance();
-	m_font.Create(10, { 1.0f, 1.0f, 1.0f });
-	serverFont.Create(10, { 0.0f, 1.0f, 0.0f });
+	m_font.Create(9, { 1.0f, 1.0f, 1.0f });
+	serverFont.Create(9, { 0.0f, 1.0f, 0.0f });
 
 	Client* client = Client::GetInstance();
 
@@ -51,7 +51,7 @@ void App::OnStart()
 
 	m_respawnText.Create(12, { 0.0f, 1.0f, 0.0f });
 	m_respawnText.SetAnchor(CPU_TEXT_CENTER);
-	m_respawnText.SetPos({ 256, 128 });
+	m_respawnText.SetPos({ 256, 118 });
 
 	m_outOfArenaText.Create(12, { 1.0f, 0.0f, 0.0f });
 	m_outOfArenaText.SetAnchor(CPU_TEXT_CENTER);
@@ -61,20 +61,20 @@ void App::OnStart()
 	m_usernameText.SetAnchor(CPU_TEXT_CENTER);
 	m_usernameText.SetPos({ 256, 220 });
 
-	m_chatText.Create(10, { 1.0f, 1.0f, 1.0f });
+	m_chatText.Create(9, { 1.0f, 1.0f, 1.0f });
 	m_chatText.SetAnchor(CPU_TEXT_LEFT);
-	m_chatText.SetPos({ 20, 220 });
+	m_chatText.SetPos({ 10, 220 });
 	m_chatText.SetText("Chat:");
 	
-	m_chatInput.Create(10, { 1.0f, 1.0f, 1.0f });
+	m_chatInput.Create(9, { 1.0f, 1.0f, 1.0f });
 	m_chatInput.SetAnchor(CPU_TEXT_LEFT);
-	m_chatInput.SetPos({ 400, 220 });
+	m_chatInput.SetPos({ 40, 220 });
 
 	InputText scoreBoardHeader;
 	scoreBoardHeader.Create(10, { 1.0f, 1.0f, 1.0f });
 	scoreBoardHeader.SetAnchor(CPU_TEXT_LEFT);
 	scoreBoardHeader.SetText("Name        KILL   DEATH    SCORE");
-	scoreBoardHeader.SetPos({ cpuDevice.GetWidth() - 170, 10 });
+	scoreBoardHeader.SetPos({ 20, 10 });
 	m_vScoreboard.push_back(scoreBoardHeader);
 	
 	for (int i = 0; i < 5; i++)
@@ -83,7 +83,7 @@ void App::OnStart()
 		InputText scoreBoardLine;
 		scoreBoardLine.Create(10, { 1.0f, 1.0f, 1.0f });
 		scoreBoardLine.SetAnchor(CPU_TEXT_LEFT);
-		scoreBoardLine.SetPos({ cpuDevice.GetWidth() - 170, yPos });
+		scoreBoardLine.SetPos({ 20, yPos });
 		m_vScoreboard.push_back(scoreBoardLine);
 	}
 	
@@ -261,13 +261,7 @@ void App::OnRender(int pass)
 	{
 		// Debug
 		cpu_stats& stats = *cpuEngine.GetStats();
-		std::string info = CPU_STR(cpuTime.fps) + " fps, ";
-		// info += CPU_STR(stats.drawnTriangleCount) + " triangles, ";
-		// info += CPU_STR(stats.clipEntityCount) + " clipped entities\n";
-		info += CPU_STR(cpuEngine.GetParticleData()->alive) + " particles, ";
-		// info += CPU_STR(stats.threadCount) + " threads, ";
-		// info += CPU_STR(stats.tileCount) + " tiles";
-
+		std::string info = CPU_STR(cpuTime.fps) + " fps ";
 		// Ray cast
 		cpu_ray ray;
 		cpuEngine.GetCursorRay(ray);
@@ -279,7 +273,7 @@ void App::OnRender(int pass)
 			info += CPU_STR(pEntity->index).c_str();
 		}
 
-		cpuDevice.DrawText(&m_font, info.c_str(), (int)(cpuDevice.GetWidth() * 0.5f), 10, CPU_TEXT_CENTER);
+		cpuDevice.DrawText(&m_font, info.c_str(), (int)(cpuDevice.GetWidth() - 20), 10, CPU_TEXT_CENTER);
 
 		if (!m_isConnected)
 		{
@@ -299,7 +293,7 @@ void App::OnRender(int pass)
 		{
 			m_chatInput.Render();
 			m_chatText.Render();
-			float y = 110.0f;
+			float y = 130.0f;
 
 			for (const ChatLine& line : s_chatMessages)
 			{
@@ -307,16 +301,16 @@ void App::OnRender(int pass)
 
 				if(line.user == "Server")
 				{
-					cpuDevice.DrawText(&serverFont, msg.c_str(), 20, (int)y, CPU_TEXT_LEFT);
+					cpuDevice.DrawText(&serverFont, msg.c_str(), 10, (int)y, CPU_TEXT_LEFT);
 				}
 				else if (line.user == "ServeR")
 				{
 					XMFLOAT3 color = { 1.0f,0.0f,0.0f };
-					cpuDevice.DrawText(&m_font, msg.c_str(), 20, (int)y, CPU_TEXT_LEFT, &color);
+					cpuDevice.DrawText(&m_font, msg.c_str(), 10, (int)y, CPU_TEXT_LEFT, &color);
 				}
 				else
 				{
-					cpuDevice.DrawText(&m_font, msg.c_str(), 20, (int)y, CPU_TEXT_LEFT);
+					cpuDevice.DrawText(&m_font, msg.c_str(), 10, (int)y, CPU_TEXT_LEFT);
 				}
 				y += 10.0f;
 			}
@@ -554,7 +548,7 @@ void App::CreateHealthSprite()
 		cpu_sprite* m_pSprite = cpuEngine.CreateSprite();
 		m_pSprite->pTexture = &m_texture;
 		m_pSprite->CenterAnchor();
-		m_pSprite->x = cpuDevice.GetWidth() - 20;
+		m_pSprite->x = cpuDevice.GetWidth() - 30;
 		m_pSprite->y = 50 + (i * 20);
 		m_healthSprites.push_back(m_pSprite);
 		m_pSprite->visible = false;
@@ -573,7 +567,7 @@ bool App::AddChatMessage(const std::string& user, const std::string& msg)
 	line.text = msg;
 	s_chatMessages.push_back(line);
 
-	if (s_chatMessages.size() > 10)
+	if (s_chatMessages.size() > 8)
 	{
 		s_chatMessages.erase(s_chatMessages.begin());
 	}
