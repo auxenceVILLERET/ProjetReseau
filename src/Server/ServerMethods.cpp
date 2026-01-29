@@ -44,7 +44,14 @@ void ServerMethods::SendCreationPackets(ClientInfo* pTarget)
             Server::GetInstance()->SendTargetedPacket(sPacket, pTarget);
         }
 
-        
+        if(entity->GetType() == EntityType::POWERUP)
+        {
+            PowerUp* powerup = dynamic_cast<PowerUp*>(entity);
+            if (powerup == nullptr) continue;
+
+            SetPowerUpTypePacket* powerupPacket = new SetPowerUpTypePacket(powerup->GetID(), powerup->GetPowerUpType());
+            Server::GetInstance()->SendTargetedPacket(powerupPacket, pTarget);
+		}
     }
 }
 
