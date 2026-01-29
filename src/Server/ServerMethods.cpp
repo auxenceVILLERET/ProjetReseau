@@ -107,12 +107,12 @@ void ServerMethods::HandleDestroyedEntities(int& destroyed)
         {
             destroyed++;
 			int radomSpawnPowerup = RandomRange(0, 100);
-            if (radomSpawnPowerup < 100) // 20% chance to spawn powerup
+            if (radomSpawnPowerup < 20) // 20% chance to spawn powerup
             {
 				PowerUp* powerup = GameManager::GetInstance()->CreateEntity<PowerUp>(true);
 				XMFLOAT3 pos = entity->GetPos();
 				powerup->SetPos(pos.x, pos.y, pos.z);
-				PowerUpType type = PowerUpType::SHIELD;
+				PowerUpType type = static_cast<PowerUpType>(RandomRange(0, 3)); 
 
 				CreateEntity* packet = new CreateEntity(powerup->GetID(), powerup->GetType(), powerup->GetTransform().pos, powerup->GetTransform().dir, powerup->GetScale());
 				Server::GetInstance()->SendPacket(packet);
