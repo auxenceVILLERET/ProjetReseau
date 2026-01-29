@@ -11,6 +11,7 @@
 #include "Asteroid.h"
 #include "PowerUp.h"
 #include "Player.h"
+#include "Client/Client.h"
 
 
 void ServerMethods::Init()
@@ -38,6 +39,9 @@ void ServerMethods::SendCreationPackets(ClientInfo* pTarget)
             
             SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(entity->GetID(), p->GetName());
             Server::GetInstance()->SendTargetedPacket(uPacket, pTarget);
+
+            SetPlayerStatsPacket* sPacket = new SetPlayerStatsPacket(entity->GetID(), p->GetKillCount(), p->GetDeathCount(), p->GetScore());
+            Server::GetInstance()->SendTargetedPacket(sPacket, pTarget);
         }
     }
 }
@@ -80,6 +84,14 @@ void ServerMethods::HandleDirtyEntities()
             if (entity->GetType() != EntityType::PLAYER) continue;
             Player* player = dynamic_cast<Player*>(entity);
             if (player == nullptr) continue;
+
+            ClientInfo* pClient = Server::GetInstance()->FindClient(player->GetName());
+            if (pClient != nullptr)
+            {
+                pClient->killCount = player->GetKillCount();
+                pClient->deathCount = player->GetDeathCount();
+                pClient->score = player->GetScore();
+            }
             
             SetPlayerStatsPacket* packet = new SetPlayerStatsPacket(player->GetID(), player->GetKillCount(), player->GetDeathCount(), player->GetScore());
             Server::GetInstance()->SendPacket(packet);

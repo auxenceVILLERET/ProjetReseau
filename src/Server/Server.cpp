@@ -111,7 +111,7 @@ void Server::GlobalMsg(const char* msg)
 {
     for (ClientInfo* client : m_vClients)
     {
-        if (client->connected == false) return;
+        if (client->connected == false) continue;
         // std::cout << "Sent global message to " << client.username << "\n";
         m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client->sockAddr);
     }
@@ -136,6 +136,8 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
         int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1024, target);
         
         if (response == -1) continue;
+
+        bool ignoreMessage = false;
         
         for (int i = 0; i < pInstance->m_vClients.size(); i++)
         {
@@ -150,8 +152,10 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
             if (ipStr != client->ip || port != client->port)
                 continue;
             if (client->connected == false)
-                continue;
+                ignoreMessage = true;
         }
+
+        if (ignoreMessage) continue;
         
         Message* msg = new Message();
         std::vector<Packet*> packets = msg->Deserialize(responseBuffer);
@@ -219,9 +223,16 @@ void Server::HandlePackets()
 
                 SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
 
+                p->SetStats(pClient->killCount, pClient->deathCount, pClient->score);
+                p->SetUsername(casted->username);
+                pClient->playerId = p->GetID();
+
+                SetPlayerStatsPacket* sPacket = new SetPlayerStatsPacket(p->GetID(), p->GetKillCount(), p->GetDeathCount(), p->GetScore());
+                SendPacket(sPacket);
                 SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(p->GetID(), pClient->username);
-                MessageConnected(pClient);
                 SendPacket(uPacket);
+                
+                MessageConnected(pClient);
             }
             else if (pClient->connected == false)
             {
@@ -277,7 +288,7 @@ void Server::HandlePackets()
             Entity* e = GameManager::GetInstance()->GetEntity(casted->id);
 
             if (e == nullptr) continue;
-
+            
             if (casted->isActive)
                 e->SetActive();
             else
@@ -396,7 +407,7 @@ void Server::SendTargetedPacket(Packet* packet, ClientInfo* pTarget)
         hasCreated = true;
     }
 
-    if (m_pendingMessages.size() == 0)
+    if (m_pendingTargetedMessage[pTarget].size() == 0)
     {
         Message* msg = new Message(true);
         m_pendingTargetedMessage[pTarget].push_back(msg);

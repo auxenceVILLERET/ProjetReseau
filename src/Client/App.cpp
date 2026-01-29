@@ -74,16 +74,16 @@ void App::OnStart()
 	scoreBoardHeader.Create(10, { 1.0f, 1.0f, 1.0f });
 	scoreBoardHeader.SetAnchor(CPU_TEXT_LEFT);
 	scoreBoardHeader.SetText("Name        KILL   DEATH    SCORE");
-	scoreBoardHeader.SetPos({ cpuDevice.GetWidth() - 200, 20 });
+	scoreBoardHeader.SetPos({ cpuDevice.GetWidth() - 170, 10 });
 	m_vScoreboard.push_back(scoreBoardHeader);
 	
 	for (int i = 0; i < 5; i++)
 	{
-		int yPos = 40 + i * 20;
+		int yPos = 30 + i * 20;
 		InputText scoreBoardLine;
 		scoreBoardLine.Create(10, { 1.0f, 1.0f, 1.0f });
 		scoreBoardLine.SetAnchor(CPU_TEXT_LEFT);
-		scoreBoardLine.SetPos({ cpuDevice.GetWidth() - 200, yPos });
+		scoreBoardLine.SetPos({ cpuDevice.GetWidth() - 170, yPos });
 		m_vScoreboard.push_back(scoreBoardLine);
 	}
 	
@@ -175,8 +175,8 @@ void App::OnUpdate()
 		}
 	}
 	
+	ClearDestroyedPlayers();
 	GameManager::GetInstance()->ClearDestroyedEntities();
-
 	
 	// Quit
 	if ( cpuInput.IsKeyDown(VK_ESCAPE) )
@@ -248,58 +248,6 @@ void App::ChatUpdate()
 
 void App::OnRender(int pass)
 {
-	if (!m_isConnected)
-	{
-		m_loginHeader.Render();
-		m_loginInput.Render();
-	}
-
-	if(m_isConnected)
-	{
-		m_usernameText.SetText(m_username);
-		m_usernameText.Render();
-		RenderOtherPlayersHealth();
-		RenderOtherNames();
-	}
-
-	if (m_chatOpen || m_newChatMessage)
-	{
-		m_chatInput.Render();
-		m_chatText.Render();
-		float y = 110.0f;
-
-		for (const ChatLine& line : s_chatMessages)
-		{
-			std::string msg = "[" + line.user + "] " + line.text;
-
-			if(line.user == "Server")
-			{
-				cpuDevice.DrawText(&serverFont, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
-			}
-			else
-			{
-				cpuDevice.DrawText(&m_font, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
-			}
-			y += 10.0f;
-		}
-	}
-
-	if(m_pPlayer != nullptr && m_pPlayer->IsAlive() == false && m_respawnTimer < m_timeRespawn)
-	{
-		m_respawnText.Render();
-	}
-
-	if (m_pPlayer != nullptr && InArena() == true && m_pPlayer->IsAlive() == true)
-	{
-		m_outOfArenaText.Render();
-	}
-
-	for (int i = 0; i < m_vScoreboard.size(); i++)
-	{
-		m_vScoreboard[i].Render();
-	}
-	
-
 	switch (pass)
 	{
 	case CPU_PASS_CLEAR_BEGIN:
@@ -342,6 +290,57 @@ void App::OnRender(int pass)
 		}
 
 		cpuDevice.DrawText(&m_font, info.c_str(), (int)(cpuDevice.GetWidth() * 0.5f), 10, CPU_TEXT_CENTER);
+
+		if (!m_isConnected)
+		{
+			m_loginHeader.Render();
+			m_loginInput.Render();
+		}
+
+		if(m_isConnected)
+		{
+			m_usernameText.SetText(m_username);
+			m_usernameText.Render();
+			RenderOtherPlayersHealth();
+			RenderOtherNames();
+		}
+
+		if (m_chatOpen || m_newChatMessage)
+		{
+			m_chatInput.Render();
+			m_chatText.Render();
+			float y = 110.0f;
+
+			for (const ChatLine& line : s_chatMessages)
+			{
+				std::string msg = "[" + line.user + "] " + line.text;
+
+				if(line.user == "Server")
+				{
+					cpuDevice.DrawText(&serverFont, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
+				}
+				else
+				{
+					cpuDevice.DrawText(&m_font, msg.c_str(), 340, (int)y, CPU_TEXT_LEFT);
+				}
+				y += 10.0f;
+			}
+		}
+
+		if(m_pPlayer != nullptr && m_pPlayer->IsAlive() == false && m_respawnTimer < m_timeRespawn)
+		{
+			m_respawnText.Render();
+		}
+
+		if (m_pPlayer != nullptr && InArena() == true && m_pPlayer->IsAlive() == true)
+		{
+			m_outOfArenaText.Render();
+		}
+
+		for (int i = 0; i < m_vScoreboard.size(); i++)
+		{
+			m_vScoreboard[i].Render();
+		}
 		break;
 	}
 	}
@@ -460,7 +459,12 @@ void App::LoginUpdate(float dt)
 	else if (m_serverPort == -1 && m_loginInput.IsFinished())
 	{
 		m_loginHeader.SetText("Connexion Request Sent");
-		m_serverPort = std::stoi( m_loginInput.GetText() );
+		
+		if (m_loginInput.GetText().size() == 0)
+			m_serverPort = 0;
+		else
+			m_serverPort = std::stoi( m_loginInput.GetText() );
+		
 		m_loginInput.Reset();
 		m_isConnecting = true;
 		Client::GetInstance()->Connect(m_serverIp, m_serverPort, m_username);
@@ -623,11 +627,18 @@ void App::UpdateScoreboard()
 {
 	SortPlayers();
 	
+	SortPlayers();
+    
 	for (int i = 0; i < 5; i++)
 	{
-		if (i >= m_vPlayers.size()) return;
-
-		m_vScoreboard[i + 1].SetText(GetScoreboardLine(m_vPlayers[i]));
+		if (i >= m_vPlayers.size())
+		{
+			m_vScoreboard[i + 1].SetText("");
+		}
+		else
+		{
+			m_vScoreboard[i + 1].SetText(GetScoreboardLine(m_vPlayers[i]));
+		}
 	}
 }
 
@@ -656,9 +667,8 @@ void App::ClearDestroyedPlayers()
 	for (auto it = m_vPlayers.begin(); it != m_vPlayers.end(); )
 	{
 		Player* p = *it;
-		if (p == nullptr)
+		if (p->GetToDestroy() == true)
 		{
-			delete p;
 			it = m_vPlayers.erase(it);
 		}
 		else

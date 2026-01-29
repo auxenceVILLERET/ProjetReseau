@@ -68,7 +68,8 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 
 Player::~Player()
 {
-	
+	delete m_pEmitter;
+	m_pEmitter = nullptr;
 }
 
 void Player::Update(float dt)

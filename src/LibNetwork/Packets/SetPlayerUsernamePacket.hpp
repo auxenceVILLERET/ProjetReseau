@@ -64,6 +64,11 @@ public:
         username.assign(_message, len - 1);
         _message += len;
     }
+
+    void PrintInfo(bool isSent)
+    {
+        // Packet::PrintInfo(isSent);
+    }
 };
 
 #endif
