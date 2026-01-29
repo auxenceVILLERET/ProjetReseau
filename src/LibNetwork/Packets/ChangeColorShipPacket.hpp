@@ -51,7 +51,7 @@ class ChangeColorShipPacket: public Packet
 	
 	void PrintInfo(bool isSent)
 	{
-		Packet::PrintInfo(isSent);
+		// Packet::PrintInfo(isSent);
 	}
 };
 
