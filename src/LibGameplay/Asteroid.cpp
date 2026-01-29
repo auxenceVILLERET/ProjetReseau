@@ -101,7 +101,8 @@ void Asteroid::UpdateRenderElements(float dt)
 		{
 			m_pEmitter->density = 0.0f;
 			m_timerParticul = 0.0f;
-			delete m_pEmitter;
+			cpuEngine.Release(m_pEmitter);
+			m_pEmitter = nullptr;
 			m_toDestroy = true;
 		}
 	}

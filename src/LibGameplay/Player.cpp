@@ -68,7 +68,7 @@ Player::Player(bool isServerSide) : Entity(isServerSide)
 
 Player::~Player()
 {
-	delete m_pEmitter;
+	cpuEngine.Release(m_pEmitter);
 	m_pEmitter = nullptr;
 }
 
