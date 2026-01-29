@@ -111,7 +111,7 @@ void Server::GlobalMsg(const char* msg)
 {
     for (ClientInfo* client : m_vClients)
     {
-        if (client->connected == false) return;
+        if (client->connected == false) continue;
         // std::cout << "Sent global message to " << client.username << "\n";
         m_udpSocket.SendTo(msg, Message::BUFFER_SIZE + 1, client->sockAddr);
     }
@@ -136,6 +136,8 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
         int response = pInstance->m_udpSocket.ReceiveFrom(responseBuffer, 1024, target);
         
         if (response == -1) continue;
+
+        bool ignoreMessage = false;
         
         for (int i = 0; i < pInstance->m_vClients.size(); i++)
         {
@@ -148,10 +150,12 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
             std::string ipStr = ip;
         
             if (ipStr != client->ip || port != client->port)
-                continue;
+                ignoreMessage = true;
             if (client->connected == false)
-                continue;
+                ignoreMessage = true;
         }
+
+        if (ignoreMessage) continue;
         
         Message* msg = new Message();
         std::vector<Packet*> packets = msg->Deserialize(responseBuffer);
@@ -221,6 +225,7 @@ void Server::HandlePackets()
 
                 p->SetStats(pClient->killCount, pClient->deathCount, pClient->score);
                 p->SetUsername(casted->username);
+                pClient->playerId = p->GetID();
                 
                 SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(p->GetID(), pClient->username);
                 MessageConnected(pClient);

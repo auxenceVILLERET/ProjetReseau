@@ -67,8 +67,7 @@ public:
 
     void PrintInfo(bool isSent)
     {
-        Packet::PrintInfo(isSent);
-        std::cout << username << std::endl;
+        // Packet::PrintInfo(isSent);
     }
 };
 
