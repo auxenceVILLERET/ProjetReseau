@@ -219,6 +219,7 @@ void Server::HandlePackets()
 
                 SendTargetedPacket(new SetPlayerIDPacket(p->GetID()), pClient);
 
+                p->SetUsername(casted->username);
                 SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(p->GetID(), pClient->username);
                 MessageConnected(pClient);
                 SendPacket(uPacket);
