@@ -448,7 +448,12 @@ void App::LoginUpdate(float dt)
 	else if (m_serverPort == -1 && m_loginInput.IsFinished())
 	{
 		m_loginHeader.SetText("Connexion Request Sent");
-		m_serverPort = std::stoi( m_loginInput.GetText() );
+		
+		if (m_loginInput.GetText().size() == 0)
+			m_serverPort = 0;
+		else
+			m_serverPort = std::stoi( m_loginInput.GetText() );
+		
 		m_loginInput.Reset();
 		m_isConnecting = true;
 		Client::GetInstance()->Connect(m_serverIp, m_serverPort, m_username);

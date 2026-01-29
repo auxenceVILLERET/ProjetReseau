@@ -39,6 +39,9 @@ void ServerMethods::SendCreationPackets(ClientInfo* pTarget)
             
             SetPlayerUsernamePacket* uPacket = new SetPlayerUsernamePacket(entity->GetID(), p->GetName());
             Server::GetInstance()->SendTargetedPacket(uPacket, pTarget);
+
+            SetPlayerStatsPacket* sPacket = new SetPlayerStatsPacket(entity->GetID(), p->GetKillCount(), p->GetDeathCount(), p->GetScore());
+            Server::GetInstance()->SendTargetedPacket(sPacket, pTarget);
         }
     }
 }
