@@ -20,6 +20,7 @@ struct ClientInfo
     int playerId = 0;
     int deathCount = 0;
     int killCount = 0;
+    int score = 0;
 };
 
 struct ReceivedPacket
