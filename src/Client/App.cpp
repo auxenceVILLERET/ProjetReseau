@@ -444,7 +444,7 @@ void App::HandleInput()
 		if (m_isSpectating)
 		{
 			m_spectatorIndex++;
-			int size = std::max(0, (int)m_vPlayers.size() - 2);
+			int size = std::max(1, (int)m_vPlayers.size() - 2);
 			m_spectatorIndex %= size;
 		}
 	}
