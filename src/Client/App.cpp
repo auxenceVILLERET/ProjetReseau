@@ -682,7 +682,7 @@ void App::RenderOtherPlayersHealth()
 		if(WorldToScreen(pos, screenPos, camera->matViewProj, cpuDevice.GetWidth(), cpuDevice.GetHeight()) == false)
 			continue;
 
-		screenPos.y -= 20.0f;
+		screenPos.y += 20.0f;
 
 		float dx = pos.x - m_pPlayer->GetPos().x;
 		float dy = pos.y - m_pPlayer->GetPos().y;
@@ -748,7 +748,7 @@ void App::RenderOtherNames()
 		if(WorldToScreen(pos, screenPos, camera->matViewProj, cpuDevice.GetWidth(), cpuDevice.GetHeight()) == false)
 			continue;
 
-		screenPos.y += 20.0f;
+		screenPos.y -= 20.0f;
 
 		float dx = pos.x - m_pPlayer->GetPos().x;
 		float dy = pos.y - m_pPlayer->GetPos().y;
