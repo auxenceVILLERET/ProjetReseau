@@ -150,7 +150,7 @@ DWORD Server::ReceiveThread(LPVOID lpParam)
             std::string ipStr = ip;
         
             if (ipStr != client->ip || port != client->port)
-                ignoreMessage = true;
+                continue;
             if (client->connected == false)
                 ignoreMessage = true;
         }
