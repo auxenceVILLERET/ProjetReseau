@@ -611,11 +611,18 @@ void App::UpdateScoreboard()
 {
 	SortPlayers();
 	
+	SortPlayers();
+    
 	for (int i = 0; i < 5; i++)
 	{
-		if (i >= m_vPlayers.size()) return;
-
-		m_vScoreboard[i + 1].SetText(GetScoreboardLine(m_vPlayers[i]));
+		if (i >= m_vPlayers.size())
+		{
+			m_vScoreboard[i + 1].SetText("");
+		}
+		else
+		{
+			m_vScoreboard[i + 1].SetText(GetScoreboardLine(m_vPlayers[i]));
+		}
 	}
 }
 
