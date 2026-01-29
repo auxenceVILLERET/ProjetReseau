@@ -52,6 +52,7 @@ public:
 	std::string MakeHpBar(int currentHealth, int maxHealth);
 	void RenderOtherNames();
 
+	void UpdateSpectating();
 
 private:
 	std::vector<ChatLine> s_chatMessages;
@@ -77,7 +78,12 @@ private:
 	float m_timeRespawn = 3.0f;
 	float m_respawnTimer = 0.0f;
 	InputText m_respawnText;
-	//////////////
+	//////////////////////////////
+
+	///////// SPECTATE ////////////////
+	int m_spectatorIndex = 0;
+	bool m_isSpectating = false;
+	///////////////////////////////////
 
 	////////// LOGIN //////////////
 	bool m_isConnected = false;

@@ -122,6 +122,12 @@ void App::OnUpdate()
 					ClientMethods::SetActiveState(m_pPlayer->GetID(), false);
 					m_pPlayer->SetInactive();
 				}
+				m_isSpectating = true;
+				UpdateSpectating();
+			}
+			else
+			{
+				m_isSpectating = false;
 			}
 
 			if (m_respawnTimer < m_timeRespawn && m_pPlayer->IsAlive() == false)
@@ -432,6 +438,15 @@ void App::HandleInput()
 	{
 		m_chatOpen = true;
 		m_chatInput.Reset();
+	}
+	if (cpuInput.IsKeyDown(VK_RBUTTON))
+	{
+		if (m_isSpectating)
+		{
+			m_spectatorIndex++;
+			int size = std::max(0, (int)m_vPlayers.size() - 2);
+			m_spectatorIndex %= size;
+		}
 	}
 	if (cpuInput.IsKeyDown('H'))
 	{
@@ -802,6 +817,22 @@ void App::RenderOtherNames()
 
 		cpuDevice.DrawText(&m_font, name.c_str(), (int)screenPos.x, (int)(screenPos.y - 10.0f), CPU_TEXT_CENTER);
 	}
+}
+
+void App::UpdateSpectating()
+{
+	Player* specP = nullptr;
+	int index = 0;
+	for (int i = 0; i < m_vPlayers.size(); i++)
+	{
+		if (index == m_spectatorIndex) break;
+		
+		if (m_vPlayers[i] != m_pPlayer)
+			index++;
+	}
+
+	specP = m_vPlayers[index];
+	specP->UpdateCamera();
 }
 
 

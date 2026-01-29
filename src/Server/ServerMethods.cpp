@@ -43,6 +43,8 @@ void ServerMethods::SendCreationPackets(ClientInfo* pTarget)
             SetPlayerStatsPacket* sPacket = new SetPlayerStatsPacket(entity->GetID(), p->GetKillCount(), p->GetDeathCount(), p->GetScore());
             Server::GetInstance()->SendTargetedPacket(sPacket, pTarget);
         }
+
+        
     }
 }
 
