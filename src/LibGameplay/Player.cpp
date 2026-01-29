@@ -166,10 +166,10 @@ void Player::OnCollision(Entity* other)
 
 void Player::TakeDamage(float damage)
 {
-	if (m_shieldActive == true && m_shieldAmount > 0.0f)
+	if (m_shieldActive == true && m_shieldAmount >= 0.0f)
 	{
 		m_shieldAmount -= damage;
-		if (m_shieldAmount < 0.0f)
+		if (m_shieldAmount <= 0.0f)
 		{
 			m_shieldAmount = 0.0f;
 			m_shieldActive = false;
@@ -222,8 +222,6 @@ bool Player::ActivateShield()
 	}
 	return false;
 }
-
-
 
 void Player::SetActive()
 {

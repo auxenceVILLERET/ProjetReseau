@@ -696,11 +696,6 @@ void App::RenderOtherPlayersHealth()
 
 		std::string hpBar = MakeHpBar(HP, maxHP);
 		
-		if(otherPlayer->ActivateShield() == true)
-		{
-			hpBar += " [SHIELD]";
-		}
-
 		float t = std::clamp((float)HP / (float)maxHP, 0.0f, 1.0f);
 		XMFLOAT3 color = { 1.0f - t, t, 0.0f };
 
